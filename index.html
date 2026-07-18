@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qualia — Step into someone else's world for an afternoon</title>
+<meta name="description" content="Qualia is a marketplace connecting guests with independent hosts for personalized, one-on-one experiences — reviewed for safety before they're ever listed.">
+<link rel="icon" type="image/svg+xml" href="brand_assets/qualia-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>window.QUALIA_BASE = '';</script>
+<script src="assets/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-paper text-ink font-sans antialiased">
+
+<!-- ================= NAV ================= -->
+<header class="sticky top-0 z-50 bg-paper/90 backdrop-blur-md border-b border-line">
+  <nav class="max-w-[1200px] mx-auto flex items-center justify-between px-6 md:px-10 py-4">
+    <a href="index.html" class="flex items-center" aria-label="Qualia home">
+      <img src="brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 md:h-7 w-auto">
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="discover.html" class="nav-link">Discover</a>
+      <a href="index.html#how-it-works" class="nav-link">How it works</a>
+      <a href="index.html#safety" class="nav-link">Trust &amp; safety</a>
+      <a href="index.html#hosts" class="nav-link">For hosts</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <div id="auth-slot" class="hidden md:flex items-center gap-4"></div>
+      <a href="discover.html" class="btn btn-primary !py-2.5 !px-5 !text-[13px] hidden sm:inline-flex">Explore experiences</a>
+      <button type="button" data-mobile-toggle class="md:hidden w-9 h-9 flex items-center justify-center text-ink" aria-label="Open menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div class="mobile-drawer">
+  <div class="scrim"></div>
+  <div class="panel">
+    <div class="flex items-center justify-between mb-8">
+      <img src="brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 w-auto">
+      <button type="button" data-mobile-close class="w-9 h-9 flex items-center justify-center" aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <nav class="flex flex-col mb-8">
+      <a href="discover.html" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">Discover</a>
+      <a href="index.html#how-it-works" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">How it works</a>
+      <a href="index.html#safety" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">Trust &amp; safety</a>
+      <a href="index.html#hosts" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">For hosts</a>
+    </nav>
+    <div id="auth-slot-mobile" class="flex flex-col gap-3 mt-auto"></div>
+  </div>
+</div>
+
+<main id="top">
+
+  <!-- ================= HERO ================= -->
+  <section class="relative overflow-hidden border-b border-line">
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 pt-16 pb-20 md:pt-24 md:pb-28 grid grid-cols-1 md:grid-cols-[1.05fr_0.95fr] gap-16 items-center">
+
+      <div class="relative z-10 min-w-0">
+        <span class="eyebrow block mb-6">A marketplace for one‑on‑one experiences</span>
+        <h1 class="font-display font-medium text-[42px] leading-[1.08] tracking-[-0.02em] md:text-[60px] md:leading-[1.04] mb-7">
+          Step into <em class="italic text-moss font-medium">someone else's</em> world for an afternoon.
+        </h1>
+        <p class="text-inksoft text-[16px] md:text-[17px] leading-[1.7] max-w-[46ch] mb-9">
+          Qualia connects you with independent hosts who'll teach you the one thing only they know — not a class, not a tour, not a video. One person, one afternoon, nothing generic.
+        </p>
+        <div class="flex flex-wrap items-center gap-4 mb-10">
+          <a href="discover.html" class="btn btn-primary">Find an experience</a>
+          <a href="login.html?mode=signup&amp;role=host" class="btn btn-outline">Become a host</a>
+        </div>
+        <div class="flex items-center gap-3 text-inksoft">
+          <span class="w-4 h-4 rounded-full border-[1.6px] border-moss/70 shrink-0"></span>
+          <span class="font-mono text-[11px] uppercase tracking-[0.06em]">Every experience is reviewed before it's listed</span>
+        </div>
+      </div>
+
+      <div class="relative z-10 flex items-center justify-center">
+        <div class="aperture ring-spin absolute w-[320px] h-[320px] md:w-[420px] md:h-[420px] opacity-[0.14] text-moss" aria-hidden="true">
+          <svg viewBox="-4 -4 108 108" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="77" y1="50" x2="88" y2="50" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="50" y1="77" x2="50" y2="88" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="23" y1="50" x2="12" y2="50" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="50" y1="23" x2="50" y2="12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        </div>
+        <div class="aperture ring-breathe absolute w-[220px] h-[220px] md:w-[280px] md:h-[280px] text-gold opacity-30" aria-hidden="true">
+          <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="1"/></svg>
+        </div>
+
+        <!-- floating experience preview cards -->
+        <div class="relative w-full max-w-[380px]">
+          <a href="experience.html?id=pasta-bensonhurst" class="block bg-card border border-line rounded-2xl shadow-brand-lg p-5 -rotate-2 card-hover">
+            <div class="flex items-center gap-4">
+              <div class="ring-frame w-16 h-16 shrink-0">
+                <span class="frame-ring"></span>
+                <img src="https://placehold.co/128x128/2c4130/F1EADA?text=R" alt="" class="w-16 h-16 rounded-full object-cover">
+              </div>
+              <div class="min-w-0">
+                <p class="font-mono text-[10px] uppercase tracking-[0.06em] text-inksoft mb-1">Pasta · Bensonhurst, Brooklyn</p>
+                <p class="font-display italic text-[15px] leading-snug mb-1">"You're not learning a recipe."</p>
+                <p class="font-mono text-[10.5px] text-inksoft">Rosa &nbsp;·&nbsp; $145/session &nbsp;·&nbsp; 4.98★</p>
+              </div>
+            </div>
+          </a>
+          <a href="experience.html?id=sailing-newport" class="block bg-card border border-line rounded-2xl shadow-brand p-5 mt-5 ml-8 rotate-1 card-hover">
+            <div class="flex items-center gap-4">
+              <div class="ring-frame w-16 h-16 shrink-0">
+                <span class="frame-ring" style="border-color:#A8483A; opacity:0.6;"></span>
+                <img src="https://placehold.co/128x128/374a2e/F1EADA?text=E" alt="" class="w-16 h-16 rounded-full object-cover">
+              </div>
+              <div class="min-w-0">
+                <p class="font-mono text-[10px] uppercase tracking-[0.06em] text-inksoft mb-1">Sailing · Newport, RI</p>
+                <p class="font-display italic text-[15px] leading-snug mb-1">"Crew an actual boat."</p>
+                <span class="inline-flex items-center gap-1 font-mono text-[9.5px] uppercase tracking-[0.04em] px-2 py-1 rounded-full bg-rose/10 text-rose mt-1">Waiver required</span>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SEARCH BAR ================= -->
+  <section class="border-b border-line bg-paperalt/60 relative">
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 -mt-8 md:-mt-9 pb-10 md:pb-12 relative z-10">
+      <form action="discover.html" method="get" class="bg-card border border-line rounded-[20px] md:rounded-full shadow-brand-lg p-3 flex flex-col md:flex-row items-stretch md:items-center gap-2">
+        <div class="flex-1 flex items-center gap-3 px-4 py-2.5 md:py-2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-moss shrink-0"><path d="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <input type="text" name="q" placeholder="Search by skill, host, or the thing you've always wanted to try" class="w-full bg-transparent text-[14px] placeholder:text-inksoft/70 focus:outline-none">
+        </div>
+        <div class="hidden md:block w-px self-stretch bg-line"></div>
+        <div class="flex items-center gap-3 px-4 py-2.5 md:py-2 md:w-[220px]">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-moss shrink-0"><path d="M12 22s7-7.5 7-12.8A7 7 0 105 9.2C5 14.5 12 22 12 22z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="9" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>
+          <input type="text" name="location" placeholder="Anywhere" class="w-full bg-transparent text-[14px] placeholder:text-inksoft/70 focus:outline-none">
+        </div>
+        <div class="hidden md:block w-px self-stretch bg-line"></div>
+        <div class="flex items-center gap-3 px-4 py-2.5 md:py-2 md:w-[210px]">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="text-moss shrink-0"><path d="M4 4h16v4H4zM4 10h10v10H4zM17 10h3v10h-3z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+          <select name="category" class="w-full bg-transparent text-[14px] text-inksoft focus:outline-none">
+            <option value="">Any category</option>
+            <option>Cooking</option>
+            <option>Sailing &amp; Water</option>
+            <option>Photography</option>
+            <option>Language</option>
+            <option>Music</option>
+            <option>Art &amp; Craft</option>
+            <option>Career &amp; Skills</option>
+            <option>Local Culture</option>
+            <option>Fitness</option>
+            <option>Specialty Hobbies</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary md:!px-7 shrink-0">Search</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ================= POSITIONING ================= -->
+  <section class="border-b border-line bg-paperalt/50">
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-16 md:py-20">
+      <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-6 mb-14">
+        <p class="font-mono text-[12px] uppercase tracking-[0.05em] text-inksoft">— Not an online course</p>
+        <p class="font-mono text-[12px] uppercase tracking-[0.05em] text-inksoft">— Not traditional tutoring</p>
+        <p class="font-mono text-[12px] uppercase tracking-[0.05em] text-inksoft">— Not tourism for its own sake</p>
+        <p class="font-mono text-[12px] uppercase tracking-[0.05em] text-inksoft">— Not a group class</p>
+      </div>
+      <p class="font-display text-[26px] md:text-[34px] leading-[1.25] max-w-[26ch] reveal">
+        <em class="italic text-moss">One</em> person sharing a unique skill, passion, or perspective with <em class="italic text-moss">another</em> person — in a way that can't be replicated.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= HOW IT WORKS ================= -->
+  <section id="how-it-works" class="border-b border-line">
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-20 md:py-28">
+      <div class="max-w-[52ch] mb-16 reveal">
+        <span class="eyebrow block mb-3">How it works</span>
+        <h2 class="font-display font-medium text-[30px] md:text-[38px] tracking-[-0.01em]">From browsing to showing up, in three steps.</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-10 md:gap-8">
+        <div class="reveal">
+          <span class="font-mono text-[13px] text-gold">01</span>
+          <h3 class="font-display text-[20px] font-medium mt-3 mb-3">Find a host</h3>
+          <p class="text-inksoft text-[15px] leading-[1.7]">Every listing on Qualia is run by an independent host and reviewed before it's ever published — for safety, clarity, and whether it belongs here at all.</p>
+        </div>
+        <div class="reveal" style="transition-delay:.08s">
+          <span class="font-mono text-[13px] text-gold">02</span>
+          <h3 class="font-display text-[20px] font-medium mt-3 mb-3">Request to book</h3>
+          <p class="text-inksoft text-[15px] leading-[1.7]">Your host confirms the details. You'll agree to their rules, the cancellation policy, and — for physical or higher-risk experiences — sign a short digital waiver first.</p>
+        </div>
+        <div class="reveal" style="transition-delay:.16s">
+          <span class="font-mono text-[13px] text-gold">03</span>
+          <h3 class="font-display text-[20px] font-medium mt-3 mb-3">Step in</h3>
+          <p class="text-inksoft text-[15px] leading-[1.7]">Meet in person, one on one, exactly as described. No cameras, no cohort, no script — just the thing your host actually knows how to do.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= EXPERIENCE SHOWCASE ================= -->
+  <section id="explore" class="border-b border-line bg-paperalt/40">
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-20 md:py-28">
+      <div class="flex flex-wrap items-end justify-between gap-6 mb-14 reveal">
+        <div class="max-w-[52ch]">
+          <span class="eyebrow block mb-3">A few current hosts</span>
+          <h2 class="font-display font-medium text-[30px] md:text-[38px] tracking-[-0.01em]">Real people. Real access.</h2>
+        </div>
+        <a href="discover.html" class="link-underline text-moss font-medium text-[14px]">Browse all experiences →</a>
+      </div>
+
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <!-- card 1 -->
+        <article class="reveal">
+          <a href="experience.html?id=woodworking-redhook" class="block bg-card border border-line rounded-2xl overflow-hidden shadow-brand card-hover">
+            <div class="photo-treat aspect-[4/5] relative">
+              <button type="button" data-wishlist="woodworking-redhook" class="heart-btn absolute top-3 right-3 z-10" aria-label="Save experience" onclick="event.preventDefault()">
+                <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.4 2.6 5 6 5c2 0 3.4 1 6 3.6C14.6 6 16 5 18 5c3.4 0 5.5 3.4 4 6.8C19.5 16.4 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://placehold.co/480x600/2c4130/F1EADA?text=Woodworking" alt="Dario's woodworking studio" class="w-full h-full object-cover">
+            </div>
+            <div class="p-5">
+              <p class="font-mono text-[10px] uppercase tracking-[0.06em] text-inksoft mb-2">Art &amp; Craft · Red Hook, Brooklyn</p>
+              <p class="font-display italic text-[16px] leading-snug mb-3">"The joint my grandfather wouldn't let me touch until I was twenty‑two."</p>
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-[12px] text-inksoft">Dario · 4.96★</span>
+                <span class="font-display font-semibold text-[16px]">$165</span>
+              </div>
+            </div>
+          </a>
+        </article>
+
+        <!-- card 2 -->
+        <article class="reveal" style="transition-delay:.06s">
+          <a href="experience.html?id=sailing-newport" class="block bg-card border border-line rounded-2xl overflow-hidden shadow-brand card-hover">
+            <div class="photo-treat aspect-[4/5] relative">
+              <button type="button" data-wishlist="sailing-newport" class="heart-btn absolute top-3 right-3 z-10" aria-label="Save experience" onclick="event.preventDefault()">
+                <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.4 2.6 5 6 5c2 0 3.4 1 6 3.6C14.6 6 16 5 18 5c3.4 0 5.5 3.4 4 6.8C19.5 16.4 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://placehold.co/480x600/374a2e/F1EADA?text=Sailing" alt="Elin's sailboat" class="w-full h-full object-cover">
+            </div>
+            <div class="p-5">
+              <div class="flex items-center justify-between mb-2">
+                <p class="font-mono text-[10px] uppercase tracking-[0.06em] text-inksoft">Sailing &amp; Water · Newport, RI</p>
+                <span class="font-mono text-[9px] uppercase tracking-[0.04em] px-2 py-0.5 rounded-full bg-rose/10 text-rose">Waiver</span>
+              </div>
+              <p class="font-display italic text-[16px] leading-snug mb-3">"You're crewing an actual boat. I expect you to earn your spot."</p>
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-[12px] text-inksoft">Elin · 5.0★</span>
+                <span class="font-display font-semibold text-[16px]">$310</span>
+              </div>
+            </div>
+          </a>
+        </article>
+
+        <!-- card 3 -->
+        <article class="reveal" style="transition-delay:.12s">
+          <a href="experience.html?id=pasta-bensonhurst" class="block bg-card border border-line rounded-2xl overflow-hidden shadow-brand card-hover">
+            <div class="photo-treat aspect-[4/5] relative">
+              <button type="button" data-wishlist="pasta-bensonhurst" class="heart-btn absolute top-3 right-3 z-10" aria-label="Save experience" onclick="event.preventDefault()">
+                <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.4 2.6 5 6 5c2 0 3.4 1 6 3.6C14.6 6 16 5 18 5c3.4 0 5.5 3.4 4 6.8C19.5 16.4 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://placehold.co/480x600/2c4130/F1EADA?text=Pasta" alt="Rosa's kitchen" class="w-full h-full object-cover">
+            </div>
+            <div class="p-5">
+              <p class="font-mono text-[10px] uppercase tracking-[0.06em] text-inksoft mb-2">Cooking · Bensonhurst, Brooklyn</p>
+              <p class="font-display italic text-[16px] leading-snug mb-3">"You're not learning a recipe. You're getting the thing that never made it into a cookbook."</p>
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-[12px] text-inksoft">Rosa · 4.98★</span>
+                <span class="font-display font-semibold text-[16px]">$145</span>
+              </div>
+            </div>
+          </a>
+        </article>
+
+        <!-- card 4 -->
+        <article class="reveal" style="transition-delay:.18s">
+          <a href="experience.html?id=climbing-boulder" class="block bg-card border border-line rounded-2xl overflow-hidden shadow-brand card-hover">
+            <div class="photo-treat aspect-[4/5] relative">
+              <button type="button" data-wishlist="climbing-boulder" class="heart-btn absolute top-3 right-3 z-10" aria-label="Save experience" onclick="event.preventDefault()">
+                <svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.4 2.6 5 6 5c2 0 3.4 1 6 3.6C14.6 6 16 5 18 5c3.4 0 5.5 3.4 4 6.8C19.5 16.4 12 21 12 21z"/></svg>
+              </button>
+              <img src="https://placehold.co/480x600/374a2e/F1EADA?text=Climbing" alt="Theo's climbing wall" class="w-full h-full object-cover">
+            </div>
+            <div class="p-5">
+              <div class="flex items-center justify-between mb-2">
+                <p class="font-mono text-[10px] uppercase tracking-[0.06em] text-inksoft">Specialty Hobbies · Boulder, CO</p>
+                <span class="font-mono text-[9px] uppercase tracking-[0.04em] px-2 py-0.5 rounded-full bg-rose/10 text-rose">Waiver</span>
+              </div>
+              <p class="font-display italic text-[16px] leading-snug mb-3">"Most people quit right where it stops being fun and starts being climbing."</p>
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-[12px] text-inksoft">Theo · 4.91★</span>
+                <span class="font-display font-semibold text-[16px]">$120</span>
+              </div>
+            </div>
+          </a>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= TRUST & SAFETY ================= -->
+  <section id="safety" class="border-b border-line relative overflow-hidden">
+    <div class="aperture absolute -right-24 -top-24 w-[420px] h-[420px] opacity-[0.05] text-moss pointer-events-none" aria-hidden="true">
+      <svg viewBox="-4 -4 108 108"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="50" cy="50" r="27" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+    </div>
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-20 md:py-28 relative z-10">
+      <div class="max-w-[58ch] mb-16 reveal">
+        <span class="eyebrow block mb-3">Trust &amp; safety</span>
+        <h2 class="font-display font-medium text-[30px] md:text-[38px] tracking-[-0.01em] mb-5">Every experience is reviewed before it goes live.</h2>
+        <p class="text-inksoft text-[15.5px] leading-[1.7]">Qualia is a marketplace, not the provider — each experience is run by an independent host. Before anything is published, our team reviews it directly.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 mb-14">
+
+        <div class="bg-card border border-line rounded-2xl p-8 reveal">
+          <span class="inline-block w-9 h-9 rounded-full border-[1.6px] border-moss mb-5"></span>
+          <h3 class="font-display text-[19px] font-medium mb-4">What every listing is reviewed for</h3>
+          <ul class="space-y-3 text-inksoft text-[14.5px]">
+            <li class="ring-bullet text-moss"><span class="text-ink">Safety risks</span> — what could realistically go wrong, and whether it's been accounted for.</li>
+            <li class="ring-bullet text-moss"><span class="text-ink">Legal &amp; licensing requirements</span> — the activity meets applicable laws in its location.</li>
+            <li class="ring-bullet text-moss"><span class="text-ink">Host credibility</span> — real experience and standing to teach what they're offering.</li>
+            <li class="ring-bullet text-moss"><span class="text-ink">Clarity</span> — the description says exactly what a guest can expect.</li>
+            <li class="ring-bullet text-moss"><span class="text-ink">Fit</span> — whether the activity belongs on Qualia at all.</li>
+          </ul>
+        </div>
+
+        <div class="bg-card border border-line rounded-2xl p-8 reveal" style="transition-delay:.06s">
+          <span class="inline-block w-9 h-9 rounded-full border-[1.6px] border-moss mb-5"></span>
+          <h3 class="font-display text-[19px] font-medium mb-4">What we ask of hosts</h3>
+          <p class="text-inksoft text-[14.5px] leading-[1.7] mb-5">Hosts are responsible for describing their experience accurately, following applicable law, and holding any license, permit, certification, or insurance their activity requires. Higher-risk categories go through additional approval, and may need proof of insurance or certification before they're listed:</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="pill">Boating</span>
+            <span class="pill">Aviation</span>
+            <span class="pill">Water sports</span>
+            <span class="pill">Climbing</span>
+            <span class="pill">Fitness &amp; training</span>
+            <span class="pill">Driving</span>
+            <span class="pill">Tools &amp; machinery</span>
+            <span class="pill">Experiences with children</span>
+          </div>
+        </div>
+
+        <div class="bg-card border border-line rounded-2xl p-8 reveal">
+          <span class="inline-block w-9 h-9 rounded-full border-[1.6px] border-moss mb-5"></span>
+          <h3 class="font-display text-[19px] font-medium mb-4">What you agree to as a guest</h3>
+          <p class="text-inksoft text-[14.5px] leading-[1.7] mb-4">Before you book, you'll see the cancellation policy, host and platform rules, safety expectations, and how refunds and disputes are handled — in plain language, not fine print you have to go looking for.</p>
+          <p class="text-inksoft text-[14.5px] leading-[1.7]">For physical or higher-risk experiences, you'll sign a short digital waiver acknowledging the assumption of risk before you show up.</p>
+        </div>
+
+        <div class="bg-card border border-line rounded-2xl p-8 reveal" style="transition-delay:.06s">
+          <span class="inline-block w-9 h-9 rounded-full border-[1.6px] border-moss mb-5"></span>
+          <h3 class="font-display text-[19px] font-medium mb-4">If something goes wrong</h3>
+          <p class="text-inksoft text-[14.5px] leading-[1.7] mb-4">Every guest and host can report an injury, misconduct, unsafe behavior, or a misleading listing directly to our safety team — and we act on it.</p>
+          <p class="text-inksoft text-[14.5px] leading-[1.7]">Qualia carries its own liability insurance as we grow, and some experiences are declined outright when the risk to people or the platform is too high.</p>
+          <a href="mailto:safety@qualia.example" class="link-underline text-rose font-medium text-[13.5px] inline-block mt-5">Report a concern →</a>
+        </div>
+
+      </div>
+
+      <div class="border-t border-line pt-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <p class="font-display italic text-[20px] md:text-[24px] leading-[1.4] max-w-[36ch]">We're not trying to remove every risk — just the ones we can see coming.</p>
+        <p class="text-inksoft text-[13px] leading-[1.6] max-w-[38ch]">Long-term, a dedicated safety and approval team reviews listings, consults with hosts directly, and keeps our standards current.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= PRINCIPLES ================= -->
+  <section class="bg-mossdeep relative overflow-hidden border-b border-line">
+    <div class="aperture absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[560px] opacity-[0.06] text-paper pointer-events-none" aria-hidden="true">
+      <svg viewBox="-4 -4 108 108"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="50" cy="50" r="27" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    </div>
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-20 relative z-10">
+      <span class="font-mono text-[11px] uppercase tracking-[0.09em] text-[#D8CFB8] block mb-8">Core principles</span>
+      <div class="flex flex-wrap gap-3">
+        <span class="pill !border-[#4a5f4d] !text-[#EDE6D3]">Human connection</span>
+        <span class="pill !border-[#4a5f4d] !text-[#EDE6D3]">Authenticity</span>
+        <span class="pill !border-[#4a5f4d] !text-[#EDE6D3]">Exclusivity</span>
+        <span class="pill !border-gold !text-gold">Safety</span>
+        <span class="pill !border-[#4a5f4d] !text-[#EDE6D3]">Quality over quantity</span>
+        <span class="pill !border-[#4a5f4d] !text-[#EDE6D3]">Personalized experiences</span>
+        <span class="pill !border-[#4a5f4d] !text-[#EDE6D3]">Learning through real people</span>
+        <span class="pill !border-[#4a5f4d] !text-[#EDE6D3]">Accessibility for anyone with something to share</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FOR HOSTS ================= -->
+  <section id="hosts" class="border-b border-line">
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-20 md:py-28 grid md:grid-cols-2 gap-16 items-center">
+      <div class="reveal">
+        <span class="eyebrow block mb-4">For hosts</span>
+        <h2 class="font-display font-medium text-[30px] md:text-[38px] tracking-[-0.01em] mb-6 max-w-[16ch]">Share the one thing only you know.</h2>
+        <p class="text-inksoft text-[15.5px] leading-[1.7] mb-6 max-w-[46ch]">You set the price, the pace, and who you're willing to teach. Qualia takes a commission on each booking — nothing upfront, nothing if you don't book. Hosts who want more visibility can opt into premium placement.</p>
+        <p class="text-inksoft text-[15.5px] leading-[1.7] mb-9 max-w-[46ch]">Every application goes through the same review as every listing — it's how guests trust what they're booking, and how hosts get taken seriously.</p>
+        <a href="login.html?mode=signup&amp;role=host" class="btn btn-primary">Apply to host</a>
+      </div>
+      <div class="bg-card border border-line rounded-2xl shadow-brand p-8 md:p-10 reveal" style="transition-delay:.08s">
+        <span class="font-mono text-[10px] uppercase tracking-[0.05em] text-inksoft">Example payout</span>
+        <div class="font-display font-semibold text-[40px] mt-2 mb-1">$165<span class="font-mono font-normal text-[11px] text-inksoft align-top ml-1">/ session</span></div>
+        <p class="text-inksoft text-[13.5px] mb-6">Before Qualia's commission</p>
+        <div class="border-t border-line pt-6 space-y-3 text-[14px]">
+          <div class="flex justify-between"><span class="text-inksoft">Session price</span><span class="font-mono">$165.00</span></div>
+          <div class="flex justify-between"><span class="text-inksoft">Platform commission</span><span class="font-mono">−$24.75</span></div>
+          <div class="flex justify-between font-semibold pt-3 border-t border-line"><span>You keep</span><span class="font-mono text-moss">$140.25</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONCIERGE ================= -->
+  <section class="border-b border-line bg-paperalt/50">
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-14 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div class="max-w-[48ch]">
+        <p class="font-display italic text-[20px] md:text-[22px] leading-[1.4]">Not sure exactly what you're looking for?</p>
+        <p class="text-inksoft text-[14.5px] mt-2">Our concierge team will match you personally with a host, based on what you actually want to get out of it.</p>
+      </div>
+      <button type="button" onclick="QUALIA_APP.openModal('concierge-modal')" class="btn btn-outline shrink-0">Ask concierge</button>
+    </div>
+  </section>
+
+  <!-- ================= FINAL CTA ================= -->
+  <section class="bg-mossdeep relative overflow-hidden">
+    <div class="aperture ring-spin absolute right-[-120px] top-1/2 -translate-y-1/2 w-[440px] h-[440px] opacity-[0.08] text-paper pointer-events-none" aria-hidden="true">
+      <svg viewBox="-4 -4 108 108"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="77" y1="50" x2="88" y2="50" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="50" y1="77" x2="50" y2="88" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="23" y1="50" x2="12" y2="50" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="50" y1="23" x2="50" y2="12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </div>
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-24 md:py-32 relative z-10 text-center">
+      <p class="font-display italic text-paper text-[26px] md:text-[38px] leading-[1.3] max-w-[26ch] mx-auto mb-10 reveal">Someone, somewhere, has exactly the afternoon you didn't know you needed.</p>
+      <a href="discover.html" class="btn !bg-paper !text-mossdeep hover:!bg-white">Find your experience</a>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-paperalt border-t border-line">
+  <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-16">
+    <div class="grid sm:grid-cols-2 md:grid-cols-5 gap-10 mb-14">
+      <div class="col-span-2">
+        <img src="brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 w-auto mb-4">
+        <p class="text-inksoft text-[13.5px] leading-[1.7] max-w-[36ch]">A marketplace for personalized, one-on-one experiences, learning, and human connection.</p>
+      </div>
+      <div>
+        <p class="font-mono text-[10.5px] uppercase tracking-[0.06em] text-inksoft mb-4">Explore</p>
+        <ul class="space-y-2.5 text-[13.5px]">
+          <li><a href="discover.html" class="link-underline text-ink">Browse experiences</a></li>
+          <li><a href="discover.html" class="link-underline text-ink">Categories</a></li>
+          <li><a href="#" class="link-underline text-ink">Gift a session</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-mono text-[10.5px] uppercase tracking-[0.06em] text-inksoft mb-4">Hosts</p>
+        <ul class="space-y-2.5 text-[13.5px]">
+          <li><a href="login.html?mode=signup&amp;role=host" class="link-underline text-ink">Become a host</a></li>
+          <li><a href="index.html#hosts" class="link-underline text-ink">Host resources</a></li>
+          <li><a href="#" class="link-underline text-ink">Host agreement</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-mono text-[10.5px] uppercase tracking-[0.06em] text-inksoft mb-4">Trust &amp; safety</p>
+        <ul class="space-y-2.5 text-[13.5px]">
+          <li><a href="index.html#safety" class="link-underline text-ink">How review works</a></li>
+          <li><a href="mailto:safety@qualia.example" class="link-underline text-ink">Report a concern</a></li>
+          <li><a href="index.html#safety" class="link-underline text-ink">Insurance &amp; waivers</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-line pt-8 flex flex-col-reverse md:flex-row items-start md:items-center justify-between gap-4">
+      <p class="text-inksoft text-[12px]">© 2026 Qualia. All rights reserved.</p>
+      <p class="text-inksoft text-[12px] max-w-[64ch] leading-[1.6]">Qualia is a marketplace connecting guests with independent hosts. Hosts are independently responsible for their experiences, including compliance with applicable law and any required licenses, permits, certifications, or insurance.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= CONCIERGE MODAL ================= -->
+<div class="modal-backdrop" id="concierge-modal">
+  <div class="modal-box p-8 md:p-9">
+    <div class="flex items-start justify-between mb-5">
+      <div>
+        <span class="eyebrow block mb-2">Concierge</span>
+        <h3 class="font-display font-medium text-[22px]">Tell us what you're after.</h3>
+      </div>
+      <button type="button" data-modal-close class="w-8 h-8 flex items-center justify-center text-inksoft hover:text-ink shrink-0" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <form id="concierge-form" class="space-y-4">
+      <div>
+        <label class="field-label">Your name</label>
+        <input type="text" class="field-input" placeholder="Jordan Avery" required>
+      </div>
+      <div>
+        <label class="field-label">Email</label>
+        <input type="email" class="field-input" placeholder="you@example.com" required>
+      </div>
+      <div>
+        <label class="field-label">What are you hoping to experience?</label>
+        <textarea class="field-textarea" placeholder="Something hands-on, somewhere warm, ideally with someone who's done it their whole life…"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary w-full">Send to concierge</button>
+    </form>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+  document.querySelectorAll('[data-wishlist]').forEach(function(btn){
+    var id = btn.getAttribute('data-wishlist');
+    if (QUALIA_STORE.isWishlisted(id)) btn.classList.add('saved');
+    btn.addEventListener('click', function(e){
+      e.preventDefault(); e.stopPropagation();
+      QUALIA_STORE.toggleWishlist(id);
+      btn.classList.toggle('saved');
+      QUALIA_APP.toast(btn.classList.contains('saved') ? 'Saved to your wishlist' : 'Removed from your wishlist');
+    });
+  });
+
+  var conciergeForm = document.getElementById('concierge-form');
+  conciergeForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    QUALIA_APP.closeModal('concierge-modal');
+    QUALIA_APP.toast('Sent — a concierge will follow up by email shortly.');
+    conciergeForm.reset();
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Host — Qualia</title>
+<link rel="icon" type="image/svg+xml" href="brand_assets/qualia-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>window.QUALIA_BASE = '';</script>
+<script src="assets/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-paper text-ink font-sans antialiased">
+
+<!-- ================= NAV ================= -->
+<header class="sticky top-0 z-50 bg-paper/90 backdrop-blur-md border-b border-line">
+  <nav class="max-w-[1200px] mx-auto flex items-center justify-between px-6 md:px-10 py-4">
+    <a href="index.html" class="flex items-center" aria-label="Qualia home">
+      <img src="brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 md:h-7 w-auto">
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="discover.html" class="nav-link">Discover</a>
+      <a href="index.html#how-it-works" class="nav-link">How it works</a>
+      <a href="index.html#safety" class="nav-link">Trust &amp; safety</a>
+      <a href="index.html#hosts" class="nav-link">For hosts</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <div id="auth-slot" class="hidden md:flex items-center gap-4"></div>
+      <button type="button" data-mobile-toggle class="md:hidden w-9 h-9 flex items-center justify-center text-ink" aria-label="Open menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div class="mobile-drawer">
+  <div class="scrim"></div>
+  <div class="panel">
+    <div class="flex items-center justify-between mb-8">
+      <img src="brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 w-auto">
+      <button type="button" data-mobile-close class="w-9 h-9 flex items-center justify-center" aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <nav class="flex flex-col mb-8">
+      <a href="discover.html" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">Discover</a>
+      <a href="index.html#how-it-works" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">How it works</a>
+      <a href="index.html#safety" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">Trust &amp; safety</a>
+      <a href="index.html#hosts" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">For hosts</a>
+    </nav>
+    <div id="auth-slot-mobile" class="flex flex-col gap-3 mt-auto"></div>
+  </div>
+</div>
+
+<main id="host-root" class="max-w-[1000px] mx-auto px-6 md:px-10 py-10 md:py-14"></main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-paperalt border-t border-line mt-16">
+  <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-16">
+    <div class="grid sm:grid-cols-2 md:grid-cols-5 gap-10 mb-14">
+      <div class="col-span-2">
+        <img src="brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 w-auto mb-4">
+        <p class="text-inksoft text-[13.5px] leading-[1.7] max-w-[36ch]">A marketplace for personalized, one-on-one experiences, learning, and human connection.</p>
+      </div>
+      <div>
+        <p class="font-mono text-[10.5px] uppercase tracking-[0.06em] text-inksoft mb-4">Explore</p>
+        <ul class="space-y-2.5 text-[13.5px]">
+          <li><a href="discover.html" class="link-underline text-ink">Browse experiences</a></li>
+          <li><a href="discover.html" class="link-underline text-ink">Categories</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-mono text-[10.5px] uppercase tracking-[0.06em] text-inksoft mb-4">Hosts</p>
+        <ul class="space-y-2.5 text-[13.5px]">
+          <li><a href="login.html?mode=signup&amp;role=host" class="link-underline text-ink">Become a host</a></li>
+          <li><a href="index.html#hosts" class="link-underline text-ink">Host resources</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-mono text-[10.5px] uppercase tracking-[0.06em] text-inksoft mb-4">Trust &amp; safety</p>
+        <ul class="space-y-2.5 text-[13.5px]">
+          <li><a href="index.html#safety" class="link-underline text-ink">How review works</a></li>
+          <li><a href="mailto:safety@qualia.example" class="link-underline text-ink">Report a concern</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-line pt-8 flex flex-col-reverse md:flex-row items-start md:items-center justify-between gap-4">
+      <p class="text-inksoft text-[12px]">© 2026 Qualia. All rights reserved.</p>
+      <p class="text-inksoft text-[12px] max-w-[64ch] leading-[1.6]">Qualia is a marketplace connecting guests with independent hosts.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var host = QUALIA_DATA.getHost(params.get('id'));
+  var root = document.getElementById('host-root');
+
+  if (!host){
+    root.innerHTML = '<div class="empty-state max-w-[520px] mx-auto"><p class="font-display text-[20px] mb-2">We couldn\'t find that host.</p><a href="discover.html" class="btn btn-primary">Browse experiences</a></div>';
+    return;
+  }
+
+  document.title = host.name + ' — Qualia';
+  document.getElementById('page-title').textContent = host.name + ' — Qualia';
+
+  function stars(rating){
+    var full = Math.round(rating), out = '';
+    for (var i=0;i<5;i++) out += (i < full ? '★' : '☆');
+    return out;
+  }
+
+  var experiences = QUALIA_DATA.getExperiencesByHost(host.id);
+  var reviews = QUALIA_DATA.getHostReviews(host.id).slice(0, 6);
+
+  var html = '';
+  html += '<p class="font-mono text-[11px] uppercase tracking-[0.05em] text-inksoft mb-8"><a href="discover.html" class="link-underline text-inksoft">Discover</a> &nbsp;/&nbsp; <span class="text-ink">' + host.name + '</span></p>';
+
+  html += '<div class="flex flex-col sm:flex-row sm:items-center gap-6 mb-8">' +
+    '<span class="avatar-circle !w-24 !h-24 !text-[30px]" style="background:#' + host.color + '">' + QUALIA_APP.initials(host.name) + '</span>' +
+    '<div>' +
+      '<div class="flex items-center gap-2 mb-1.5">' +
+        '<h1 class="font-display font-medium text-[28px] md:text-[32px]">' + host.name + '</h1>' +
+        (host.verified ? '<span class="status status-live">Verified host</span>' : '') +
+      '</div>' +
+      '<p class="font-display italic text-[16px] text-inksoft mb-2 max-w-[50ch]">' + host.tagline + '</p>' +
+      '<div class="flex flex-wrap items-center gap-4 font-mono text-[11px] uppercase tracking-[0.04em] text-inksoft">' +
+        '<span>' + host.location + '</span><span>Hosting since ' + host.joined + '</span><span>' + host.responseRate + '% response rate</span>' +
+        '<span class="flex items-center gap-1 normal-case tracking-normal text-ink"><span class="stars text-[12px]">' + stars(host.rating) + '</span>' + host.rating.toFixed(2) + ' (' + host.reviewCount + ')</span>' +
+      '</div>' +
+    '</div>' +
+    '<button type="button" id="message-host" class="btn btn-outline shrink-0 sm:ml-auto">Message host</button>' +
+  '</div>';
+
+  html += '<p class="text-inksoft text-[15px] leading-[1.75] max-w-[68ch] mb-8 pb-8 border-b border-line">' + host.bio + '</p>';
+
+  if (host.credentials && host.credentials.length){
+    html += '<div class="mb-12">' +
+      '<p class="field-label mb-3">Credentials &amp; insurance on file</p>' +
+      '<div class="flex flex-wrap gap-2">' + host.credentials.map(function(c){ return '<span class="pill">' + c + '</span>'; }).join('') + '</div>' +
+    '</div>';
+  }
+
+  html += '<h2 class="font-display font-medium text-[22px] mb-6">Experiences by ' + host.name.split(' ')[0] + '</h2>' +
+    '<div class="grid sm:grid-cols-2 gap-6 mb-14">' + experiences.map(function(exp){
+      return '<a href="experience.html?id=' + exp.id + '" class="block bg-card border border-line rounded-2xl overflow-hidden shadow-brand card-hover">' +
+        '<div class="photo-treat aspect-[16/10]"><img src="https://placehold.co/560x350/' + exp.img + '/F1EADA?text=' + encodeURIComponent(exp.category.split(' ')[0]) + '" alt="" class="w-full h-full object-cover"></div>' +
+        '<div class="p-5">' +
+          '<p class="font-mono text-[10px] uppercase tracking-[0.06em] text-inksoft mb-2">' + exp.category + ' · ' + exp.location + '</p>' +
+          '<p class="font-display italic text-[15.5px] leading-snug mb-3">"' + exp.tagline + '"</p>' +
+          '<div class="flex items-center justify-between"><span class="font-mono text-[12px] text-inksoft">' + exp.rating.toFixed(2) + '★ (' + exp.reviewCount + ')</span><span class="font-display font-semibold text-[16px]">$' + exp.price + '</span></div>' +
+        '</div>' +
+      '</a>';
+    }).join('') + '</div>';
+
+  if (reviews.length){
+    html += '<h2 class="font-display font-medium text-[22px] mb-6">What guests say</h2>' +
+      '<div class="grid sm:grid-cols-2 gap-6">' + reviews.map(function(r){
+        return '<div class="border-t border-line pt-5">' +
+          '<div class="flex items-center gap-3 mb-2.5">' +
+            '<span class="avatar-circle !w-9 !h-9 !text-[12px]" style="background:#55504A">' + QUALIA_APP.initials(r.author) + '</span>' +
+            '<span><span class="block text-[13.5px] font-semibold">' + r.author + '</span><span class="block font-mono text-[10.5px] text-inksoft">' + QUALIA_STORE.displayDate(r.date) + '</span></span>' +
+          '</div>' +
+          '<p class="text-[14px] text-inksoft leading-[1.7]">' + r.text + '</p>' +
+        '</div>';
+      }).join('') + '</div>';
+  }
+
+  root.innerHTML = html;
+  document.getElementById('message-host').addEventListener('click', function(){
+    QUALIA_APP.toast(host.name.split(' ')[0] + ' usually responds within a few hours.');
+  });
+})();
+</script>
+</body>
+</html>

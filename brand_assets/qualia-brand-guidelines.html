@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qualia — Brand Guidelines</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#221E1A; --ink-soft:#55504A;
+    --paper:#FAF6EE; --paper-alt:#F1EADA; --card:#FFFDF8;
+    --moss:#37503B; --moss-deep:#263A2A;
+    --gold:#C7962C; --rose:#A8483A;
+    --line:#E1D7C2;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Inter',sans-serif; font-size:16px; line-height:1.6;
+  }
+  h1,h2,h3,h4{font-family:'Fraunces',serif; margin:0; color:var(--ink); font-weight:500; letter-spacing:-0.01em;}
+  p{margin:0 0 12px;}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase;
+    letter-spacing:0.09em; color:var(--ink-soft);
+  }
+  a{color:var(--moss);}
+
+  /* ---------- nav ---------- */
+  .navbar{
+    position:sticky; top:0; z-index:50; display:flex; align-items:center; justify-content:space-between;
+    padding:14px 40px; background:rgba(250,246,238,0.9); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .navbar .brand{display:flex; align-items:center; gap:8px;}
+  .navbar .brand svg{height:22px; width:auto; color:var(--moss);}
+  .navbar .brand span{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); letter-spacing:0.06em; text-transform:uppercase;}
+  .navlinks{display:flex; gap:22px; flex-wrap:wrap;}
+  .navlinks a{font-size:12.5px; color:var(--ink-soft); text-decoration:none; font-weight:500;}
+  .navlinks a:hover{color:var(--moss);}
+
+  section{max-width:980px; margin:0 auto; padding:90px 40px; border-bottom:1px solid var(--line);}
+  section:last-of-type{border-bottom:none;}
+  .section-head{margin-bottom:44px;}
+  .section-head h2{font-size:30px;}
+  .section-head .eyebrow{margin-bottom:10px; display:block;}
+
+  /* ---------- cover ---------- */
+  .cover{
+    min-height:92vh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:60px 40px; border-bottom:1px solid var(--line); position:relative; overflow:hidden;
+  }
+  .cover .ring-decor{position:absolute; border-radius:50%; border:1px solid var(--line); opacity:0.6;}
+  .cover .logo-big{color:var(--moss); width:min(70vw,520px); height:auto; margin-bottom:36px;}
+  .cover h1{font-size:15px; font-family:'IBM Plex Mono',monospace; letter-spacing:0.14em; text-transform:uppercase; color:var(--ink-soft); font-weight:500;}
+  .cover .sub{font-family:'Fraunces',serif; font-style:italic; font-size:22px; color:var(--ink); margin-top:14px; max-width:34ch;}
+  .cover .meta{margin-top:46px; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); letter-spacing:0.05em;}
+
+  /* ---------- essence ---------- */
+  .essence-lead{font-family:'Fraunces',serif; font-size:26px; font-style:italic; line-height:1.4; max-width:26ch; margin-bottom:26px;}
+  .essence-body{max-width:62ch; color:var(--ink-soft); font-size:15.5px;}
+  .principles{display:flex; flex-wrap:wrap; gap:10px; margin-top:28px;}
+  .principles span{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.05em;
+    border:1px solid var(--line); border-radius:999px; padding:7px 14px; color:var(--ink-soft);
+  }
+
+  /* ---------- logo ---------- */
+  .logo-primary{
+    background:var(--card); border:1px solid var(--line); border-radius:20px; padding:70px 40px;
+    display:flex; align-items:center; justify-content:center; margin-bottom:18px;
+  }
+  .logo-primary svg{width:min(80%,420px); height:auto; color:var(--moss);}
+  .logo-caption{text-align:center; font-size:12.5px; color:var(--ink-soft); margin-bottom:56px;}
+
+  .logo-variants{display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:56px;}
+  .variant-card{border:1px solid var(--line); border-radius:14px; padding:30px 18px; display:flex; flex-direction:column; align-items:center; gap:14px;}
+  .variant-card.on-moss{background:var(--moss-deep);}
+  .variant-card.on-paperalt{background:var(--paper-alt);}
+  .variant-card svg{height:46px; width:auto;}
+  .variant-card .vlabel{font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-soft);}
+  .variant-card.on-moss .vlabel{color:#D8CFB8;}
+
+  .clearspace-box{
+    border:1px solid var(--line); border-radius:16px; padding:44px; display:flex; align-items:center; gap:40px; margin-bottom:56px;
+  }
+  .clearspace-demo{
+    border:1.5px dashed #B9AE93; border-radius:8px; padding:28px; display:flex; align-items:center; justify-content:center;
+  }
+  .clearspace-demo svg{height:36px; width:auto; color:var(--moss);}
+  .clearspace-text{flex:1; font-size:14px; color:var(--ink-soft);}
+  .clearspace-text strong{color:var(--ink);}
+
+  .minsize-row{display:flex; align-items:flex-end; gap:26px; margin-bottom:56px; flex-wrap:wrap;}
+  .minsize-item{display:flex; flex-direction:column; align-items:center; gap:10px;}
+  .minsize-item svg{color:var(--moss);}
+  .minsize-item span{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-soft);}
+
+  .donts-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:16px;}
+  .dont-card{
+    position:relative; border:1px solid var(--line); border-radius:14px; padding:30px 20px 20px;
+    display:flex; flex-direction:column; align-items:center; gap:14px; background:var(--card); overflow:hidden;
+  }
+  .dont-card .xmark{
+    position:absolute; top:12px; right:14px; width:22px; height:22px; border-radius:50%;
+    background:var(--rose); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700;
+  }
+  .dont-card svg{height:34px; width:auto;}
+  .dont-card p{font-size:12.5px; color:var(--ink-soft); text-align:center; margin:0;}
+  .dont-fake-font{font-family:Arial,Helvetica,sans-serif; font-size:26px; font-weight:700; color:var(--ink);}
+
+  /* ---------- color ---------- */
+  .swatch-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  .swatch{border:1px solid var(--line); border-radius:14px; overflow:hidden; background:var(--card);}
+  .swatch-fill{height:96px;}
+  .swatch-meta{padding:12px 14px;}
+  .swatch-meta .sname{font-size:13px; font-weight:600; margin-bottom:4px;}
+  .swatch-meta .shex{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft);}
+  .swatch-meta .srgb{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-soft); opacity:0.8;}
+  .color-note{margin-top:26px; font-size:13.5px; color:var(--ink-soft); max-width:64ch;}
+
+  /* ---------- typography ---------- */
+  .type-block{padding:34px 0; border-top:1px solid var(--line);}
+  .type-block:first-of-type{border-top:none; padding-top:0;}
+  .type-role{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:6px;}
+  .type-role .tname{font-size:14px; font-weight:600;}
+  .type-role .trole{font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-soft);}
+  .type-sample-display{font-family:'Fraunces',serif; font-weight:500; font-size:44px; line-height:1.1; margin:10px 0;}
+  .type-sample-display em{font-style:italic; color:var(--moss);}
+  .type-sample-body{font-family:'Inter',sans-serif; font-size:15.5px; color:var(--ink-soft); max-width:64ch; margin:10px 0;}
+  .type-sample-mono{font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:0.04em; color:var(--ink); margin:10px 0;}
+  .weight-row{display:flex; gap:20px; flex-wrap:wrap; margin-top:10px;}
+  .weight-row div{font-size:12px; color:var(--ink-soft);}
+  .weight-row b{display:block; font-family:'Fraunces',serif; font-size:15px; color:var(--ink); font-weight:inherit;}
+
+  /* ---------- aperture system ---------- */
+  .system-grid{display:grid; grid-template-columns:0.9fr 1.1fr; gap:50px; align-items:center; margin-bottom:50px;}
+  .system-diagram{display:flex; align-items:center; justify-content:center;}
+  .system-diagram svg{width:100%; max-width:320px; height:auto;}
+  .system-text p{color:var(--ink-soft); font-size:14.5px;}
+  .uses-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .use-card{border:1px solid var(--line); border-radius:14px; padding:22px; background:var(--card);}
+  .use-card .u-icon{margin-bottom:14px; color:var(--moss);}
+  .use-card h4{font-size:14px; margin-bottom:6px;}
+  .use-card p{font-size:12.5px; color:var(--ink-soft); margin:0;}
+
+  /* ---------- voice ---------- */
+  .voice-adjectives{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:40px;}
+  .voice-adjectives span{
+    font-family:'Fraunces',serif; font-style:italic; font-size:15px; color:var(--moss);
+    border-bottom:1px solid var(--line); padding-bottom:4px;
+  }
+  .pair-grid{display:flex; flex-direction:column; gap:16px;}
+  .pair{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .pair .cell{border-radius:14px; padding:22px 24px; font-size:14px; line-height:1.55;}
+  .pair .do{background:rgba(55,80,59,0.07); border:1px solid rgba(55,80,59,0.22);}
+  .pair .dont{background:rgba(168,72,58,0.06); border:1px solid rgba(168,72,58,0.2);}
+  .pair .tag{font-family:'IBM Plex Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.06em; display:block; margin-bottom:8px;}
+  .pair .do .tag{color:var(--moss);}
+  .pair .dont .tag{color:var(--rose);}
+  .pair .cell p{font-style:italic; font-family:'Fraunces',serif; font-size:15.5px; color:var(--ink); margin:0;}
+
+  /* ---------- application ---------- */
+  .app-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  .app-card{border:1px solid var(--line); border-radius:14px; padding:26px; background:var(--card); display:flex; flex-direction:column; align-items:flex-start; gap:14px;}
+  .btn-demo{background:var(--moss); color:#fff; border:none; border-radius:999px; padding:11px 20px; font-family:'Inter',sans-serif; font-weight:600; font-size:13px;}
+  .badge-demo{font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.04em; padding:5px 10px; border-radius:999px; background:rgba(168,72,58,0.1); color:var(--rose); display:inline-flex; align-items:center; gap:5px;}
+  .price-demo{font-family:'Fraunces',serif; font-weight:600; font-size:22px;}
+  .price-demo span{display:block; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-soft); font-weight:400; margin-top:2px;}
+  .app-card .alabel{font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.05em;}
+
+  /* ---------- files ---------- */
+  .file-list{border:1px solid var(--line); border-radius:14px; overflow:hidden;}
+  .file-row{display:flex; align-items:center; gap:16px; padding:14px 20px; border-bottom:1px solid var(--line); background:var(--card);}
+  .file-row:last-child{border-bottom:none;}
+  .file-row .fname{font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--ink); min-width:280px;}
+  .file-row .fdesc{font-size:13px; color:var(--ink-soft);}
+  .footer-note{margin-top:40px; font-size:12.5px; color:var(--ink-soft); max-width:64ch;}
+
+  @media (max-width:820px){
+    section{padding:60px 22px;}
+    .navbar{padding:12px 20px;}
+    .navlinks{display:none;}
+    .system-grid, .pair, .logo-variants, .donts-grid, .app-grid{grid-template-columns:1fr;}
+    .swatch-grid{grid-template-columns:repeat(2,1fr);}
+    .uses-grid{grid-template-columns:1fr;}
+  }
+  @media print{
+    .navbar{display:none;}
+    section{padding:36px 0; max-width:100%; border-bottom:1px solid #ddd;}
+    body{background:#fff;}
+  }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="brand">
+    <svg width="22" height="22" viewBox="-4 -4 108 108" xmlns="http://www.w3.org/2000/svg" style="color:var(--moss);"><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></svg>
+    <span>Qualia · Brand Guidelines</span>
+  </div>
+  <div class="navlinks">
+    <a href="#logo">Logo</a>
+    <a href="#color">Color</a>
+    <a href="#type">Typography</a>
+    <a href="#system">System</a>
+    <a href="#voice">Voice</a>
+    <a href="#application">Application</a>
+    <a href="#files">Files</a>
+  </div>
+</nav>
+
+<header class="cover">
+  <svg  viewBox="-6 -6 314.70 112" xmlns="http://www.w3.org/2000/svg" style="color:var(--moss); width:min(70vw,520px); height:auto;"><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/><g transform="translate(116.00,66.01) scale(0.5961)"><path d="M40.91,-71.59 Q49.91,-71.59 56.25,-68.34 Q62.59,-65.09 66.55,-59.80 Q70.50,-54.50 72.20,-48.20 Q73.91,-41.91 73.70,-35.59 Q73.50,-30.41 71.84,-25.00 Q70.20,-19.59 67.00,-14.64 Q63.80,-9.70 59.09,-5.89 Q54.41,-2.09 48.20,-0.20 L48.20,-0.09 Q51.00,-0.09 53.25,0.30 Q55.50,0.70 57.75,1.89 Q60.00,3.09 62.70,5.80 Q66.30,9.20 68.50,11.30 Q70.70,13.41 72.00,14.45 Q73.30,15.50 74.44,15.84 Q75.59,16.20 77.09,16.20 L76.91,21.80 L73.09,21.80 Q68.80,21.80 66.14,21.50 Q63.50,21.20 61.30,20.05 Q59.09,18.91 56.30,16.30 Q53.09,13.30 50.64,10.64 Q48.20,8.00 46.09,5.95 Q44.00,3.91 41.75,2.75 Q39.50,1.59 36.41,1.59 Q27.30,1.59 21.05,-1.59 Q14.80,-4.80 11.00,-10.00 Q7.20,-15.20 5.59,-21.55 Q4.00,-27.91 4.20,-34.20 Q4.41,-41.00 6.95,-47.64 Q9.50,-54.30 14.09,-59.69 Q18.70,-65.09 25.45,-68.34 Q32.20,-71.59 40.91,-71.59 Z M39.59,-65.41 Q34.00,-65.30 30.00,-62.59 Q26.00,-59.91 23.34,-55.50 Q20.70,-51.09 19.34,-45.94 Q18.00,-40.80 17.80,-35.80 Q17.59,-30.91 18.55,-25.50 Q19.50,-20.09 21.80,-15.34 Q24.09,-10.59 28.09,-7.59 Q32.09,-4.59 38.20,-4.59 Q43.80,-4.59 47.84,-7.30 Q51.91,-10.00 54.59,-14.34 Q57.30,-18.70 58.59,-23.84 Q59.91,-29.00 60.09,-34.00 Q60.30,-40.50 59.19,-46.25 Q58.09,-52.00 55.55,-56.30 Q53.00,-60.59 49.05,-63.05 Q45.09,-65.50 39.59,-65.41 Z M99.49,1.09 Q95.40,1.09 92.79,-0.75 Q90.20,-2.59 89.04,-5.89 Q87.90,-9.20 87.90,-13.50 Q87.90,-17.80 88.59,-22.64 Q89.29,-27.50 89.99,-32.05 Q90.70,-36.59 90.70,-39.91 Q90.70,-41.70 90.13,-42.45 Q89.59,-43.20 88.70,-43.20 Q87.40,-43.20 85.95,-41.34 Q84.49,-39.50 83.20,-34.70 L78.59,-36.00 Q78.99,-38.00 80.04,-40.59 Q81.09,-43.20 82.88,-45.59 Q84.70,-48.00 87.20,-49.55 Q89.70,-51.09 92.90,-51.09 Q97.99,-51.09 99.99,-48.25 Q101.99,-45.41 101.99,-40.30 Q101.99,-37.41 101.54,-33.55 Q101.09,-29.70 100.54,-25.59 Q99.99,-21.50 99.54,-17.80 Q99.09,-14.09 99.09,-11.50 Q99.09,-10.09 99.43,-9.00 Q99.79,-7.91 100.54,-7.25 Q101.29,-6.59 102.59,-6.59 Q104.59,-6.59 106.74,-8.94 Q108.90,-11.30 110.84,-15.25 Q112.79,-19.20 114.34,-24.00 Q115.90,-28.80 116.79,-33.84 Q117.70,-38.91 117.70,-43.41 Q117.70,-44.91 117.63,-46.84 Q117.59,-48.80 117.49,-50.00 L128.90,-50.00 Q128.99,-48.41 129.04,-47.66 Q129.09,-46.91 129.09,-45.91 Q129.09,-44.00 128.84,-41.25 Q128.59,-38.50 128.18,-34.95 Q127.79,-31.41 127.20,-27.00 Q126.79,-23.30 126.43,-20.50 Q126.09,-17.70 125.84,-15.75 Q125.59,-13.80 125.43,-12.39 Q125.29,-11.00 125.29,-10.00 Q125.29,-8.30 125.79,-7.55 Q126.29,-6.80 127.20,-6.80 Q128.49,-6.80 129.95,-8.64 Q131.40,-10.50 132.79,-15.30 L137.29,-14.00 Q136.99,-12.00 136.04,-9.39 Q135.09,-6.80 133.49,-4.39 Q131.90,-2.00 129.59,-0.45 Q127.29,1.09 124.09,1.09 Q120.70,1.09 118.34,-1.00 Q115.99,-3.09 115.99,-8.00 Q115.99,-10.30 116.29,-12.34 Q116.59,-14.41 116.90,-16.80 L116.70,-16.80 Q114.09,-9.70 111.24,-5.84 Q108.40,-2.00 105.45,-0.45 Q102.49,1.09 99.49,1.09 Z M171.49,-51.09 Q174.28,-51.09 177.99,-50.59 Q181.69,-50.09 185.49,-49.09 Q184.89,-44.70 184.14,-39.09 Q183.39,-33.50 182.64,-27.95 Q181.89,-22.41 181.44,-17.80 Q180.99,-13.20 180.99,-10.70 Q180.99,-8.80 181.38,-7.80 Q181.78,-6.80 182.89,-6.80 Q184.19,-6.80 185.74,-8.64 Q187.28,-10.50 188.69,-15.30 L193.19,-14.00 Q192.89,-12.00 191.89,-9.39 Q190.89,-6.80 189.24,-4.39 Q187.60,-2.00 185.19,-0.45 Q182.78,1.09 179.60,1.09 Q176.19,1.09 173.99,-1.00 Q171.78,-3.09 171.78,-8.00 Q171.78,-9.80 172.03,-12.00 Q172.28,-14.20 172.69,-16.30 L172.49,-16.30 Q170.49,-11.00 168.28,-7.55 Q166.10,-4.09 163.78,-2.19 Q161.49,-0.30 159.19,0.39 Q156.89,1.09 154.69,1.09 Q149.19,1.09 145.39,-3.20 Q141.60,-7.50 141.60,-16.80 Q141.60,-23.80 143.53,-29.94 Q145.49,-36.09 149.28,-40.89 Q153.10,-45.70 158.64,-48.39 Q164.19,-51.09 171.49,-51.09 Z M167.99,-45.50 Q164.60,-45.50 161.89,-43.45 Q159.19,-41.41 157.28,-37.66 Q155.39,-33.91 154.44,-28.70 Q153.49,-23.50 153.49,-17.09 Q153.49,-12.20 154.63,-9.25 Q155.78,-6.30 158.19,-6.30 Q160.60,-6.30 162.78,-8.69 Q164.99,-11.09 166.78,-15.19 Q168.60,-19.30 169.99,-24.34 Q171.39,-29.41 172.28,-34.66 Q173.19,-39.91 173.28,-44.70 Q172.49,-45.00 170.99,-45.25 Q169.49,-45.50 167.99,-45.50 Z M217.89,-75.50 Q217.59,-72.59 217.18,-69.59 Q216.79,-66.59 216.43,-63.80 Q216.09,-61.00 215.79,-58.50 Q214.89,-50.70 214.14,-44.14 Q213.39,-37.59 212.84,-32.25 Q212.29,-26.91 211.89,-22.75 Q211.50,-18.59 211.29,-15.55 Q211.09,-12.50 211.09,-10.41 Q211.09,-8.59 211.54,-7.69 Q212.00,-6.80 212.89,-6.80 Q214.29,-6.80 215.79,-8.64 Q217.29,-10.50 218.59,-15.30 L223.18,-14.00 Q222.68,-11.70 221.59,-9.09 Q220.50,-6.50 218.75,-4.14 Q217.00,-1.80 214.50,-0.34 Q212.00,1.09 208.59,1.09 Q204.79,1.09 202.39,-1.05 Q200.00,-3.20 199.89,-8.00 Q199.89,-11.20 200.18,-15.70 Q200.50,-20.20 200.93,-25.50 Q201.39,-30.80 201.98,-36.44 Q202.59,-42.09 203.23,-47.75 Q203.89,-53.41 204.50,-58.50 Q204.79,-60.80 205.09,-62.75 Q205.39,-64.70 205.68,-66.50 Q204.00,-66.41 202.00,-66.34 Q200.00,-66.30 198.68,-66.20 L199.09,-72.59 Q203.59,-72.59 206.48,-73.05 Q209.39,-73.50 211.03,-74.20 Q212.68,-74.91 213.39,-75.50 L217.89,-75.50 Z M239.38,-51.09 Q244.29,-51.09 246.33,-48.05 Q248.38,-45.00 248.38,-39.91 Q248.38,-37.30 247.88,-33.30 Q247.38,-29.30 246.73,-24.80 Q246.08,-20.30 245.54,-16.34 Q244.99,-12.41 244.99,-9.91 Q244.99,-8.20 245.58,-7.50 Q246.18,-6.80 247.08,-6.80 Q248.38,-6.80 249.88,-8.64 Q251.38,-10.50 252.79,-15.30 L257.29,-14.00 Q256.88,-11.91 255.77,-9.30 Q254.68,-6.70 252.93,-4.34 Q251.18,-2.00 248.68,-0.45 Q246.18,1.09 242.99,1.09 Q237.79,1.09 235.68,-1.70 Q233.58,-4.50 233.58,-9.59 Q233.58,-13.00 234.13,-17.05 Q234.68,-21.09 235.38,-25.25 Q236.08,-29.41 236.58,-33.20 Q237.08,-37.00 237.08,-40.00 Q237.08,-41.59 236.58,-42.39 Q236.08,-43.20 235.08,-43.20 Q233.88,-43.20 232.38,-41.34 Q230.88,-39.50 229.49,-34.70 L224.99,-36.00 Q225.29,-38.00 226.38,-40.59 Q227.49,-43.20 229.33,-45.59 Q231.18,-48.00 233.68,-49.55 Q236.18,-51.09 239.38,-51.09 Z M243.62,-75.09 Q246.62,-75.09 248.46,-73.00 Q250.30,-70.91 250.21,-67.70 Q250.12,-64.59 248.12,-62.50 Q246.12,-60.41 243.21,-60.41 Q240.21,-60.41 238.30,-62.50 Q236.41,-64.59 236.51,-67.70 Q236.62,-70.91 238.76,-73.00 Q240.91,-75.09 243.62,-75.09 Z M291.48,-51.09 Q294.28,-51.09 297.98,-50.59 Q301.69,-50.09 305.48,-49.09 Q304.89,-44.70 304.14,-39.09 Q303.39,-33.50 302.64,-27.95 Q301.89,-22.41 301.44,-17.80 Q300.98,-13.20 300.98,-10.70 Q300.98,-8.80 301.38,-7.80 Q301.78,-6.80 302.89,-6.80 Q304.19,-6.80 305.73,-8.64 Q307.28,-10.50 308.69,-15.30 L313.19,-14.00 Q312.89,-12.00 311.89,-9.39 Q310.89,-6.80 309.23,-4.39 Q307.59,-2.00 305.19,-0.45 Q302.78,1.09 299.59,1.09 Q296.19,1.09 293.98,-1.00 Q291.78,-3.09 291.78,-8.00 Q291.78,-9.80 292.03,-12.00 Q292.28,-14.20 292.69,-16.30 L292.48,-16.30 Q290.48,-11.00 288.28,-7.55 Q286.09,-4.09 283.78,-2.19 Q281.48,-0.30 279.19,0.39 Q276.89,1.09 274.69,1.09 Q269.19,1.09 265.39,-3.20 Q261.59,-7.50 261.59,-16.80 Q261.59,-23.80 263.53,-29.94 Q265.48,-36.09 269.28,-40.89 Q273.09,-45.70 278.64,-48.39 Q284.19,-51.09 291.48,-51.09 Z M287.98,-45.50 Q284.59,-45.50 281.89,-43.45 Q279.19,-41.41 277.28,-37.66 Q275.39,-33.91 274.44,-28.70 Q273.48,-23.50 273.48,-17.09 Q273.48,-12.20 274.62,-9.25 Q275.78,-6.30 278.19,-6.30 Q280.59,-6.30 282.78,-8.69 Q284.98,-11.09 286.78,-15.19 Q288.59,-19.30 289.98,-24.34 Q291.39,-29.41 292.28,-34.66 Q293.19,-39.91 293.28,-44.70 Q292.48,-45.00 290.98,-45.25 Q289.48,-45.50 287.98,-45.50 Z" fill="currentColor"/></g></svg>
+  <h1>Brand Guidelines</h1>
+  <p class="sub">Step into someone else's world for an afternoon.</p>
+  <p class="meta">Version 1.0 &nbsp;·&nbsp; July 2026</p>
+</header>
+
+<section id="essence">
+  <div class="section-head">
+    <span class="eyebrow">01 — Essence</span>
+    <h2>What Qualia is, in one breath</h2>
+  </div>
+  <p class="essence-lead">A marketplace for personalized, one-on-one experiences, learning, and human connection.</p>
+  <p class="essence-body">People aren't paying for information — they're paying for a unique experience, and the chance to step temporarily into someone else's world. Every experience on Qualia is personalized and exclusive to the people who book it: not a class, not a tour group, not a video. One person, sharing something only they can teach, with another person, in a way that can't be replicated. Every part of the brand — the writing, the color, the mark — should feel like that: warm, specific, a little imperfect, and unmistakably human.</p>
+  <div class="principles">
+    <span>Human connection</span>
+    <span>Authenticity</span>
+    <span>Exclusivity</span>
+    <span>Quality over quantity</span>
+    <span>Safety</span>
+    <span>Learning through real people</span>
+  </div>
+</section>
+
+<section id="logo">
+  <div class="section-head">
+    <span class="eyebrow">02 — Logo</span>
+    <h2>The mark and the wordmark</h2>
+  </div>
+
+  <div class="logo-primary">
+    <svg height="92" viewBox="-6 -6 314.70 112" xmlns="http://www.w3.org/2000/svg" style="color:var(--moss);"><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/><g transform="translate(116.00,66.01) scale(0.5961)"><path d="M40.91,-71.59 Q49.91,-71.59 56.25,-68.34 Q62.59,-65.09 66.55,-59.80 Q70.50,-54.50 72.20,-48.20 Q73.91,-41.91 73.70,-35.59 Q73.50,-30.41 71.84,-25.00 Q70.20,-19.59 67.00,-14.64 Q63.80,-9.70 59.09,-5.89 Q54.41,-2.09 48.20,-0.20 L48.20,-0.09 Q51.00,-0.09 53.25,0.30 Q55.50,0.70 57.75,1.89 Q60.00,3.09 62.70,5.80 Q66.30,9.20 68.50,11.30 Q70.70,13.41 72.00,14.45 Q73.30,15.50 74.44,15.84 Q75.59,16.20 77.09,16.20 L76.91,21.80 L73.09,21.80 Q68.80,21.80 66.14,21.50 Q63.50,21.20 61.30,20.05 Q59.09,18.91 56.30,16.30 Q53.09,13.30 50.64,10.64 Q48.20,8.00 46.09,5.95 Q44.00,3.91 41.75,2.75 Q39.50,1.59 36.41,1.59 Q27.30,1.59 21.05,-1.59 Q14.80,-4.80 11.00,-10.00 Q7.20,-15.20 5.59,-21.55 Q4.00,-27.91 4.20,-34.20 Q4.41,-41.00 6.95,-47.64 Q9.50,-54.30 14.09,-59.69 Q18.70,-65.09 25.45,-68.34 Q32.20,-71.59 40.91,-71.59 Z M39.59,-65.41 Q34.00,-65.30 30.00,-62.59 Q26.00,-59.91 23.34,-55.50 Q20.70,-51.09 19.34,-45.94 Q18.00,-40.80 17.80,-35.80 Q17.59,-30.91 18.55,-25.50 Q19.50,-20.09 21.80,-15.34 Q24.09,-10.59 28.09,-7.59 Q32.09,-4.59 38.20,-4.59 Q43.80,-4.59 47.84,-7.30 Q51.91,-10.00 54.59,-14.34 Q57.30,-18.70 58.59,-23.84 Q59.91,-29.00 60.09,-34.00 Q60.30,-40.50 59.19,-46.25 Q58.09,-52.00 55.55,-56.30 Q53.00,-60.59 49.05,-63.05 Q45.09,-65.50 39.59,-65.41 Z M99.49,1.09 Q95.40,1.09 92.79,-0.75 Q90.20,-2.59 89.04,-5.89 Q87.90,-9.20 87.90,-13.50 Q87.90,-17.80 88.59,-22.64 Q89.29,-27.50 89.99,-32.05 Q90.70,-36.59 90.70,-39.91 Q90.70,-41.70 90.13,-42.45 Q89.59,-43.20 88.70,-43.20 Q87.40,-43.20 85.95,-41.34 Q84.49,-39.50 83.20,-34.70 L78.59,-36.00 Q78.99,-38.00 80.04,-40.59 Q81.09,-43.20 82.88,-45.59 Q84.70,-48.00 87.20,-49.55 Q89.70,-51.09 92.90,-51.09 Q97.99,-51.09 99.99,-48.25 Q101.99,-45.41 101.99,-40.30 Q101.99,-37.41 101.54,-33.55 Q101.09,-29.70 100.54,-25.59 Q99.99,-21.50 99.54,-17.80 Q99.09,-14.09 99.09,-11.50 Q99.09,-10.09 99.43,-9.00 Q99.79,-7.91 100.54,-7.25 Q101.29,-6.59 102.59,-6.59 Q104.59,-6.59 106.74,-8.94 Q108.90,-11.30 110.84,-15.25 Q112.79,-19.20 114.34,-24.00 Q115.90,-28.80 116.79,-33.84 Q117.70,-38.91 117.70,-43.41 Q117.70,-44.91 117.63,-46.84 Q117.59,-48.80 117.49,-50.00 L128.90,-50.00 Q128.99,-48.41 129.04,-47.66 Q129.09,-46.91 129.09,-45.91 Q129.09,-44.00 128.84,-41.25 Q128.59,-38.50 128.18,-34.95 Q127.79,-31.41 127.20,-27.00 Q126.79,-23.30 126.43,-20.50 Q126.09,-17.70 125.84,-15.75 Q125.59,-13.80 125.43,-12.39 Q125.29,-11.00 125.29,-10.00 Q125.29,-8.30 125.79,-7.55 Q126.29,-6.80 127.20,-6.80 Q128.49,-6.80 129.95,-8.64 Q131.40,-10.50 132.79,-15.30 L137.29,-14.00 Q136.99,-12.00 136.04,-9.39 Q135.09,-6.80 133.49,-4.39 Q131.90,-2.00 129.59,-0.45 Q127.29,1.09 124.09,1.09 Q120.70,1.09 118.34,-1.00 Q115.99,-3.09 115.99,-8.00 Q115.99,-10.30 116.29,-12.34 Q116.59,-14.41 116.90,-16.80 L116.70,-16.80 Q114.09,-9.70 111.24,-5.84 Q108.40,-2.00 105.45,-0.45 Q102.49,1.09 99.49,1.09 Z M171.49,-51.09 Q174.28,-51.09 177.99,-50.59 Q181.69,-50.09 185.49,-49.09 Q184.89,-44.70 184.14,-39.09 Q183.39,-33.50 182.64,-27.95 Q181.89,-22.41 181.44,-17.80 Q180.99,-13.20 180.99,-10.70 Q180.99,-8.80 181.38,-7.80 Q181.78,-6.80 182.89,-6.80 Q184.19,-6.80 185.74,-8.64 Q187.28,-10.50 188.69,-15.30 L193.19,-14.00 Q192.89,-12.00 191.89,-9.39 Q190.89,-6.80 189.24,-4.39 Q187.60,-2.00 185.19,-0.45 Q182.78,1.09 179.60,1.09 Q176.19,1.09 173.99,-1.00 Q171.78,-3.09 171.78,-8.00 Q171.78,-9.80 172.03,-12.00 Q172.28,-14.20 172.69,-16.30 L172.49,-16.30 Q170.49,-11.00 168.28,-7.55 Q166.10,-4.09 163.78,-2.19 Q161.49,-0.30 159.19,0.39 Q156.89,1.09 154.69,1.09 Q149.19,1.09 145.39,-3.20 Q141.60,-7.50 141.60,-16.80 Q141.60,-23.80 143.53,-29.94 Q145.49,-36.09 149.28,-40.89 Q153.10,-45.70 158.64,-48.39 Q164.19,-51.09 171.49,-51.09 Z M167.99,-45.50 Q164.60,-45.50 161.89,-43.45 Q159.19,-41.41 157.28,-37.66 Q155.39,-33.91 154.44,-28.70 Q153.49,-23.50 153.49,-17.09 Q153.49,-12.20 154.63,-9.25 Q155.78,-6.30 158.19,-6.30 Q160.60,-6.30 162.78,-8.69 Q164.99,-11.09 166.78,-15.19 Q168.60,-19.30 169.99,-24.34 Q171.39,-29.41 172.28,-34.66 Q173.19,-39.91 173.28,-44.70 Q172.49,-45.00 170.99,-45.25 Q169.49,-45.50 167.99,-45.50 Z M217.89,-75.50 Q217.59,-72.59 217.18,-69.59 Q216.79,-66.59 216.43,-63.80 Q216.09,-61.00 215.79,-58.50 Q214.89,-50.70 214.14,-44.14 Q213.39,-37.59 212.84,-32.25 Q212.29,-26.91 211.89,-22.75 Q211.50,-18.59 211.29,-15.55 Q211.09,-12.50 211.09,-10.41 Q211.09,-8.59 211.54,-7.69 Q212.00,-6.80 212.89,-6.80 Q214.29,-6.80 215.79,-8.64 Q217.29,-10.50 218.59,-15.30 L223.18,-14.00 Q222.68,-11.70 221.59,-9.09 Q220.50,-6.50 218.75,-4.14 Q217.00,-1.80 214.50,-0.34 Q212.00,1.09 208.59,1.09 Q204.79,1.09 202.39,-1.05 Q200.00,-3.20 199.89,-8.00 Q199.89,-11.20 200.18,-15.70 Q200.50,-20.20 200.93,-25.50 Q201.39,-30.80 201.98,-36.44 Q202.59,-42.09 203.23,-47.75 Q203.89,-53.41 204.50,-58.50 Q204.79,-60.80 205.09,-62.75 Q205.39,-64.70 205.68,-66.50 Q204.00,-66.41 202.00,-66.34 Q200.00,-66.30 198.68,-66.20 L199.09,-72.59 Q203.59,-72.59 206.48,-73.05 Q209.39,-73.50 211.03,-74.20 Q212.68,-74.91 213.39,-75.50 L217.89,-75.50 Z M239.38,-51.09 Q244.29,-51.09 246.33,-48.05 Q248.38,-45.00 248.38,-39.91 Q248.38,-37.30 247.88,-33.30 Q247.38,-29.30 246.73,-24.80 Q246.08,-20.30 245.54,-16.34 Q244.99,-12.41 244.99,-9.91 Q244.99,-8.20 245.58,-7.50 Q246.18,-6.80 247.08,-6.80 Q248.38,-6.80 249.88,-8.64 Q251.38,-10.50 252.79,-15.30 L257.29,-14.00 Q256.88,-11.91 255.77,-9.30 Q254.68,-6.70 252.93,-4.34 Q251.18,-2.00 248.68,-0.45 Q246.18,1.09 242.99,1.09 Q237.79,1.09 235.68,-1.70 Q233.58,-4.50 233.58,-9.59 Q233.58,-13.00 234.13,-17.05 Q234.68,-21.09 235.38,-25.25 Q236.08,-29.41 236.58,-33.20 Q237.08,-37.00 237.08,-40.00 Q237.08,-41.59 236.58,-42.39 Q236.08,-43.20 235.08,-43.20 Q233.88,-43.20 232.38,-41.34 Q230.88,-39.50 229.49,-34.70 L224.99,-36.00 Q225.29,-38.00 226.38,-40.59 Q227.49,-43.20 229.33,-45.59 Q231.18,-48.00 233.68,-49.55 Q236.18,-51.09 239.38,-51.09 Z M243.62,-75.09 Q246.62,-75.09 248.46,-73.00 Q250.30,-70.91 250.21,-67.70 Q250.12,-64.59 248.12,-62.50 Q246.12,-60.41 243.21,-60.41 Q240.21,-60.41 238.30,-62.50 Q236.41,-64.59 236.51,-67.70 Q236.62,-70.91 238.76,-73.00 Q240.91,-75.09 243.62,-75.09 Z M291.48,-51.09 Q294.28,-51.09 297.98,-50.59 Q301.69,-50.09 305.48,-49.09 Q304.89,-44.70 304.14,-39.09 Q303.39,-33.50 302.64,-27.95 Q301.89,-22.41 301.44,-17.80 Q300.98,-13.20 300.98,-10.70 Q300.98,-8.80 301.38,-7.80 Q301.78,-6.80 302.89,-6.80 Q304.19,-6.80 305.73,-8.64 Q307.28,-10.50 308.69,-15.30 L313.19,-14.00 Q312.89,-12.00 311.89,-9.39 Q310.89,-6.80 309.23,-4.39 Q307.59,-2.00 305.19,-0.45 Q302.78,1.09 299.59,1.09 Q296.19,1.09 293.98,-1.00 Q291.78,-3.09 291.78,-8.00 Q291.78,-9.80 292.03,-12.00 Q292.28,-14.20 292.69,-16.30 L292.48,-16.30 Q290.48,-11.00 288.28,-7.55 Q286.09,-4.09 283.78,-2.19 Q281.48,-0.30 279.19,0.39 Q276.89,1.09 274.69,1.09 Q269.19,1.09 265.39,-3.20 Q261.59,-7.50 261.59,-16.80 Q261.59,-23.80 263.53,-29.94 Q265.48,-36.09 269.28,-40.89 Q273.09,-45.70 278.64,-48.39 Q284.19,-51.09 291.48,-51.09 Z M287.98,-45.50 Q284.59,-45.50 281.89,-43.45 Q279.19,-41.41 277.28,-37.66 Q275.39,-33.91 274.44,-28.70 Q273.48,-23.50 273.48,-17.09 Q273.48,-12.20 274.62,-9.25 Q275.78,-6.30 278.19,-6.30 Q280.59,-6.30 282.78,-8.69 Q284.98,-11.09 286.78,-15.19 Q288.59,-19.30 289.98,-24.34 Q291.39,-29.41 292.28,-34.66 Q293.19,-39.91 293.28,-44.70 Q292.48,-45.00 290.98,-45.25 Q289.48,-45.50 287.98,-45.50 Z" fill="currentColor"/></g></svg>
+  </div>
+  <p class="logo-caption">Primary lockup — the aperture mark paired with the "Qualia" logotype. This is the default logo; use it whenever there's room.</p>
+
+  <div class="logo-variants">
+    <div class="variant-card">
+      <svg width="46" height="46" viewBox="-4 -4 108 108" xmlns="http://www.w3.org/2000/svg" style="color:var(--moss);"><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></svg>
+      <span class="vlabel">Mark · Moss</span>
+    </div>
+    <div class="variant-card on-moss">
+      <svg width="46" height="46" viewBox="-4 -4 108 108" xmlns="http://www.w3.org/2000/svg" style="color:var(--paper);"><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></svg>
+      <span class="vlabel">Mark · Reversed</span>
+    </div>
+    <div class="variant-card on-paperalt">
+      <svg height="70" viewBox="-6 -6 112 172.00" xmlns="http://www.w3.org/2000/svg" style="color:var(--moss);"><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/><g transform="translate(-24.03,149.69) scale(0.4728)"><path d="M40.91,-71.59 Q49.91,-71.59 56.25,-68.34 Q62.59,-65.09 66.55,-59.80 Q70.50,-54.50 72.20,-48.20 Q73.91,-41.91 73.70,-35.59 Q73.50,-30.41 71.84,-25.00 Q70.20,-19.59 67.00,-14.64 Q63.80,-9.70 59.09,-5.89 Q54.41,-2.09 48.20,-0.20 L48.20,-0.09 Q51.00,-0.09 53.25,0.30 Q55.50,0.70 57.75,1.89 Q60.00,3.09 62.70,5.80 Q66.30,9.20 68.50,11.30 Q70.70,13.41 72.00,14.45 Q73.30,15.50 74.44,15.84 Q75.59,16.20 77.09,16.20 L76.91,21.80 L73.09,21.80 Q68.80,21.80 66.14,21.50 Q63.50,21.20 61.30,20.05 Q59.09,18.91 56.30,16.30 Q53.09,13.30 50.64,10.64 Q48.20,8.00 46.09,5.95 Q44.00,3.91 41.75,2.75 Q39.50,1.59 36.41,1.59 Q27.30,1.59 21.05,-1.59 Q14.80,-4.80 11.00,-10.00 Q7.20,-15.20 5.59,-21.55 Q4.00,-27.91 4.20,-34.20 Q4.41,-41.00 6.95,-47.64 Q9.50,-54.30 14.09,-59.69 Q18.70,-65.09 25.45,-68.34 Q32.20,-71.59 40.91,-71.59 Z M39.59,-65.41 Q34.00,-65.30 30.00,-62.59 Q26.00,-59.91 23.34,-55.50 Q20.70,-51.09 19.34,-45.94 Q18.00,-40.80 17.80,-35.80 Q17.59,-30.91 18.55,-25.50 Q19.50,-20.09 21.80,-15.34 Q24.09,-10.59 28.09,-7.59 Q32.09,-4.59 38.20,-4.59 Q43.80,-4.59 47.84,-7.30 Q51.91,-10.00 54.59,-14.34 Q57.30,-18.70 58.59,-23.84 Q59.91,-29.00 60.09,-34.00 Q60.30,-40.50 59.19,-46.25 Q58.09,-52.00 55.55,-56.30 Q53.00,-60.59 49.05,-63.05 Q45.09,-65.50 39.59,-65.41 Z M99.49,1.09 Q95.40,1.09 92.79,-0.75 Q90.20,-2.59 89.04,-5.89 Q87.90,-9.20 87.90,-13.50 Q87.90,-17.80 88.59,-22.64 Q89.29,-27.50 89.99,-32.05 Q90.70,-36.59 90.70,-39.91 Q90.70,-41.70 90.13,-42.45 Q89.59,-43.20 88.70,-43.20 Q87.40,-43.20 85.95,-41.34 Q84.49,-39.50 83.20,-34.70 L78.59,-36.00 Q78.99,-38.00 80.04,-40.59 Q81.09,-43.20 82.88,-45.59 Q84.70,-48.00 87.20,-49.55 Q89.70,-51.09 92.90,-51.09 Q97.99,-51.09 99.99,-48.25 Q101.99,-45.41 101.99,-40.30 Q101.99,-37.41 101.54,-33.55 Q101.09,-29.70 100.54,-25.59 Q99.99,-21.50 99.54,-17.80 Q99.09,-14.09 99.09,-11.50 Q99.09,-10.09 99.43,-9.00 Q99.79,-7.91 100.54,-7.25 Q101.29,-6.59 102.59,-6.59 Q104.59,-6.59 106.74,-8.94 Q108.90,-11.30 110.84,-15.25 Q112.79,-19.20 114.34,-24.00 Q115.90,-28.80 116.79,-33.84 Q117.70,-38.91 117.70,-43.41 Q117.70,-44.91 117.63,-46.84 Q117.59,-48.80 117.49,-50.00 L128.90,-50.00 Q128.99,-48.41 129.04,-47.66 Q129.09,-46.91 129.09,-45.91 Q129.09,-44.00 128.84,-41.25 Q128.59,-38.50 128.18,-34.95 Q127.79,-31.41 127.20,-27.00 Q126.79,-23.30 126.43,-20.50 Q126.09,-17.70 125.84,-15.75 Q125.59,-13.80 125.43,-12.39 Q125.29,-11.00 125.29,-10.00 Q125.29,-8.30 125.79,-7.55 Q126.29,-6.80 127.20,-6.80 Q128.49,-6.80 129.95,-8.64 Q131.40,-10.50 132.79,-15.30 L137.29,-14.00 Q136.99,-12.00 136.04,-9.39 Q135.09,-6.80 133.49,-4.39 Q131.90,-2.00 129.59,-0.45 Q127.29,1.09 124.09,1.09 Q120.70,1.09 118.34,-1.00 Q115.99,-3.09 115.99,-8.00 Q115.99,-10.30 116.29,-12.34 Q116.59,-14.41 116.90,-16.80 L116.70,-16.80 Q114.09,-9.70 111.24,-5.84 Q108.40,-2.00 105.45,-0.45 Q102.49,1.09 99.49,1.09 Z M171.49,-51.09 Q174.28,-51.09 177.99,-50.59 Q181.69,-50.09 185.49,-49.09 Q184.89,-44.70 184.14,-39.09 Q183.39,-33.50 182.64,-27.95 Q181.89,-22.41 181.44,-17.80 Q180.99,-13.20 180.99,-10.70 Q180.99,-8.80 181.38,-7.80 Q181.78,-6.80 182.89,-6.80 Q184.19,-6.80 185.74,-8.64 Q187.28,-10.50 188.69,-15.30 L193.19,-14.00 Q192.89,-12.00 191.89,-9.39 Q190.89,-6.80 189.24,-4.39 Q187.60,-2.00 185.19,-0.45 Q182.78,1.09 179.60,1.09 Q176.19,1.09 173.99,-1.00 Q171.78,-3.09 171.78,-8.00 Q171.78,-9.80 172.03,-12.00 Q172.28,-14.20 172.69,-16.30 L172.49,-16.30 Q170.49,-11.00 168.28,-7.55 Q166.10,-4.09 163.78,-2.19 Q161.49,-0.30 159.19,0.39 Q156.89,1.09 154.69,1.09 Q149.19,1.09 145.39,-3.20 Q141.60,-7.50 141.60,-16.80 Q141.60,-23.80 143.53,-29.94 Q145.49,-36.09 149.28,-40.89 Q153.10,-45.70 158.64,-48.39 Q164.19,-51.09 171.49,-51.09 Z M167.99,-45.50 Q164.60,-45.50 161.89,-43.45 Q159.19,-41.41 157.28,-37.66 Q155.39,-33.91 154.44,-28.70 Q153.49,-23.50 153.49,-17.09 Q153.49,-12.20 154.63,-9.25 Q155.78,-6.30 158.19,-6.30 Q160.60,-6.30 162.78,-8.69 Q164.99,-11.09 166.78,-15.19 Q168.60,-19.30 169.99,-24.34 Q171.39,-29.41 172.28,-34.66 Q173.19,-39.91 173.28,-44.70 Q172.49,-45.00 170.99,-45.25 Q169.49,-45.50 167.99,-45.50 Z M217.89,-75.50 Q217.59,-72.59 217.18,-69.59 Q216.79,-66.59 216.43,-63.80 Q216.09,-61.00 215.79,-58.50 Q214.89,-50.70 214.14,-44.14 Q213.39,-37.59 212.84,-32.25 Q212.29,-26.91 211.89,-22.75 Q211.50,-18.59 211.29,-15.55 Q211.09,-12.50 211.09,-10.41 Q211.09,-8.59 211.54,-7.69 Q212.00,-6.80 212.89,-6.80 Q214.29,-6.80 215.79,-8.64 Q217.29,-10.50 218.59,-15.30 L223.18,-14.00 Q222.68,-11.70 221.59,-9.09 Q220.50,-6.50 218.75,-4.14 Q217.00,-1.80 214.50,-0.34 Q212.00,1.09 208.59,1.09 Q204.79,1.09 202.39,-1.05 Q200.00,-3.20 199.89,-8.00 Q199.89,-11.20 200.18,-15.70 Q200.50,-20.20 200.93,-25.50 Q201.39,-30.80 201.98,-36.44 Q202.59,-42.09 203.23,-47.75 Q203.89,-53.41 204.50,-58.50 Q204.79,-60.80 205.09,-62.75 Q205.39,-64.70 205.68,-66.50 Q204.00,-66.41 202.00,-66.34 Q200.00,-66.30 198.68,-66.20 L199.09,-72.59 Q203.59,-72.59 206.48,-73.05 Q209.39,-73.50 211.03,-74.20 Q212.68,-74.91 213.39,-75.50 L217.89,-75.50 Z M239.38,-51.09 Q244.29,-51.09 246.33,-48.05 Q248.38,-45.00 248.38,-39.91 Q248.38,-37.30 247.88,-33.30 Q247.38,-29.30 246.73,-24.80 Q246.08,-20.30 245.54,-16.34 Q244.99,-12.41 244.99,-9.91 Q244.99,-8.20 245.58,-7.50 Q246.18,-6.80 247.08,-6.80 Q248.38,-6.80 249.88,-8.64 Q251.38,-10.50 252.79,-15.30 L257.29,-14.00 Q256.88,-11.91 255.77,-9.30 Q254.68,-6.70 252.93,-4.34 Q251.18,-2.00 248.68,-0.45 Q246.18,1.09 242.99,1.09 Q237.79,1.09 235.68,-1.70 Q233.58,-4.50 233.58,-9.59 Q233.58,-13.00 234.13,-17.05 Q234.68,-21.09 235.38,-25.25 Q236.08,-29.41 236.58,-33.20 Q237.08,-37.00 237.08,-40.00 Q237.08,-41.59 236.58,-42.39 Q236.08,-43.20 235.08,-43.20 Q233.88,-43.20 232.38,-41.34 Q230.88,-39.50 229.49,-34.70 L224.99,-36.00 Q225.29,-38.00 226.38,-40.59 Q227.49,-43.20 229.33,-45.59 Q231.18,-48.00 233.68,-49.55 Q236.18,-51.09 239.38,-51.09 Z M243.62,-75.09 Q246.62,-75.09 248.46,-73.00 Q250.30,-70.91 250.21,-67.70 Q250.12,-64.59 248.12,-62.50 Q246.12,-60.41 243.21,-60.41 Q240.21,-60.41 238.30,-62.50 Q236.41,-64.59 236.51,-67.70 Q236.62,-70.91 238.76,-73.00 Q240.91,-75.09 243.62,-75.09 Z M291.48,-51.09 Q294.28,-51.09 297.98,-50.59 Q301.69,-50.09 305.48,-49.09 Q304.89,-44.70 304.14,-39.09 Q303.39,-33.50 302.64,-27.95 Q301.89,-22.41 301.44,-17.80 Q300.98,-13.20 300.98,-10.70 Q300.98,-8.80 301.38,-7.80 Q301.78,-6.80 302.89,-6.80 Q304.19,-6.80 305.73,-8.64 Q307.28,-10.50 308.69,-15.30 L313.19,-14.00 Q312.89,-12.00 311.89,-9.39 Q310.89,-6.80 309.23,-4.39 Q307.59,-2.00 305.19,-0.45 Q302.78,1.09 299.59,1.09 Q296.19,1.09 293.98,-1.00 Q291.78,-3.09 291.78,-8.00 Q291.78,-9.80 292.03,-12.00 Q292.28,-14.20 292.69,-16.30 L292.48,-16.30 Q290.48,-11.00 288.28,-7.55 Q286.09,-4.09 283.78,-2.19 Q281.48,-0.30 279.19,0.39 Q276.89,1.09 274.69,1.09 Q269.19,1.09 265.39,-3.20 Q261.59,-7.50 261.59,-16.80 Q261.59,-23.80 263.53,-29.94 Q265.48,-36.09 269.28,-40.89 Q273.09,-45.70 278.64,-48.39 Q284.19,-51.09 291.48,-51.09 Z M287.98,-45.50 Q284.59,-45.50 281.89,-43.45 Q279.19,-41.41 277.28,-37.66 Q275.39,-33.91 274.44,-28.70 Q273.48,-23.50 273.48,-17.09 Q273.48,-12.20 274.62,-9.25 Q275.78,-6.30 278.19,-6.30 Q280.59,-6.30 282.78,-8.69 Q284.98,-11.09 286.78,-15.19 Q288.59,-19.30 289.98,-24.34 Q291.39,-29.41 292.28,-34.66 Q293.19,-39.91 293.28,-44.70 Q292.48,-45.00 290.98,-45.25 Q289.48,-45.50 287.98,-45.50 Z" fill="currentColor"/></g></svg>
+      <span class="vlabel">Stacked lockup</span>
+    </div>
+  </div>
+
+  <div class="clearspace-box">
+    <div class="clearspace-demo">
+      <svg height="38" viewBox="-6 -6 314.70 112" xmlns="http://www.w3.org/2000/svg" style="color:var(--moss);"><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/><g transform="translate(116.00,66.01) scale(0.5961)"><path d="M40.91,-71.59 Q49.91,-71.59 56.25,-68.34 Q62.59,-65.09 66.55,-59.80 Q70.50,-54.50 72.20,-48.20 Q73.91,-41.91 73.70,-35.59 Q73.50,-30.41 71.84,-25.00 Q70.20,-19.59 67.00,-14.64 Q63.80,-9.70 59.09,-5.89 Q54.41,-2.09 48.20,-0.20 L48.20,-0.09 Q51.00,-0.09 53.25,0.30 Q55.50,0.70 57.75,1.89 Q60.00,3.09 62.70,5.80 Q66.30,9.20 68.50,11.30 Q70.70,13.41 72.00,14.45 Q73.30,15.50 74.44,15.84 Q75.59,16.20 77.09,16.20 L76.91,21.80 L73.09,21.80 Q68.80,21.80 66.14,21.50 Q63.50,21.20 61.30,20.05 Q59.09,18.91 56.30,16.30 Q53.09,13.30 50.64,10.64 Q48.20,8.00 46.09,5.95 Q44.00,3.91 41.75,2.75 Q39.50,1.59 36.41,1.59 Q27.30,1.59 21.05,-1.59 Q14.80,-4.80 11.00,-10.00 Q7.20,-15.20 5.59,-21.55 Q4.00,-27.91 4.20,-34.20 Q4.41,-41.00 6.95,-47.64 Q9.50,-54.30 14.09,-59.69 Q18.70,-65.09 25.45,-68.34 Q32.20,-71.59 40.91,-71.59 Z M39.59,-65.41 Q34.00,-65.30 30.00,-62.59 Q26.00,-59.91 23.34,-55.50 Q20.70,-51.09 19.34,-45.94 Q18.00,-40.80 17.80,-35.80 Q17.59,-30.91 18.55,-25.50 Q19.50,-20.09 21.80,-15.34 Q24.09,-10.59 28.09,-7.59 Q32.09,-4.59 38.20,-4.59 Q43.80,-4.59 47.84,-7.30 Q51.91,-10.00 54.59,-14.34 Q57.30,-18.70 58.59,-23.84 Q59.91,-29.00 60.09,-34.00 Q60.30,-40.50 59.19,-46.25 Q58.09,-52.00 55.55,-56.30 Q53.00,-60.59 49.05,-63.05 Q45.09,-65.50 39.59,-65.41 Z M99.49,1.09 Q95.40,1.09 92.79,-0.75 Q90.20,-2.59 89.04,-5.89 Q87.90,-9.20 87.90,-13.50 Q87.90,-17.80 88.59,-22.64 Q89.29,-27.50 89.99,-32.05 Q90.70,-36.59 90.70,-39.91 Q90.70,-41.70 90.13,-42.45 Q89.59,-43.20 88.70,-43.20 Q87.40,-43.20 85.95,-41.34 Q84.49,-39.50 83.20,-34.70 L78.59,-36.00 Q78.99,-38.00 80.04,-40.59 Q81.09,-43.20 82.88,-45.59 Q84.70,-48.00 87.20,-49.55 Q89.70,-51.09 92.90,-51.09 Q97.99,-51.09 99.99,-48.25 Q101.99,-45.41 101.99,-40.30 Q101.99,-37.41 101.54,-33.55 Q101.09,-29.70 100.54,-25.59 Q99.99,-21.50 99.54,-17.80 Q99.09,-14.09 99.09,-11.50 Q99.09,-10.09 99.43,-9.00 Q99.79,-7.91 100.54,-7.25 Q101.29,-6.59 102.59,-6.59 Q104.59,-6.59 106.74,-8.94 Q108.90,-11.30 110.84,-15.25 Q112.79,-19.20 114.34,-24.00 Q115.90,-28.80 116.79,-33.84 Q117.70,-38.91 117.70,-43.41 Q117.70,-44.91 117.63,-46.84 Q117.59,-48.80 117.49,-50.00 L128.90,-50.00 Q128.99,-48.41 129.04,-47.66 Q129.09,-46.91 129.09,-45.91 Q129.09,-44.00 128.84,-41.25 Q128.59,-38.50 128.18,-34.95 Q127.79,-31.41 127.20,-27.00 Q126.79,-23.30 126.43,-20.50 Q126.09,-17.70 125.84,-15.75 Q125.59,-13.80 125.43,-12.39 Q125.29,-11.00 125.29,-10.00 Q125.29,-8.30 125.79,-7.55 Q126.29,-6.80 127.20,-6.80 Q128.49,-6.80 129.95,-8.64 Q131.40,-10.50 132.79,-15.30 L137.29,-14.00 Q136.99,-12.00 136.04,-9.39 Q135.09,-6.80 133.49,-4.39 Q131.90,-2.00 129.59,-0.45 Q127.29,1.09 124.09,1.09 Q120.70,1.09 118.34,-1.00 Q115.99,-3.09 115.99,-8.00 Q115.99,-10.30 116.29,-12.34 Q116.59,-14.41 116.90,-16.80 L116.70,-16.80 Q114.09,-9.70 111.24,-5.84 Q108.40,-2.00 105.45,-0.45 Q102.49,1.09 99.49,1.09 Z M171.49,-51.09 Q174.28,-51.09 177.99,-50.59 Q181.69,-50.09 185.49,-49.09 Q184.89,-44.70 184.14,-39.09 Q183.39,-33.50 182.64,-27.95 Q181.89,-22.41 181.44,-17.80 Q180.99,-13.20 180.99,-10.70 Q180.99,-8.80 181.38,-7.80 Q181.78,-6.80 182.89,-6.80 Q184.19,-6.80 185.74,-8.64 Q187.28,-10.50 188.69,-15.30 L193.19,-14.00 Q192.89,-12.00 191.89,-9.39 Q190.89,-6.80 189.24,-4.39 Q187.60,-2.00 185.19,-0.45 Q182.78,1.09 179.60,1.09 Q176.19,1.09 173.99,-1.00 Q171.78,-3.09 171.78,-8.00 Q171.78,-9.80 172.03,-12.00 Q172.28,-14.20 172.69,-16.30 L172.49,-16.30 Q170.49,-11.00 168.28,-7.55 Q166.10,-4.09 163.78,-2.19 Q161.49,-0.30 159.19,0.39 Q156.89,1.09 154.69,1.09 Q149.19,1.09 145.39,-3.20 Q141.60,-7.50 141.60,-16.80 Q141.60,-23.80 143.53,-29.94 Q145.49,-36.09 149.28,-40.89 Q153.10,-45.70 158.64,-48.39 Q164.19,-51.09 171.49,-51.09 Z M167.99,-45.50 Q164.60,-45.50 161.89,-43.45 Q159.19,-41.41 157.28,-37.66 Q155.39,-33.91 154.44,-28.70 Q153.49,-23.50 153.49,-17.09 Q153.49,-12.20 154.63,-9.25 Q155.78,-6.30 158.19,-6.30 Q160.60,-6.30 162.78,-8.69 Q164.99,-11.09 166.78,-15.19 Q168.60,-19.30 169.99,-24.34 Q171.39,-29.41 172.28,-34.66 Q173.19,-39.91 173.28,-44.70 Q172.49,-45.00 170.99,-45.25 Q169.49,-45.50 167.99,-45.50 Z M217.89,-75.50 Q217.59,-72.59 217.18,-69.59 Q216.79,-66.59 216.43,-63.80 Q216.09,-61.00 215.79,-58.50 Q214.89,-50.70 214.14,-44.14 Q213.39,-37.59 212.84,-32.25 Q212.29,-26.91 211.89,-22.75 Q211.50,-18.59 211.29,-15.55 Q211.09,-12.50 211.09,-10.41 Q211.09,-8.59 211.54,-7.69 Q212.00,-6.80 212.89,-6.80 Q214.29,-6.80 215.79,-8.64 Q217.29,-10.50 218.59,-15.30 L223.18,-14.00 Q222.68,-11.70 221.59,-9.09 Q220.50,-6.50 218.75,-4.14 Q217.00,-1.80 214.50,-0.34 Q212.00,1.09 208.59,1.09 Q204.79,1.09 202.39,-1.05 Q200.00,-3.20 199.89,-8.00 Q199.89,-11.20 200.18,-15.70 Q200.50,-20.20 200.93,-25.50 Q201.39,-30.80 201.98,-36.44 Q202.59,-42.09 203.23,-47.75 Q203.89,-53.41 204.50,-58.50 Q204.79,-60.80 205.09,-62.75 Q205.39,-64.70 205.68,-66.50 Q204.00,-66.41 202.00,-66.34 Q200.00,-66.30 198.68,-66.20 L199.09,-72.59 Q203.59,-72.59 206.48,-73.05 Q209.39,-73.50 211.03,-74.20 Q212.68,-74.91 213.39,-75.50 L217.89,-75.50 Z M239.38,-51.09 Q244.29,-51.09 246.33,-48.05 Q248.38,-45.00 248.38,-39.91 Q248.38,-37.30 247.88,-33.30 Q247.38,-29.30 246.73,-24.80 Q246.08,-20.30 245.54,-16.34 Q244.99,-12.41 244.99,-9.91 Q244.99,-8.20 245.58,-7.50 Q246.18,-6.80 247.08,-6.80 Q248.38,-6.80 249.88,-8.64 Q251.38,-10.50 252.79,-15.30 L257.29,-14.00 Q256.88,-11.91 255.77,-9.30 Q254.68,-6.70 252.93,-4.34 Q251.18,-2.00 248.68,-0.45 Q246.18,1.09 242.99,1.09 Q237.79,1.09 235.68,-1.70 Q233.58,-4.50 233.58,-9.59 Q233.58,-13.00 234.13,-17.05 Q234.68,-21.09 235.38,-25.25 Q236.08,-29.41 236.58,-33.20 Q237.08,-37.00 237.08,-40.00 Q237.08,-41.59 236.58,-42.39 Q236.08,-43.20 235.08,-43.20 Q233.88,-43.20 232.38,-41.34 Q230.88,-39.50 229.49,-34.70 L224.99,-36.00 Q225.29,-38.00 226.38,-40.59 Q227.49,-43.20 229.33,-45.59 Q231.18,-48.00 233.68,-49.55 Q236.18,-51.09 239.38,-51.09 Z M243.62,-75.09 Q246.62,-75.09 248.46,-73.00 Q250.30,-70.91 250.21,-67.70 Q250.12,-64.59 248.12,-62.50 Q246.12,-60.41 243.21,-60.41 Q240.21,-60.41 238.30,-62.50 Q236.41,-64.59 236.51,-67.70 Q236.62,-70.91 238.76,-73.00 Q240.91,-75.09 243.62,-75.09 Z M291.48,-51.09 Q294.28,-51.09 297.98,-50.59 Q301.69,-50.09 305.48,-49.09 Q304.89,-44.70 304.14,-39.09 Q303.39,-33.50 302.64,-27.95 Q301.89,-22.41 301.44,-17.80 Q300.98,-13.20 300.98,-10.70 Q300.98,-8.80 301.38,-7.80 Q301.78,-6.80 302.89,-6.80 Q304.19,-6.80 305.73,-8.64 Q307.28,-10.50 308.69,-15.30 L313.19,-14.00 Q312.89,-12.00 311.89,-9.39 Q310.89,-6.80 309.23,-4.39 Q307.59,-2.00 305.19,-0.45 Q302.78,1.09 299.59,1.09 Q296.19,1.09 293.98,-1.00 Q291.78,-3.09 291.78,-8.00 Q291.78,-9.80 292.03,-12.00 Q292.28,-14.20 292.69,-16.30 L292.48,-16.30 Q290.48,-11.00 288.28,-7.55 Q286.09,-4.09 283.78,-2.19 Q281.48,-0.30 279.19,0.39 Q276.89,1.09 274.69,1.09 Q269.19,1.09 265.39,-3.20 Q261.59,-7.50 261.59,-16.80 Q261.59,-23.80 263.53,-29.94 Q265.48,-36.09 269.28,-40.89 Q273.09,-45.70 278.64,-48.39 Q284.19,-51.09 291.48,-51.09 Z M287.98,-45.50 Q284.59,-45.50 281.89,-43.45 Q279.19,-41.41 277.28,-37.66 Q275.39,-33.91 274.44,-28.70 Q273.48,-23.50 273.48,-17.09 Q273.48,-12.20 274.62,-9.25 Q275.78,-6.30 278.19,-6.30 Q280.59,-6.30 282.78,-8.69 Q284.98,-11.09 286.78,-15.19 Q288.59,-19.30 289.98,-24.34 Q291.39,-29.41 292.28,-34.66 Q293.19,-39.91 293.28,-44.70 Q292.48,-45.00 290.98,-45.25 Q289.48,-45.50 287.98,-45.50 Z" fill="currentColor"/></g></svg>
+    </div>
+    <div class="clearspace-text">
+      <strong>Clear space.</strong> Keep an empty margin around the logo at least equal to the width of one aperture ring (measured from the mark's outer edge to its inner edge). Nothing else — text, edges, other logos, photography — should enter that zone.<br><br>
+      <strong>Minimum size.</strong> Don't use the full horizontal lockup below 120px / 1.25in wide. Below that, drop to the mark alone — it stays legible all the way down to favicon size.
+    </div>
+  </div>
+
+  <div class="minsize-row">
+    <div class="minsize-item"><svg width="64" height="64" viewBox="-4 -4 108 108" xmlns="http://www.w3.org/2000/svg" style=""><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></svg><span>64px</span></div>
+<div class="minsize-item"><svg width="44" height="44" viewBox="-4 -4 108 108" xmlns="http://www.w3.org/2000/svg" style=""><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></svg><span>44px</span></div>
+<div class="minsize-item"><svg width="28" height="28" viewBox="-4 -4 108 108" xmlns="http://www.w3.org/2000/svg" style=""><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></svg><span>28px</span></div>
+<div class="minsize-item"><svg width="18" height="18" viewBox="-4 -4 108 108" xmlns="http://www.w3.org/2000/svg" style=""><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></svg><span>18px</span></div>
+  </div>
+
+  <div class="donts-grid">
+    <div class="dont-card">
+      <div class="xmark">&times;</div>
+      <div style="transform:scaleX(1.8); transform-origin:center;"><svg width="40" height="40" viewBox="-4 -4 108 108" xmlns="http://www.w3.org/2000/svg" style="color:var(--moss);"><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></svg></div>
+      <p>Don't stretch, skew, or distort the lockup's proportions.</p>
+    </div>
+    <div class="dont-card">
+      <div class="xmark">&times;</div>
+      <svg width="40" height="40" viewBox="-4 -4 108 108" xmlns="http://www.w3.org/2000/svg" style="color:#2E6BE0;"><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></svg>
+      <p>Don't recolor the mark outside the approved palette.</p>
+    </div>
+    <div class="dont-card">
+      <div class="xmark">&times;</div>
+      <div class="dont-fake-font">Qualia</div>
+      <p>Don't re-type "Qualia" in Fraunces or any other font. The wordmark is a fixed logotype — always use the official file.</p>
+    </div>
+    <div class="dont-card">
+      <div class="xmark">&times;</div>
+      <div style="background:var(--paper-alt); padding:10px; border-radius:8px;"><svg width="40" height="40" viewBox="-4 -4 108 108" xmlns="http://www.w3.org/2000/svg" style="color:var(--paper);"><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="4.2"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"/></svg></div>
+      <p>Don't place the reversed (white) mark on a light background — it disappears.</p>
+    </div>
+  </div>
+</section>
+
+<section id="color">
+  <div class="section-head">
+    <span class="eyebrow">03 — Color</span>
+    <h2>Palette</h2>
+  </div>
+  <div class="swatch-grid">
+    <div class="swatch"><div class="swatch-fill" style="background:#221E1A;"></div><div class="swatch-meta"><div class="sname">Ink</div><div class="shex">#221E1A</div><div class="srgb">rgb(34, 30, 26)</div></div></div>
+<div class="swatch"><div class="swatch-fill" style="background:#FAF6EE;"></div><div class="swatch-meta"><div class="sname">Paper</div><div class="shex">#FAF6EE</div><div class="srgb">rgb(250, 246, 238)</div></div></div>
+<div class="swatch"><div class="swatch-fill" style="background:#F1EADA;"></div><div class="swatch-meta"><div class="sname">Paper Alt</div><div class="shex">#F1EADA</div><div class="srgb">rgb(241, 234, 218)</div></div></div>
+<div class="swatch"><div class="swatch-fill" style="background:#FFFDF8;"></div><div class="swatch-meta"><div class="sname">Card</div><div class="shex">#FFFDF8</div><div class="srgb">rgb(255, 253, 248)</div></div></div>
+<div class="swatch"><div class="swatch-fill" style="background:#37503B;"></div><div class="swatch-meta"><div class="sname">Moss</div><div class="shex">#37503B</div><div class="srgb">rgb(55, 80, 59)</div></div></div>
+<div class="swatch"><div class="swatch-fill" style="background:#263A2A;"></div><div class="swatch-meta"><div class="sname">Moss Deep</div><div class="shex">#263A2A</div><div class="srgb">rgb(38, 58, 42)</div></div></div>
+<div class="swatch"><div class="swatch-fill" style="background:#C7962C;"></div><div class="swatch-meta"><div class="sname">Gold</div><div class="shex">#C7962C</div><div class="srgb">rgb(199, 150, 44)</div></div></div>
+<div class="swatch"><div class="swatch-fill" style="background:#A8483A;"></div><div class="swatch-meta"><div class="sname">Rose</div><div class="shex">#A8483A</div><div class="srgb">rgb(168, 72, 58)</div></div></div>
+  </div>
+  <p class="color-note">Paper carries the majority of every layout — Qualia should feel like warm paper, not a screen. Moss is the primary brand color: the logo, primary buttons, links, verified badges. Gold is a spark, not a base — one accent per view, used for ratings, highlights, and the aperture's warm inner glow. Rose is reserved strictly for safety and risk signals (waivers, higher-risk activity notices) — never used decoratively, so it keeps its meaning.</p>
+</section>
+
+<section id="type">
+  <div class="section-head">
+    <span class="eyebrow">04 — Typography</span>
+    <h2>Three typefaces, three jobs</h2>
+  </div>
+
+  <div class="type-block">
+    <div class="type-role"><span class="tname">Fraunces</span><span class="trole">Display — headlines &amp; pull quotes</span></div>
+    <div class="type-sample-display">Step into <em>someone else's</em> world.</div>
+    <p class="type-sample-body">Used big, and sparingly: page headlines, section titles, prices in hero contexts, and italic pull-quotes pulled from a host's own words. Never set as body text or in long paragraphs — Fraunces is a voice, not a paragraph face.</p>
+    <div class="weight-row">
+      <div><b style="font-weight:300;">Light 300</b>Rare — large hero moments only</div>
+      <div><b style="font-weight:500;">Medium 500</b>Default for headlines</div>
+      <div><b style="font-weight:600;">SemiBold 600</b>Emphasis, prices</div>
+      <div><b style="font-style:italic; font-weight:500;">Italic</b>Pull quotes, taglines</div>
+    </div>
+  </div>
+
+  <div class="type-block">
+    <div class="type-role"><span class="tname">Inter</span><span class="trole">Body — everything you read</span></div>
+    <p class="type-sample-body" style="font-size:17px; color:var(--ink);">Inter carries every paragraph, every button label, every form field, every line of navigation. It should feel invisible — clear, unfussy, and out of the way of the person's own words. Set body copy at 15–17px with generous line height (1.5–1.6) so it reads like something written by a person, not printed by a platform.</p>
+    <div class="weight-row">
+      <div><b style="font-family:'Inter',sans-serif; font-weight:400;">Regular 400</b>Body copy</div>
+      <div><b style="font-family:'Inter',sans-serif; font-weight:500;">Medium 500</b>UI labels, nav, buttons</div>
+      <div><b style="font-family:'Inter',sans-serif; font-weight:600;">SemiBold 600</b>Emphasis within body text</div>
+    </div>
+  </div>
+
+  <div class="type-block">
+    <div class="type-role"><span class="tname">IBM Plex Mono</span><span class="trole">Data — anything that isn't prose</span></div>
+    <div class="type-sample-mono">LOCATION &nbsp;·&nbsp; BENSONHURST, BROOKLYN &nbsp;&nbsp; $145 / SESSION &nbsp;&nbsp; 4.98 ★</div>
+    <p class="type-sample-body">Reserved for category tags, eyebrows, prices in list contexts, timestamps, and metadata — anything that should read as data rather than a sentence. Set in uppercase with wide letter-spacing (about 0.05–0.09em) at small sizes (10–12px).</p>
+  </div>
+</section>
+
+<section id="system">
+  <div class="section-head">
+    <span class="eyebrow">05 — The Aperture</span>
+    <h2>One motif, used everywhere</h2>
+  </div>
+  <div class="system-grid">
+    <div class="system-diagram">
+      <svg viewBox="-60 -60 220 220" xmlns="http://www.w3.org/2000/svg" style="color:var(--moss); width:100%; height:auto;"><circle cx="50.0" cy="50.0" r="46.0" fill="none" stroke="currentColor" stroke-width="1.4" opacity="0.85"/><circle cx="50.0" cy="50.0" r="27.0" fill="none" stroke="currentColor" stroke-width="1.8"/><line x1="77.00" y1="50.00" x2="88.00" y2="50.00" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+<line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+<line x1="50.00" y1="77.00" x2="50.00" y2="88.00" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+<line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+<line x1="23.00" y1="50.00" x2="12.00" y2="50.00" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+<line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+<line x1="50.00" y1="23.00" x2="50.00" y2="12.00" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+<line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="50.0" y1="50.0" x2="96.0" y2="50.0" stroke="var(--line)" stroke-width="1" stroke-dasharray="2,2"/><text x="100.0" y="53.0" style="font-family:IBM Plex Mono,monospace; font-size:6px; fill:var(--ink-soft);">r=46</text><line x1="50.0" y1="50.0" x2="50.0" y2="23.0" stroke="var(--line)" stroke-width="1" stroke-dasharray="2,2"/><text x="53.0" y="20.0" style="font-family:IBM Plex Mono,monospace; font-size:6px; fill:var(--ink-soft);">r=27</text></svg>
+    </div>
+    <div class="system-text">
+      <p>The mark is a camera aperture — a ring that opens to reveal what's on the other side. That's the whole product: for one afternoon, you get access to a view you didn't have before. The motif recurs everywhere, always as a variation on the same two circles and eight blades, never redrawn from scratch.</p>
+    </div>
+  </div>
+  <div class="uses-grid">
+    <div class="use-card">
+      <div class="u-icon">
+        <svg width="26" height="26" viewBox="0 0 100 100"><circle cx="50" cy="50" r="34" fill="none" stroke="currentColor" stroke-width="6"/></svg>
+      </div>
+      <h4>List markers</h4>
+      <p>A single thin ring replaces the bullet point in front of experience highlights and feature lists.</p>
+    </div>
+    <div class="use-card">
+      <div class="u-icon">
+        <svg width="26" height="26" viewBox="0 0 100 100"><circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" stroke-width="5"/><circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="2" opacity="0.4"/></svg>
+      </div>
+      <h4>Thumbnail rings</h4>
+      <p>Every host photo and experience thumbnail sits inside a thin aperture ring that tightens on hover.</p>
+    </div>
+    <div class="use-card">
+      <div class="u-icon">
+        <svg width="26" height="26" viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="50" cy="50" r="10" fill="currentColor"/></svg>
+      </div>
+      <h4>The opening transition</h4>
+      <p>When someone opens an experience, the aperture briefly expands full-screen — the literal moment of "stepping in."</p>
+    </div>
+  </div>
+</section>
+
+<section id="voice">
+  <div class="section-head">
+    <span class="eyebrow">06 — Voice &amp; Tone</span>
+    <h2>Write like a person, not a platform</h2>
+  </div>
+  <div class="voice-adjectives">
+    <span>Warm</span><span>Specific</span><span>First-person</span><span>Unpolished on purpose</span><span>Never salesy</span>
+  </div>
+  <div class="pair-grid">
+    <div class="pair">
+      <div class="cell do"><span class="tag">Do</span><p>"You're not learning a recipe. You're getting the one thing that's never made it into a cookbook."</p></div>
+      <div class="cell dont"><span class="tag">Don't</span><p>"Learn authentic Italian cooking techniques from a professional chef in a fun, hands-on environment!"</p></div>
+    </div>
+    <div class="pair">
+      <div class="cell do"><span class="tag">Do</span><p>"I'm not running you through a class. I'm coaching you the way I was coached — one person, watched closely."</p></div>
+      <div class="cell dont"><span class="tag">Don't</span><p>"Get fit fast with personalized training sessions tailored to your goals!"</p></div>
+    </div>
+  </div>
+  <p class="footer-note">Concretely: write in the host's own first-person voice wherever possible. Prefer one true sensory detail over three superlatives. "Amazing," "best-in-class," and exclamation points used to manufacture excitement are not part of the Qualia voice.</p>
+</section>
+
+<section id="application">
+  <div class="section-head">
+    <span class="eyebrow">07 — In Application</span>
+    <h2>The system at work</h2>
+  </div>
+  <div class="app-grid">
+    <div class="app-card">
+      <span class="alabel">Primary button</span>
+      <button class="btn-demo">Request to book</button>
+    </div>
+    <div class="app-card">
+      <span class="alabel">Risk badge</span>
+      <span class="badge-demo">Waiver required</span>
+    </div>
+    <div class="app-card">
+      <span class="alabel">Price, list context</span>
+      <div class="price-demo">$145<span>per session</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="files">
+  <div class="section-head">
+    <span class="eyebrow">08 — Delivered Files</span>
+    <h2>What's in this package</h2>
+  </div>
+  <div class="file-list">
+    <div class="file-row"><span class="fname">qualia-logo-horizontal.svg</span><span class="fdesc">Primary lockup, moss. Default choice.</span></div>
+    <div class="file-row"><span class="fname">qualia-logo-horizontal-reversed.svg</span><span class="fdesc">Primary lockup, paper-white — for moss or dark backgrounds.</span></div>
+    <div class="file-row"><span class="fname">qualia-logo-stacked.svg</span><span class="fdesc">Centered vertical lockup — square contexts, app icon, social avatar.</span></div>
+    <div class="file-row"><span class="fname">qualia-mark.svg</span><span class="fdesc">Icon alone, moss — favicons, small UI, watermarks.</span></div>
+    <div class="file-row"><span class="fname">qualia-mark-reversed.svg</span><span class="fdesc">Icon alone, paper-white — for dark backgrounds.</span></div>
+    <div class="file-row"><span class="fname">qualia-mark-black.svg</span><span class="fdesc">Single-color black — stamps, engraving, one-color print.</span></div>
+    <div class="file-row"><span class="fname">qualia-mark.png</span><span class="fdesc">Transparent raster of the icon, for tools that don't accept SVG.</span></div>
+    <div class="file-row"><span class="fname">qualia-logo-horizontal.png</span><span class="fdesc">Transparent raster of the primary lockup.</span></div>
+  </div>
+  <p class="footer-note">All SVGs are pure vector with transparent backgrounds — the wordmark is fully outlined (not live text), so it renders identically in any application, including ones without Fraunces installed. This guide itself loads Fraunces, Inter, and IBM Plex Mono live from Google Fonts, so open it in a browser to see true brand typography; use your browser's Print → Save as PDF if you need a static copy.</p>
+</section>
+
+</body>
+</html>

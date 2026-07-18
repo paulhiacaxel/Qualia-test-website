@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My bookings — Qualia</title>
+<link rel="icon" type="image/svg+xml" href="../brand_assets/qualia-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>window.QUALIA_BASE = '../';</script>
+<script src="../assets/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="../assets/css/style.css">
+</head>
+<body class="bg-paper text-ink font-sans antialiased">
+
+<!-- ================= NAV ================= -->
+<header class="sticky top-0 z-50 bg-paper/90 backdrop-blur-md border-b border-line">
+  <nav class="max-w-[1200px] mx-auto flex items-center justify-between px-6 md:px-10 py-4">
+    <a href="../index.html" class="flex items-center" aria-label="Qualia home">
+      <img src="../brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 md:h-7 w-auto">
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="../discover.html" class="nav-link">Discover</a>
+      <a href="../index.html#how-it-works" class="nav-link">How it works</a>
+      <a href="../index.html#safety" class="nav-link">Trust &amp; safety</a>
+      <a href="../index.html#hosts" class="nav-link">For hosts</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <div id="auth-slot" class="hidden md:flex items-center gap-4"></div>
+      <button type="button" data-mobile-toggle class="md:hidden w-9 h-9 flex items-center justify-center text-ink" aria-label="Open menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div class="mobile-drawer">
+  <div class="scrim"></div>
+  <div class="panel">
+    <div class="flex items-center justify-between mb-8">
+      <img src="../brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 w-auto">
+      <button type="button" data-mobile-close class="w-9 h-9 flex items-center justify-center" aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <nav class="flex flex-col mb-8">
+      <a href="../discover.html" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">Discover</a>
+      <a href="../index.html#how-it-works" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">How it works</a>
+      <a href="../index.html#safety" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">Trust &amp; safety</a>
+      <a href="../index.html#hosts" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">For hosts</a>
+    </nav>
+    <div id="auth-slot-mobile" class="flex flex-col gap-3 mt-auto"></div>
+  </div>
+</div>
+
+<!-- ================= LOCKED STATE ================= -->
+<div id="portal-locked" class="max-w-[560px] mx-auto px-6 py-24 text-center hidden">
+  <span class="inline-block w-12 h-12 rounded-full border-[1.6px] border-moss/50 mb-6"></span>
+  <h1 class="font-display font-medium text-[26px] mb-3">This is your bookings dashboard.</h1>
+  <p class="text-inksoft text-[14.5px] leading-[1.7] mb-8">Log in to see your upcoming experiences, past ones, and anything you've saved.</p>
+  <div class="flex flex-col sm:flex-row gap-3 justify-center">
+    <a href="../login.html?next=account/dashboard.html" class="btn btn-primary">Log in</a>
+    <a href="../login.html?next=account/dashboard.html" id="demo-guest-link" class="btn btn-outline">Continue as demo guest</a>
+  </div>
+</div>
+
+<!-- ================= PORTAL CONTENT ================= -->
+<main id="portal-content" class="hidden">
+
+  <section class="border-b border-line bg-paperalt/40">
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 pt-12 pb-6 md:pt-14">
+      <span class="eyebrow block mb-3">Your account</span>
+      <h1 class="font-display font-medium text-[30px] md:text-[36px] tracking-[-0.01em] mb-6" id="welcome-heading">Welcome back.</h1>
+      <div class="tab-underline" id="account-tabs">
+        <button type="button" data-panel="upcoming" class="active">Upcoming</button>
+        <button type="button" data-panel="past">Past</button>
+        <button type="button" data-panel="saved">Saved</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-[1200px] mx-auto px-6 md:px-10 py-12">
+
+    <div id="panel-upcoming" class="account-panel">
+      <div id="upcoming-list" class="grid gap-5"></div>
+    </div>
+
+    <div id="panel-past" class="account-panel hidden">
+      <div id="past-list" class="grid gap-5"></div>
+    </div>
+
+    <div id="panel-saved" class="account-panel hidden">
+      <div id="saved-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+
+  </section>
+</main>
+
+<!-- ================= REVIEW MODAL ================= -->
+<div class="modal-backdrop" id="review-modal">
+  <div class="modal-box p-8">
+    <div class="flex items-start justify-between mb-5">
+      <div>
+        <span class="eyebrow block mb-2">Leave a review</span>
+        <h3 id="review-modal-title" class="font-display font-medium text-[20px]"></h3>
+      </div>
+      <button type="button" data-modal-close class="w-8 h-8 flex items-center justify-center text-inksoft hover:text-ink shrink-0" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="flex items-center gap-2 mb-5" id="review-stars"></div>
+    <textarea id="review-text" class="field-textarea mb-5" placeholder="What made this feel different from a class or a video?"></textarea>
+    <button type="button" id="review-submit" class="btn btn-primary w-full">Submit review</button>
+  </div>
+</div>
+
+<script src="../assets/js/data.js"></script>
+<script src="../assets/js/store.js"></script>
+<script src="../assets/js/app.js"></script>
+<script>
+(function(){
+  document.getElementById('demo-guest-link').addEventListener('click', function(e){
+    e.preventDefault();
+    var account = QUALIA_STORE.findAccountByEmail('jordan@demo.qualia');
+    QUALIA_STORE.setSession(account);
+    window.location.reload();
+  });
+
+  var session = QUALIA_STORE.getSession();
+  if (!session || session.role !== 'guest'){
+    document.getElementById('portal-locked').classList.remove('hidden');
+    return;
+  }
+  document.getElementById('portal-content').classList.remove('hidden');
+
+  var guestId = session.guestId;
+  document.getElementById('welcome-heading').textContent = 'Welcome back, ' + session.name.split(' ')[0] + '.';
+
+  function resolveExp(expId){
+    return QUALIA_DATA.getExperience(expId) || QUALIA_STORE.getListings().find(function(l){ return l.id === expId; });
+  }
+
+  /* ---------- tabs ---------- */
+  var tabs = document.getElementById('account-tabs');
+  tabs.querySelectorAll('button').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      tabs.querySelectorAll('button').forEach(function(b){ b.classList.remove('active'); });
+      btn.classList.add('active');
+      document.querySelectorAll('.account-panel').forEach(function(p){ p.classList.add('hidden'); });
+      document.getElementById('panel-' + btn.getAttribute('data-panel')).classList.remove('hidden');
+    });
+  });
+
+  var statusLabel = { pending: 'Pending', confirmed: 'Confirmed', completed: 'Completed', cancelled: 'Cancelled' };
+
+  function bookingRow(b, opts){
+    var exp = resolveExp(b.experienceId);
+    var host = exp ? QUALIA_DATA.getHost(exp.hostId) : null;
+    var title = exp ? exp.title : 'Experience';
+    var img = exp ? exp.img : '374a2e';
+    var actions = '';
+    if (opts.canCancel){
+      actions += '<button type="button" class="btn btn-sm btn-danger" data-cancel="' + b.id + '">Cancel</button>';
+    }
+    if (opts.canReview){
+      actions += b.reviewed
+        ? '<span class="status status-live">Reviewed</span>'
+        : '<button type="button" class="btn btn-sm btn-outline" data-review="' + b.id + '" data-title="' + title.replace(/"/g,'&quot;') + '">Leave a review</button>';
+    }
+    return '<div class="flex flex-col sm:flex-row sm:items-center gap-4 border border-line rounded-2xl p-5 bg-card">' +
+      '<div class="ring-frame w-16 h-16 shrink-0"><span class="frame-ring"></span><img src="https://placehold.co/128x128/' + img + '/F1EADA?text=' + encodeURIComponent(host ? QUALIA_APP.initials(host.name) : 'Q') + '" class="w-16 h-16 rounded-full object-cover" alt=""></div>' +
+      '<div class="min-w-0 flex-1">' +
+        '<div class="flex items-center gap-2 flex-wrap mb-1"><p class="font-display text-[16px] font-medium truncate">' + title + '</p><span class="status status-' + b.status + '">' + statusLabel[b.status] + '</span></div>' +
+        '<p class="font-mono text-[11px] uppercase tracking-[0.04em] text-inksoft">' + (host ? host.name + ' · ' : '') + QUALIA_STORE.displayDate(b.date) + ' · ' + b.time + ' · ' + b.guests + (b.guests===1?' guest':' guests') + '</p>' +
+      '</div>' +
+      '<div class="flex items-center gap-3 shrink-0">' +
+        (exp ? '<a href="../experience.html?id=' + exp.id + '" class="btn btn-sm btn-ghost">View</a>' : '') +
+        actions +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderUpcoming(){
+    var all = QUALIA_STORE.getBookingsForGuest(guestId)
+      .filter(function(b){ return !QUALIA_STORE.isPastISO(b.date) && b.status !== 'cancelled'; })
+      .sort(function(a,b){ return a.date < b.date ? -1 : 1; });
+    var wrap = document.getElementById('upcoming-list');
+    if (!all.length){
+      wrap.innerHTML = '<div class="empty-state"><p class="font-display text-[18px] mb-2">Nothing booked yet.</p><p class="text-inksoft text-[14px] mb-6">When you request an experience, it\'ll show up here.</p><a href="../discover.html" class="btn btn-primary">Discover experiences</a></div>';
+      return;
+    }
+    wrap.innerHTML = all.map(function(b){ return bookingRow(b, { canCancel: true }); }).join('');
+    wrap.querySelectorAll('[data-cancel]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        QUALIA_STORE.updateBooking(btn.getAttribute('data-cancel'), { status: 'cancelled' });
+        QUALIA_APP.toast('Booking cancelled.');
+        renderUpcoming();
+      });
+    });
+  }
+
+  function renderPast(){
+    var all = QUALIA_STORE.getBookingsForGuest(guestId)
+      .filter(function(b){ return QUALIA_STORE.isPastISO(b.date) || b.status === 'completed'; })
+      .sort(function(a,b){ return a.date > b.date ? -1 : 1; });
+    var wrap = document.getElementById('past-list');
+    if (!all.length){
+      wrap.innerHTML = '<div class="empty-state"><p class="text-inksoft text-[14px]">No past experiences yet.</p></div>';
+      return;
+    }
+    wrap.innerHTML = all.map(function(b){ return bookingRow(b, { canReview: true }); }).join('');
+    wrap.querySelectorAll('[data-review]').forEach(function(btn){
+      btn.addEventListener('click', function(){ openReviewModal(btn.getAttribute('data-review'), btn.getAttribute('data-title')); });
+    });
+  }
+
+  function renderSaved(){
+    var ids = QUALIA_STORE.getWishlist();
+    var grid = document.getElementById('saved-grid');
+    if (!ids.length){
+      grid.innerHTML = '<div class="empty-state sm:col-span-2 lg:col-span-3"><p class="font-display text-[18px] mb-2">Nothing saved yet.</p><p class="text-inksoft text-[14px] mb-6">Tap the heart on any experience to keep it here.</p><a href="../discover.html" class="btn btn-primary">Discover experiences</a></div>';
+      return;
+    }
+    grid.innerHTML = ids.map(function(id){
+      var exp = QUALIA_DATA.getExperience(id);
+      if (!exp) return '';
+      var host = QUALIA_DATA.getHost(exp.hostId);
+      return '<a href="../experience.html?id=' + exp.id + '" class="block bg-card border border-line rounded-2xl overflow-hidden shadow-brand card-hover">' +
+        '<div class="photo-treat aspect-[4/5] relative">' +
+          '<button type="button" class="heart-btn saved absolute top-3 right-3 z-10" data-unsave="' + exp.id + '" onclick="event.preventDefault()"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.4 2.6 5 6 5c2 0 3.4 1 6 3.6C14.6 6 16 5 18 5c3.4 0 5.5 3.4 4 6.8C19.5 16.4 12 21 12 21z"/></svg></button>' +
+          '<img src="https://placehold.co/480x600/' + exp.img + '/F1EADA?text=' + encodeURIComponent(exp.category.split(' ')[0]) + '" class="w-full h-full object-cover" alt="">' +
+        '</div>' +
+        '<div class="p-5"><p class="font-mono text-[10px] uppercase tracking-[0.06em] text-inksoft mb-2">' + exp.category + ' · ' + exp.location + '</p><p class="font-display italic text-[15.5px] leading-snug mb-3">"' + exp.tagline + '"</p><div class="flex items-center justify-between"><span class="font-mono text-[12px] text-inksoft">' + host.name.split(' ')[0] + ' · ' + exp.rating.toFixed(2) + '★</span><span class="font-display font-semibold text-[16px]">$' + exp.price + '</span></div></div>' +
+      '</a>';
+    }).join('');
+    grid.querySelectorAll('[data-unsave]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault(); e.stopPropagation();
+        QUALIA_STORE.toggleWishlist(btn.getAttribute('data-unsave'));
+        QUALIA_APP.toast('Removed from your wishlist');
+        renderSaved();
+      });
+    });
+  }
+
+  var reviewStarValue = 5;
+  var reviewingBookingId = null;
+  function paintStars(){
+    document.getElementById('review-stars').innerHTML = [1,2,3,4,5].map(function(n){
+      return '<button type="button" data-star="' + n + '" class="text-[22px] leading-none" style="color:' + (n <= reviewStarValue ? '#C7962C' : '#E1D7C2') + '">★</button>';
+    }).join('');
+    document.querySelectorAll('[data-star]').forEach(function(btn){
+      btn.addEventListener('click', function(){ reviewStarValue = Number(btn.getAttribute('data-star')); paintStars(); });
+    });
+  }
+  function openReviewModal(bookingId, title){
+    reviewingBookingId = bookingId;
+    reviewStarValue = 5;
+    document.getElementById('review-modal-title').textContent = title;
+    document.getElementById('review-text').value = '';
+    paintStars();
+    QUALIA_APP.openModal('review-modal');
+  }
+  document.getElementById('review-submit').addEventListener('click', function(){
+    QUALIA_STORE.updateBooking(reviewingBookingId, { reviewed: true, guestRating: reviewStarValue });
+    QUALIA_APP.closeModal('review-modal');
+    QUALIA_APP.toast('Thanks for sharing your experience.');
+    renderPast();
+  });
+
+  renderUpcoming();
+  renderPast();
+  renderSaved();
+})();
+</script>
+</body>
+</html>

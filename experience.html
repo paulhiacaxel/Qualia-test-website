@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="page-title">Experience — Qualia</title>
+<link rel="icon" type="image/svg+xml" href="brand_assets/qualia-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>window.QUALIA_BASE = '';</script>
+<script src="assets/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-paper text-ink font-sans antialiased">
+
+<!-- ================= NAV ================= -->
+<header class="sticky top-0 z-50 bg-paper/90 backdrop-blur-md border-b border-line">
+  <nav class="max-w-[1200px] mx-auto flex items-center justify-between px-6 md:px-10 py-4">
+    <a href="index.html" class="flex items-center" aria-label="Qualia home">
+      <img src="brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 md:h-7 w-auto">
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="discover.html" class="nav-link">Discover</a>
+      <a href="index.html#how-it-works" class="nav-link">How it works</a>
+      <a href="index.html#safety" class="nav-link">Trust &amp; safety</a>
+      <a href="index.html#hosts" class="nav-link">For hosts</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <div id="auth-slot" class="hidden md:flex items-center gap-4"></div>
+      <button type="button" data-mobile-toggle class="md:hidden w-9 h-9 flex items-center justify-center text-ink" aria-label="Open menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div class="mobile-drawer">
+  <div class="scrim"></div>
+  <div class="panel">
+    <div class="flex items-center justify-between mb-8">
+      <img src="brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 w-auto">
+      <button type="button" data-mobile-close class="w-9 h-9 flex items-center justify-center" aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <nav class="flex flex-col mb-8">
+      <a href="discover.html" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">Discover</a>
+      <a href="index.html#how-it-works" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">How it works</a>
+      <a href="index.html#safety" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">Trust &amp; safety</a>
+      <a href="index.html#hosts" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">For hosts</a>
+    </nav>
+    <div id="auth-slot-mobile" class="flex flex-col gap-3 mt-auto"></div>
+  </div>
+</div>
+
+<main id="exp-root" class="max-w-[1200px] mx-auto px-6 md:px-10 py-8 md:py-10">
+
+  <p id="exp-breadcrumb" class="font-mono text-[11px] uppercase tracking-[0.05em] text-inksoft mb-6"></p>
+
+  <div id="exp-header" class="mb-8"></div>
+
+  <div id="exp-gallery" class="mb-12"></div>
+
+  <div class="grid lg:grid-cols-[1.55fr_1fr] gap-12 lg:gap-16 items-start">
+
+    <div class="min-w-0">
+      <div id="exp-host-card" class="mb-12"></div>
+      <div id="exp-details" class="mb-12"></div>
+      <div id="exp-safety" class="mb-12"></div>
+      <div id="exp-cancellation" class="mb-12"></div>
+      <div id="exp-reviews" class="mb-12"></div>
+      <div id="exp-more-host"></div>
+    </div>
+
+    <aside class="lg:sticky lg:top-24">
+      <div class="bg-card border border-line rounded-[22px] shadow-brand-lg p-6 md:p-7">
+        <div id="booking-price" class="mb-5"></div>
+        <div id="booking-calendar" class="mb-5 pb-5 border-b border-line"></div>
+        <div id="booking-slots" class="mb-5"></div>
+        <div id="booking-qty" class="mb-5 pb-5 border-b border-line"></div>
+        <div id="booking-breakdown" class="mb-5"></div>
+        <button type="button" id="booking-cta" class="btn btn-primary w-full" disabled>Choose a date</button>
+        <p class="text-center text-[11.5px] text-inksoft mt-3">You won't be charged yet.</p>
+      </div>
+    </aside>
+  </div>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-paperalt border-t border-line mt-16">
+  <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-16">
+    <div class="grid sm:grid-cols-2 md:grid-cols-5 gap-10 mb-14">
+      <div class="col-span-2">
+        <img src="brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 w-auto mb-4">
+        <p class="text-inksoft text-[13.5px] leading-[1.7] max-w-[36ch]">A marketplace for personalized, one-on-one experiences, learning, and human connection.</p>
+      </div>
+      <div>
+        <p class="font-mono text-[10.5px] uppercase tracking-[0.06em] text-inksoft mb-4">Explore</p>
+        <ul class="space-y-2.5 text-[13.5px]">
+          <li><a href="discover.html" class="link-underline text-ink">Browse experiences</a></li>
+          <li><a href="discover.html" class="link-underline text-ink">Categories</a></li>
+          <li><a href="#" class="link-underline text-ink">Gift a session</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-mono text-[10.5px] uppercase tracking-[0.06em] text-inksoft mb-4">Hosts</p>
+        <ul class="space-y-2.5 text-[13.5px]">
+          <li><a href="login.html?mode=signup&amp;role=host" class="link-underline text-ink">Become a host</a></li>
+          <li><a href="index.html#hosts" class="link-underline text-ink">Host resources</a></li>
+          <li><a href="#" class="link-underline text-ink">Host agreement</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-mono text-[10.5px] uppercase tracking-[0.06em] text-inksoft mb-4">Trust &amp; safety</p>
+        <ul class="space-y-2.5 text-[13.5px]">
+          <li><a href="index.html#safety" class="link-underline text-ink">How review works</a></li>
+          <li><a href="mailto:safety@qualia.example" class="link-underline text-ink">Report a concern</a></li>
+          <li><a href="index.html#safety" class="link-underline text-ink">Insurance &amp; waivers</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-line pt-8 flex flex-col-reverse md:flex-row items-start md:items-center justify-between gap-4">
+      <p class="text-inksoft text-[12px]">© 2026 Qualia. All rights reserved.</p>
+      <p class="text-inksoft text-[12px] max-w-[64ch] leading-[1.6]">Qualia is a marketplace connecting guests with independent hosts. Hosts are independently responsible for their experiences, including compliance with applicable law and any required licenses, permits, certifications, or insurance.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ================= BOOKING MODAL ================= -->
+<div class="modal-backdrop" id="booking-modal">
+  <div class="modal-box p-8 md:p-9">
+    <div class="flex items-start justify-between mb-5">
+      <div>
+        <span class="eyebrow block mb-2">Request to book</span>
+        <h3 id="booking-modal-title" class="font-display font-medium text-[21px]"></h3>
+      </div>
+      <button type="button" data-modal-close class="w-8 h-8 flex items-center justify-center text-inksoft hover:text-ink shrink-0" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div id="booking-modal-summary" class="bg-paperalt/60 border border-line rounded-2xl p-5 mb-5 text-[13.5px] space-y-2"></div>
+    <div id="booking-modal-waiver" class="mb-5"></div>
+    <label class="check-row mb-6">
+      <input type="checkbox" id="booking-agree">
+      <span class="check-box"></span>
+      <span class="text-[13px] text-inksoft leading-[1.6]" id="booking-agree-label"></span>
+    </label>
+    <button type="button" id="booking-confirm" class="btn btn-primary w-full" disabled>Send request</button>
+  </div>
+</div>
+
+<!-- ================= SUCCESS MODAL ================= -->
+<div class="modal-backdrop" id="success-modal">
+  <div class="modal-box p-8 md:p-10 text-center">
+    <div class="w-14 h-14 rounded-full border-[1.6px] border-moss mx-auto mb-6 flex items-center justify-center">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#37503B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <h3 class="font-display font-medium text-[23px] mb-3">Request sent.</h3>
+    <p id="success-message" class="text-inksoft text-[14.5px] leading-[1.7] mb-8 max-w-[38ch] mx-auto"></p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="account/dashboard.html" class="btn btn-primary">View my bookings</a>
+      <button type="button" data-modal-close class="btn btn-outline">Keep browsing</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/calendar.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/experience.js"></script>
+</body>
+</html>

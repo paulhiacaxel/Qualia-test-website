@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Discover experiences — Qualia</title>
+<meta name="description" content="Search Qualia's reviewed, one-on-one experiences by category, location, and price.">
+<link rel="icon" type="image/svg+xml" href="brand_assets/qualia-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>window.QUALIA_BASE = '';</script>
+<script src="assets/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-paper text-ink font-sans antialiased">
+
+<!-- ================= NAV ================= -->
+<header class="sticky top-0 z-50 bg-paper/90 backdrop-blur-md border-b border-line">
+  <nav class="max-w-[1200px] mx-auto flex items-center justify-between px-6 md:px-10 py-4">
+    <a href="index.html" class="flex items-center" aria-label="Qualia home">
+      <img src="brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 md:h-7 w-auto">
+    </a>
+    <div class="hidden md:flex items-center gap-8">
+      <a href="discover.html" class="nav-link current">Discover</a>
+      <a href="index.html#how-it-works" class="nav-link">How it works</a>
+      <a href="index.html#safety" class="nav-link">Trust &amp; safety</a>
+      <a href="index.html#hosts" class="nav-link">For hosts</a>
+    </div>
+    <div class="flex items-center gap-4">
+      <div id="auth-slot" class="hidden md:flex items-center gap-4"></div>
+      <button type="button" data-mobile-toggle class="md:hidden w-9 h-9 flex items-center justify-center text-ink" aria-label="Open menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<div class="mobile-drawer">
+  <div class="scrim"></div>
+  <div class="panel">
+    <div class="flex items-center justify-between mb-8">
+      <img src="brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 w-auto">
+      <button type="button" data-mobile-close class="w-9 h-9 flex items-center justify-center" aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <nav class="flex flex-col mb-8">
+      <a href="discover.html" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">Discover</a>
+      <a href="index.html#how-it-works" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">How it works</a>
+      <a href="index.html#safety" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">Trust &amp; safety</a>
+      <a href="index.html#hosts" class="py-3.5 text-[15px] font-medium text-ink border-b border-line">For hosts</a>
+    </nav>
+    <div id="auth-slot-mobile" class="flex flex-col gap-3 mt-auto"></div>
+  </div>
+</div>
+
+<main>
+
+  <!-- ================= PAGE HEADER ================= -->
+  <section class="border-b border-line bg-paperalt/40 relative overflow-hidden">
+    <div class="aperture absolute -right-20 -top-20 w-[300px] h-[300px] opacity-[0.06] text-moss pointer-events-none" aria-hidden="true">
+      <svg viewBox="-4 -4 108 108"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="50" cy="50" r="27" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>
+    </div>
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 pt-14 pb-8 md:pt-16 relative z-10">
+      <span class="eyebrow block mb-3">Discover</span>
+      <h1 class="font-display font-medium text-[34px] md:text-[44px] tracking-[-0.01em] mb-4">Someone, somewhere, knows exactly this.</h1>
+      <p class="text-inksoft text-[15.5px] max-w-[56ch] leading-[1.7]">Every listing below is run by an independent host and was reviewed by Qualia before publication. Nothing here is a class, a tour group, or a video.</p>
+    </div>
+  </section>
+
+  <!-- ================= FILTER BAR ================= -->
+  <section class="border-b border-line bg-card/60">
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-5">
+      <div class="flex flex-col md:flex-row md:items-center gap-3 mb-4">
+        <div class="flex-1 flex items-center gap-3 border border-line rounded-full px-4 py-2.5 bg-card">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" class="text-moss shrink-0"><path d="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.35-4.35" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <input id="f-search" type="text" placeholder="Search by skill, host, or keyword" class="w-full bg-transparent text-[14px] placeholder:text-inksoft/70 focus:outline-none">
+        </div>
+        <div class="flex items-center gap-3 border border-line rounded-full px-4 py-2.5 bg-card md:w-[220px]">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" class="text-moss shrink-0"><path d="M12 22s7-7.5 7-12.8A7 7 0 105 9.2C5 14.5 12 22 12 22z" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="9" r="2.4" stroke="currentColor" stroke-width="1.8"/></svg>
+          <input id="f-location" type="text" placeholder="Anywhere" class="w-full bg-transparent text-[14px] placeholder:text-inksoft/70 focus:outline-none">
+        </div>
+        <select id="f-sort" class="field-select md:w-[200px] !rounded-full !py-2.5">
+          <option value="recommended">Sort: Recommended</option>
+          <option value="price-asc">Price: low to high</option>
+          <option value="price-desc">Price: high to low</option>
+          <option value="rating">Top rated</option>
+        </select>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2" id="category-chips"></div>
+
+      <div class="flex flex-col sm:flex-row sm:items-center gap-5 mt-4 pt-4 border-t border-line">
+        <div class="flex items-center gap-3 flex-1 max-w-[320px]">
+          <span class="font-mono text-[10.5px] uppercase tracking-[0.05em] text-inksoft whitespace-nowrap">Up to $<span id="price-value">500</span></span>
+          <input type="range" min="50" max="500" step="10" value="500" id="f-price" class="slider">
+        </div>
+        <label class="flex items-center gap-2.5 text-[13px] text-inksoft cursor-pointer">
+          <input type="checkbox" id="f-risk" checked class="w-4 h-4 accent-[#37503B]">
+          Include higher-risk experiences
+        </label>
+        <span id="results-count" class="sm:ml-auto font-mono text-[11px] uppercase tracking-[0.05em] text-inksoft"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RESULTS ================= -->
+  <section class="pb-24">
+    <div class="max-w-[1200px] mx-auto px-6 md:px-10 pt-10">
+      <div id="results-grid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      <div id="empty-state" class="empty-state hidden mt-4">
+        <span class="inline-block w-10 h-10 rounded-full border-[1.6px] border-moss/50 mb-4"></span>
+        <p class="font-display text-[19px] mb-2">Nothing matches yet.</p>
+        <p class="text-inksoft text-[14px] mb-6">Try widening your search, or ask our concierge to go find it for you.</p>
+        <button type="button" id="clear-filters" class="btn btn-outline">Clear all filters</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="bg-paperalt border-t border-line">
+  <div class="max-w-[1200px] mx-auto px-6 md:px-10 py-16">
+    <div class="grid sm:grid-cols-2 md:grid-cols-5 gap-10 mb-14">
+      <div class="col-span-2">
+        <img src="brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 w-auto mb-4">
+        <p class="text-inksoft text-[13.5px] leading-[1.7] max-w-[36ch]">A marketplace for personalized, one-on-one experiences, learning, and human connection.</p>
+      </div>
+      <div>
+        <p class="font-mono text-[10.5px] uppercase tracking-[0.06em] text-inksoft mb-4">Explore</p>
+        <ul class="space-y-2.5 text-[13.5px]">
+          <li><a href="discover.html" class="link-underline text-ink">Browse experiences</a></li>
+          <li><a href="discover.html" class="link-underline text-ink">Categories</a></li>
+          <li><a href="#" class="link-underline text-ink">Gift a session</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-mono text-[10.5px] uppercase tracking-[0.06em] text-inksoft mb-4">Hosts</p>
+        <ul class="space-y-2.5 text-[13.5px]">
+          <li><a href="login.html?mode=signup&amp;role=host" class="link-underline text-ink">Become a host</a></li>
+          <li><a href="index.html#hosts" class="link-underline text-ink">Host resources</a></li>
+          <li><a href="#" class="link-underline text-ink">Host agreement</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="font-mono text-[10.5px] uppercase tracking-[0.06em] text-inksoft mb-4">Trust &amp; safety</p>
+        <ul class="space-y-2.5 text-[13.5px]">
+          <li><a href="index.html#safety" class="link-underline text-ink">How review works</a></li>
+          <li><a href="mailto:safety@qualia.example" class="link-underline text-ink">Report a concern</a></li>
+          <li><a href="index.html#safety" class="link-underline text-ink">Insurance &amp; waivers</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-line pt-8 flex flex-col-reverse md:flex-row items-start md:items-center justify-between gap-4">
+      <p class="text-inksoft text-[12px]">© 2026 Qualia. All rights reserved.</p>
+      <p class="text-inksoft text-[12px] max-w-[64ch] leading-[1.6]">Qualia is a marketplace connecting guests with independent hosts. Hosts are independently responsible for their experiences, including compliance with applicable law and any required licenses, permits, certifications, or insurance.</p>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var activeCategories = params.get('category') ? [params.get('category')] : [];
+
+  var chipsWrap = document.getElementById('category-chips');
+  QUALIA_DATA.categories.forEach(function(cat){
+    var chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'chip' + (activeCategories.indexOf(cat) !== -1 ? ' active' : '');
+    chip.textContent = cat;
+    chip.addEventListener('click', function(){
+      var idx = activeCategories.indexOf(cat);
+      if (idx === -1) activeCategories.push(cat); else activeCategories.splice(idx, 1);
+      chip.classList.toggle('active');
+      renderResults();
+    });
+    chipsWrap.appendChild(chip);
+  });
+
+  var searchInput = document.getElementById('f-search');
+  var locationInput = document.getElementById('f-location');
+  var sortSelect = document.getElementById('f-sort');
+  var priceSlider = document.getElementById('f-price');
+  var priceValue = document.getElementById('price-value');
+  var riskCheckbox = document.getElementById('f-risk');
+  var grid = document.getElementById('results-grid');
+  var emptyState = document.getElementById('empty-state');
+  var resultsCount = document.getElementById('results-count');
+
+  searchInput.value = params.get('q') || '';
+  locationInput.value = params.get('location') || '';
+
+  function cardHTML(exp){
+    var host = QUALIA_DATA.getHost(exp.hostId);
+    var saved = QUALIA_STORE.isWishlisted(exp.id);
+    return (
+      '<article class="reveal is-visible">' +
+        '<a href="experience.html?id=' + exp.id + '" class="block bg-card border border-line rounded-2xl overflow-hidden shadow-brand card-hover h-full">' +
+          '<div class="photo-treat aspect-[4/5] relative">' +
+            '<button type="button" data-wishlist="' + exp.id + '" class="heart-btn absolute top-3 right-3 z-10' + (saved ? ' saved' : '') + '" aria-label="Save experience" onclick="event.preventDefault()">' +
+              '<svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-10-9.2C.5 8.4 2.6 5 6 5c2 0 3.4 1 6 3.6C14.6 6 16 5 18 5c3.4 0 5.5 3.4 4 6.8C19.5 16.4 12 21 12 21z"/></svg>' +
+            '</button>' +
+            (exp.risk === 'high' ? '<span class="status status-changes absolute top-3 left-3 z-10" style="background:rgba(168,72,58,.85); color:#FAF6EE;">Waiver</span>' : '') +
+            '<img src="https://placehold.co/480x600/' + exp.img + '/F1EADA?text=' + encodeURIComponent(exp.category.split(' ')[0]) + '" alt="" class="w-full h-full object-cover">' +
+          '</div>' +
+          '<div class="p-5">' +
+            '<p class="font-mono text-[10px] uppercase tracking-[0.06em] text-inksoft mb-2">' + exp.category + ' · ' + exp.location + '</p>' +
+            '<p class="font-display italic text-[16px] leading-snug mb-3">"' + exp.tagline + '"</p>' +
+            '<div class="flex items-center justify-between">' +
+              '<span class="font-mono text-[12px] text-inksoft">' + host.name.split(' ')[0] + ' · ' + exp.rating.toFixed(2) + '★</span>' +
+              '<span class="font-display font-semibold text-[16px]">$' + exp.price + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</a>' +
+      '</article>'
+    );
+  }
+
+  function renderResults(){
+    var q = searchInput.value.trim().toLowerCase();
+    var loc = locationInput.value.trim().toLowerCase();
+    var maxPrice = Number(priceSlider.value);
+    priceValue.textContent = maxPrice;
+    var includeRisk = riskCheckbox.checked;
+
+    var results = QUALIA_DATA.experiences.filter(function(exp){
+      var host = QUALIA_DATA.getHost(exp.hostId);
+      if (activeCategories.length && activeCategories.indexOf(exp.category) === -1) return false;
+      if (loc && exp.location.toLowerCase().indexOf(loc) === -1) return false;
+      if (exp.price > maxPrice) return false;
+      if (!includeRisk && exp.risk === 'high') return false;
+      if (q){
+        var hay = (exp.title + ' ' + exp.tagline + ' ' + exp.category + ' ' + exp.location + ' ' + host.name).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+
+    var sort = sortSelect.value;
+    if (sort === 'price-asc') results.sort(function(a,b){ return a.price - b.price; });
+    else if (sort === 'price-desc') results.sort(function(a,b){ return b.price - a.price; });
+    else if (sort === 'rating') results.sort(function(a,b){ return b.rating - a.rating; });
+
+    resultsCount.textContent = results.length + (results.length === 1 ? ' experience' : ' experiences');
+
+    if (!results.length){
+      grid.innerHTML = '';
+      emptyState.classList.remove('hidden');
+      return;
+    }
+    emptyState.classList.add('hidden');
+    grid.innerHTML = results.map(cardHTML).join('');
+
+    grid.querySelectorAll('[data-wishlist]').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        e.preventDefault(); e.stopPropagation();
+        var id = btn.getAttribute('data-wishlist');
+        QUALIA_STORE.toggleWishlist(id);
+        btn.classList.toggle('saved');
+        QUALIA_APP.toast(btn.classList.contains('saved') ? 'Saved to your wishlist' : 'Removed from your wishlist');
+      });
+    });
+  }
+
+  [searchInput, locationInput].forEach(function(el){ el.addEventListener('input', renderResults); });
+  sortSelect.addEventListener('change', renderResults);
+  priceSlider.addEventListener('input', renderResults);
+  riskCheckbox.addEventListener('change', renderResults);
+  document.getElementById('clear-filters').addEventListener('click', function(){
+    searchInput.value = ''; locationInput.value = ''; sortSelect.value = 'recommended';
+    priceSlider.value = 500; riskCheckbox.checked = true;
+    activeCategories.length = 0;
+    chipsWrap.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('active'); });
+    renderResults();
+  });
+
+  renderResults();
+})();
+</script>
+</body>
+</html>

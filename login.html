@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Log in — Qualia</title>
+<link rel="icon" type="image/svg+xml" href="brand_assets/qualia-mark.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>window.QUALIA_BASE = '';</script>
+<script src="assets/js/tailwind-config.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="bg-paper text-ink font-sans antialiased">
+
+<div class="min-h-screen flex flex-col relative overflow-hidden">
+  <div class="aperture ring-spin absolute -right-32 -top-32 w-[480px] h-[480px] opacity-[0.05] text-moss pointer-events-none" aria-hidden="true">
+    <svg viewBox="-4 -4 108 108"><circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="77" y1="50" x2="88" y2="50" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="69.09" y1="69.09" x2="76.87" y2="76.87" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="50" y1="77" x2="50" y2="88" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="30.91" y1="69.09" x2="23.13" y2="76.87" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="23" y1="50" x2="12" y2="50" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="30.91" y1="30.91" x2="23.13" y2="23.13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="50" y1="23" x2="50" y2="12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="69.09" y1="30.91" x2="76.87" y2="23.13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+  </div>
+
+  <header class="px-6 md:px-10 py-6 relative z-10">
+    <a href="index.html" class="inline-flex items-center" aria-label="Qualia home">
+      <img src="brand_assets/qualia-logo-horizontal.svg" alt="Qualia" class="h-6 w-auto">
+    </a>
+  </header>
+
+  <main class="flex-1 flex items-center justify-center px-6 py-10 relative z-10">
+    <div class="w-full max-w-[440px]">
+
+      <div class="text-center mb-8">
+        <span class="eyebrow block mb-3">Welcome</span>
+        <h1 class="font-display font-medium text-[28px] tracking-[-0.01em]">One account, one step in.</h1>
+      </div>
+
+      <div class="flex justify-center mb-8">
+        <div class="seg" id="mode-seg">
+          <button type="button" data-mode="signin" class="active">Sign in</button>
+          <button type="button" data-mode="signup">Sign up</button>
+        </div>
+      </div>
+
+      <div class="bg-card border border-line rounded-[22px] shadow-brand-lg p-7 md:p-8">
+
+        <!-- ============ SIGN IN ============ -->
+        <form id="signin-form" class="space-y-4">
+          <div>
+            <label class="field-label">Email</label>
+            <input type="email" id="signin-email" class="field-input" placeholder="you@example.com" required>
+          </div>
+          <div>
+            <label class="field-label">Password</label>
+            <input type="password" class="field-input" placeholder="••••••••" required>
+          </div>
+          <p id="signin-error" class="text-[13px] text-rose hidden"></p>
+          <button type="submit" class="btn btn-primary w-full">Sign in</button>
+
+          <div class="flex items-center gap-3 py-1">
+            <span class="flex-1 h-px bg-line"></span><span class="font-mono text-[10px] uppercase tracking-[0.05em] text-inksoft">or try it instantly</span><span class="flex-1 h-px bg-line"></span>
+          </div>
+          <button type="button" id="demo-guest" class="btn btn-outline w-full">Continue as demo guest</button>
+          <button type="button" id="demo-host" class="btn btn-outline w-full">Continue as demo host</button>
+        </form>
+
+        <!-- ============ SIGN UP ============ -->
+        <form id="signup-form" class="space-y-4 hidden">
+          <div>
+            <label class="field-label mb-3 block">I want to…</label>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="radio-card" data-role="guest">
+                <input type="radio" name="role" value="guest" class="sr-only">
+                <span class="block font-display text-[15px] font-medium mb-1">Book experiences</span>
+                <span class="block text-[12px] text-inksoft">Find hosts &amp; book sessions</span>
+              </label>
+              <label class="radio-card" data-role="host">
+                <input type="radio" name="role" value="host" class="sr-only">
+                <span class="block font-display text-[15px] font-medium mb-1">Host experiences</span>
+                <span class="block text-[12px] text-inksoft">Share your own skill</span>
+              </label>
+            </div>
+          </div>
+          <div>
+            <label class="field-label">Full name</label>
+            <input type="text" id="signup-name" class="field-input" placeholder="Jordan Avery" required>
+          </div>
+          <div>
+            <label class="field-label">Email</label>
+            <input type="email" id="signup-email" class="field-input" placeholder="you@example.com" required>
+          </div>
+          <div>
+            <label class="field-label">Password</label>
+            <input type="password" class="field-input" placeholder="••••••••" required>
+          </div>
+          <p class="field-hint" id="signup-terms">By continuing, you agree to Qualia's guest terms and cancellation policy.</p>
+          <button type="submit" class="btn btn-primary w-full" id="signup-submit">Create guest account</button>
+        </form>
+
+      </div>
+
+      <p class="text-center text-[12.5px] text-inksoft mt-6">Every booking and listing here is a demo — nothing is charged and no email is sent.</p>
+    </div>
+  </main>
+</div>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/store.js"></script>
+<script src="assets/js/app.js"></script>
+<script>
+(function(){
+  var params = new URLSearchParams(window.location.search);
+  var next = params.get('next');
+
+  function redirectAfterAuth(session){
+    if (next){ window.location.href = next; return; }
+    window.location.href = session.role === 'host' ? 'host/dashboard.html' : 'account/dashboard.html';
+  }
+
+  /* ---------- tabs ---------- */
+  var seg = document.getElementById('mode-seg');
+  var signinForm = document.getElementById('signin-form');
+  var signupForm = document.getElementById('signup-form');
+  function setMode(mode){
+    seg.querySelectorAll('button').forEach(function(b){ b.classList.toggle('active', b.getAttribute('data-mode') === mode); });
+    signinForm.classList.toggle('hidden', mode !== 'signin');
+    signupForm.classList.toggle('hidden', mode !== 'signup');
+  }
+  seg.querySelectorAll('button').forEach(function(b){
+    b.addEventListener('click', function(){ setMode(b.getAttribute('data-mode')); });
+  });
+  setMode(params.get('mode') === 'signup' ? 'signup' : 'signin');
+
+  /* ---------- role cards ---------- */
+  var roleCards = document.querySelectorAll('.radio-card');
+  var signupSubmit = document.getElementById('signup-submit');
+  var signupTerms = document.getElementById('signup-terms');
+  var currentRole = params.get('role') === 'host' ? 'host' : 'guest';
+  function paintRole(){
+    roleCards.forEach(function(card){
+      var active = card.getAttribute('data-role') === currentRole;
+      card.classList.toggle('active', active);
+      card.querySelector('input').checked = active;
+    });
+    signupSubmit.textContent = currentRole === 'host' ? 'Create host account' : 'Create guest account';
+    signupTerms.textContent = currentRole === 'host'
+      ? "By continuing, you agree to Qualia's host agreement, including accurate listings and applicable licensing."
+      : "By continuing, you agree to Qualia's guest terms and cancellation policy.";
+  }
+  roleCards.forEach(function(card){
+    card.addEventListener('click', function(){ currentRole = card.getAttribute('data-role'); paintRole(); });
+  });
+  paintRole();
+
+  /* ---------- sign up ---------- */
+  document.getElementById('signup-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = document.getElementById('signup-name').value.trim();
+    var email = document.getElementById('signup-email').value.trim();
+    if (!name || !email) return;
+    var account = { name: name, email: email, role: currentRole };
+    account[currentRole === 'host' ? 'hostId' : 'guestId'] = QUALIA_STORE.uid(currentRole);
+    QUALIA_STORE.addAccount(account);
+    QUALIA_STORE.setSession(account);
+    redirectAfterAuth(account);
+  });
+
+  /* ---------- sign in ---------- */
+  document.getElementById('signin-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    var email = document.getElementById('signin-email').value.trim();
+    var account = QUALIA_STORE.findAccountByEmail(email);
+    var errorEl = document.getElementById('signin-error');
+    if (!account){
+      errorEl.textContent = "We couldn't find an account with that email — try one of the demo accounts below, or sign up.";
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    errorEl.classList.add('hidden');
+    QUALIA_STORE.setSession(account);
+    redirectAfterAuth(account);
+  });
+
+  /* ---------- demo accounts ---------- */
+  document.getElementById('demo-guest').addEventListener('click', function(){
+    var account = QUALIA_STORE.findAccountByEmail('jordan@demo.qualia');
+    QUALIA_STORE.setSession(account);
+    redirectAfterAuth(account);
+  });
+  document.getElementById('demo-host').addEventListener('click', function(){
+    var account = QUALIA_STORE.findAccountByEmail('rosa@demo.qualia');
+    QUALIA_STORE.setSession(account);
+    redirectAfterAuth(account);
+  });
+})();
+</script>
+</body>
+</html>
