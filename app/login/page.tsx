@@ -14,8 +14,11 @@ export default async function LoginPage({
 }) {
   const params = await searchParams;
   const next = safeNext(firstValue(params.next));
+  const explicitNext = safeNext(firstValue(params.next), "");
   if (firstValue(params.mode) === "signup")
-    redirect(`/signup?role=${firstValue(params.role) === "host" ? "host" : "guest"}`);
+    redirect(
+      `/signup?role=${firstValue(params.role) === "host" ? "host" : "guest"}${explicitNext ? `&next=${encodeURIComponent(explicitNext)}` : ""}`,
+    );
   if (await getCurrentUser()) redirect(next);
   return (
     <AuthShell title="One account, one step in.">
@@ -23,7 +26,9 @@ export default async function LoginPage({
         <Link href="/login" aria-current="page">
           Sign in
         </Link>
-        <Link href="/signup">Sign up</Link>
+        <Link href={explicitNext ? `/signup?next=${encodeURIComponent(explicitNext)}` : "/signup"}>
+          Sign up
+        </Link>
       </nav>
       {firstValue(params.updated) === "1" ? (
         <p className="notice success">Your password was updated. Sign in with your new password.</p>

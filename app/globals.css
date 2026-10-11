@@ -12,6 +12,20 @@
   --line: #e1d7c2;
   color-scheme: light;
 }
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  font-size: 13px;
+}
+.footer-links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+textarea {
+  font: inherit;
+  resize: vertical;
+}
 * {
   box-sizing: border-box;
 }

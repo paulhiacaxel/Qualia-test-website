@@ -1,4 +1,6 @@
-# Phase 1: setup and live verification
+# Phase 1: authentication setup and live verification
+
+This document preserves the authentication setup detail. See [launch setup](launch-setup.md) for the current full-MVP status and remaining launch requirements.
 
 ## Current boundary
 
@@ -19,6 +21,7 @@ The original repository's `frontend-design` skill and Windows screenshot tooling
    ```
 
    Confirm the linked project before running `db push`. Do not reset a hosted database.
+
 3. Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and `NEXT_PUBLIC_SITE_URL` in `.env.local`. Set the same values independently in Vercel's Preview environment when creating a preview. Never put a service-role/secret key in a public variable.
 4. In hosted Auth settings, enable email confirmations and require passwords of at least 12 characters. Disable anonymous signup. The checked-in CLI settings configure local development only; they do not automatically configure a hosted project.
 5. Set Auth's Site URL to the canonical app origin. Allow the exact app callback routes and their expected `next` query values, using the list in `supabase/config.toml` as a reference. Replace the localhost origin with the selected preview/production domain, never a wildcard covering other people's domains.
@@ -44,12 +47,10 @@ Create and confirm the owner's normal account. Copy its UUID from the trusted Su
 - Recovery works from the same browser; the optional token-hash template also works from a different browser. The old password fails after a successful change.
 - A confirmed guest can enable host mode and retains guest access. Editing user metadata cannot grant admin or publication rights.
 - A second user cannot read another user's private profile, draft, address, or booking through the Data API. Anonymous users see only deliberately published content.
-- The owner can access `/admin`; a normal host cannot. The review queue itself is Phase 3.
+- The owner can access `/admin`; a normal host cannot.
 - Run Supabase security/performance advisors against the actual project and resolve material findings.
 - Review the login/signup/recovery and dashboard screens on mobile and desktop, including keyboard navigation, visible errors, and loading states.
 
-## Next phases
+## Related setup
 
-Marketplace tables are reserved foundations. Payment and review transitions remain locked until their audited server workflows are implemented. No card charging, payouts, outreach sending, or booking-confirmation emails are active in Phase 1.
-
-Use Stripe sandbox credentials when Phase 5 begins. The owner still needs to choose standard/founding commission rates and whether processing fees are separate. The launch domain, Qualia outreach mailbox, postal address for email outreach, and final legal policies also remain owner inputs.
+The branch now includes marketplace, review, payment, and email code. This does not establish that hosted services are configured or that live payments are enabled. Use the sandbox and complete the acceptance checks in [launch setup](launch-setup.md). Outreach still requires separate owner approval of the lead/message workbook before any sending.

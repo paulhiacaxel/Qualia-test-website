@@ -1,11 +1,22 @@
 import Link from "next/link";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { requireUser, getProfile } from "@/lib/auth/session";
+import { getMyBookings } from "@/lib/booking/data";
+import { BookingList } from "@/components/booking/booking-list";
+import { effectiveStatus } from "@/lib/booking/validation";
+import "@/components/booking/booking.css";
 
 export const metadata = { title: "Your account" };
 export default async function AccountPage() {
   const user = await requireUser();
-  const profile = await getProfile();
+  const [profile, bookings] = await Promise.all([getProfile(), getMyBookings("guest")]);
+  const activeBookings = bookings
+    .filter(
+      (booking) =>
+        ["requested", "awaiting_payment", "confirmed"].includes(effectiveStatus(booking)) &&
+        Date.parse(booking.ends_at) > Date.now(),
+    )
+    .slice(0, 3);
   return (
     <DashboardShell
       title={profile?.full_name ? `Welcome, ${profile.full_name}.` : "Welcome to Qualia."}
@@ -29,13 +40,18 @@ export default async function AccountPage() {
             </div>
           </dl>
           <span className="status">Email confirmed</span>
+          <p style={{ marginTop: 20, marginBottom: 0 }}>
+            <Link className="text-link" href="/account/profile">
+              Edit account details
+            </Link>
+          </p>
         </section>
         <section className="panel">
           <span className="eyebrow">A little curiosity goes a long way</span>
           <h2>Your next experience starts here.</h2>
           <p>
-            We&apos;re putting together our first collection of Miami experiences. Booking will open
-            when the collection is ready.
+            Explore the Miami collection, request a time, and keep every conversation with your host
+            in one place.
           </p>
           <div className="button-row">
             <Link className="btn btn-primary" href="/discover">
@@ -50,6 +66,15 @@ export default async function AccountPage() {
           </div>
         </section>
       </div>
+      <section className="booking-history">
+        <div className="booking-page-heading">
+          <h2>Your next afternoons</h2>
+          <Link className="text-link" href="/bookings">
+            View all bookings
+          </Link>
+        </div>
+        <BookingList bookings={activeBookings} role="guest" />
+      </section>
     </DashboardShell>
   );
 }

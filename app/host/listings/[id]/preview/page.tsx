@@ -1,0 +1,122 @@
+import Image from "next/image";
+import Link from "next/link";
+import { getHostProfile, getListingDetails } from "@/lib/host/data";
+import { formatMoney, formatMiamiDate } from "@/lib/host/validation";
+
+export const metadata = { title: "Private experience preview" };
+
+export default async function PreviewListingPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const [{ listing, photos, availability }, host] = await Promise.all([
+    getListingDetails(id),
+    getHostProfile(),
+  ]);
+  const futureWindows = availability.filter((window) => Date.parse(window.starts_at) > Date.now());
+  return (
+    <main id="main-content" className="container listing-preview">
+      <div className="panel preview-notice">
+        <p>
+          <strong>Your private preview.</strong> This page is only visible to you. It does not
+          publish your experience or accept bookings.
+        </p>
+        <Link href={`/host/listings/${id}/edit`} className="btn btn-outline btn-sm">
+          Back to experience
+        </Link>
+      </div>
+      <div className="preview-title">
+        <span className="eyebrow">
+          {listing.category} · {listing.city}
+        </span>
+        <h1>{listing.title}</h1>
+        <div className="preview-subtitle">
+          <span>With {host?.display_name}</span>
+          <span>{listing.duration_minutes} minutes</span>
+          <span>One guest</span>
+          <span>{listing.neighborhood || "Neighborhood to be added"}</span>
+        </div>
+      </div>
+      {photos.length ? (
+        <div className="preview-gallery">
+          {photos.map((photo) =>
+            photo.signedUrl ? (
+              <Image
+                key={photo.id}
+                src={photo.signedUrl}
+                alt={photo.alt_text}
+                width={1600}
+                height={1200}
+                unoptimized
+              />
+            ) : null,
+          )}
+        </div>
+      ) : (
+        <div className="panel host-empty">Your experience photos will appear here.</div>
+      )}
+      <div className="preview-content">
+        <div>
+          <section>
+            <h2>An afternoon, your way.</h2>
+            <p className="preview-prose">
+              {listing.description || "Add a description to tell guests what you’ll do together."}
+            </p>
+          </section>
+          <section className="preview-host">
+            <span className="eyebrow">Meet your host</span>
+            <h2>{host?.display_name}</h2>
+            <p className="preview-prose">
+              {host?.bio || "Add your host bio to introduce yourself."}
+            </p>
+            {host?.portfolio_url ? (
+              <a
+                href={host.portfolio_url}
+                className="text-link"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Explore my work ↗
+              </a>
+            ) : null}
+          </section>
+          <section className="preview-host">
+            <h2>Where you&apos;ll meet</h2>
+            <p className="muted">
+              {listing.neighborhood ? `${listing.neighborhood}, ` : ""}
+              {listing.city}
+            </p>
+            <p className="muted">
+              Exact meeting details are kept private and shared with confirmed guests.
+            </p>
+          </section>
+        </div>
+        <aside className="panel">
+          <div className="preview-price">
+            {formatMoney(listing.price_cents)} <small>/ session</small>
+          </div>
+          <p>{listing.duration_minutes} minutes · one-on-one</p>
+          <hr style={{ border: 0, borderTop: "1px solid var(--line)", margin: "24px 0" }} />
+          <span className="eyebrow">Your saved availability</span>
+          {futureWindows.length ? (
+            <ul className="availability-list">
+              {futureWindows.slice(0, 6).map((window) => (
+                <li key={window.id}>
+                  <div>
+                    <time dateTime={window.starts_at}>{formatMiamiDate(window.starts_at)}</time>
+                    <span className="availability-separator">to</span>
+                    <time dateTime={window.ends_at}>{formatMiamiDate(window.ends_at)}</time>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="muted">Add future availability in your editor.</p>
+          )}
+          <p className="field-hint">
+            This preview is private. Guests can request a time once the experience is published and
+            bookings open.
+          </p>
+        </aside>
+      </div>
+    </main>
+  );
+}

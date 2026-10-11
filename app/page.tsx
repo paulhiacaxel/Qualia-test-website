@@ -1,9 +1,13 @@
 import Link from "next/link";
 import { Aperture } from "@/components/aperture";
+import { ExperienceCard } from "@/components/booking/experience-card";
+import { listExperiences } from "@/lib/booking/data";
+import "@/components/booking/booking.css";
 
 const categories = ["Cooking", "Sailing", "Photography", "Language", "Music", "Art", "Fitness"];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const { experiences } = await listExperiences({ limit: 3 });
   return (
     <main id="main-content">
       <section className="hero">
@@ -59,12 +63,32 @@ export default function HomePage() {
       <div className="category-strip">
         <div className="container category-list" aria-label="Experience categories">
           {categories.map((category) => (
-            <span className="pill" key={category}>
+            <Link
+              href={`/discover?category=${category.toLowerCase()}`}
+              className="pill"
+              key={category}
+            >
               {category}
-            </span>
+            </Link>
           ))}
         </div>
       </div>
+      {experiences.length ? (
+        <section className="section container">
+          <div className="section-heading">
+            <span className="eyebrow">From the Miami collection</span>
+            <h2>Meet your next afternoon.</h2>
+          </div>
+          <div className="experience-grid">
+            {experiences.map((experience) => (
+              <ExperienceCard key={experience.id} experience={experience} />
+            ))}
+          </div>
+          <Link className="btn btn-outline" href="/discover">
+            Explore all experiences
+          </Link>
+        </section>
+      ) : null}
       <section id="how-it-works" className="section container">
         <div className="section-heading">
           <span className="eyebrow">A little less ordinary</span>

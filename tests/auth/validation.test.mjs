@@ -18,6 +18,19 @@ test("post-auth navigation rejects external origins and encoded redirect tricks"
     assert.equal(safeNext(destination), "/account/dashboard");
   assert.equal(safeNext("/host/start"), "/host/start");
   assert.equal(safeNext("/admin"), "/admin"); // The destination still has its own authorization guard.
+  assert.equal(
+    safeNext("/experiences/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"),
+    "/experiences/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+  );
+  assert.equal(
+    safeNext("/bookings/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa"),
+    "/bookings/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa",
+  );
+  assert.equal(safeNext("/experiences/not-an-id"), "/account/dashboard");
+  assert.equal(
+    safeNext("/bookings/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa?next=//evil.example"),
+    "/account/dashboard",
+  );
 });
 
 test("signup cannot request an administrator role and requires a strong password", () => {
@@ -79,6 +92,8 @@ test("missing or unsafe connection configuration disables account actions", () =
     assert.equal(getSupabaseConfig(), null);
     process.env.NEXT_PUBLIC_SUPABASE_URL = "https://project.supabase.co";
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "sb_secret_wrong_key_type";
+    assert.equal(getSupabaseConfig(), null);
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiJ9.legacy-jwt.signature";
     assert.equal(getSupabaseConfig(), null);
   } finally {
     for (const [name, value] of Object.entries(before)) {

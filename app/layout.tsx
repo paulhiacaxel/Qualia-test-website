@@ -6,6 +6,7 @@ import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: { default: "Qualia — One person. A whole new world.", template: "%s — Qualia" },
@@ -31,6 +32,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <span className="wordmark">Qualia</span>
             <span className="eyebrow">One-on-one. Human to human.</span>
             <span className="footer-note">Pre-launch · Miami / Miami Beach</span>
+            <nav className="footer-links" aria-label="Footer navigation">
+              <Link href="/discover">Discover</Link>
+              <Link href="/host/start">Host with Qualia</Link>
+              <Link href="/help">Help &amp; concierge</Link>
+              <Link href="/contact">Contact us</Link>
+            </nav>
           </div>
         </footer>
       </body>

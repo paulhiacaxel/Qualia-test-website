@@ -18,6 +18,7 @@ export function DashboardShell({
       </div>
       <nav className="dashboard-nav" aria-label="Account navigation">
         <Link href="/account/dashboard">My account</Link>
+        <Link href="/bookings">My bookings</Link>
         <Link href="/host/dashboard">Host workspace</Link>
         <Link href="/account/update-password">Password</Link>
       </nav>

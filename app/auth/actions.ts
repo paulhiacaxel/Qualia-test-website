@@ -41,7 +41,10 @@ export async function signUp(_previous: AuthState, formData: FormData): Promise<
   const parsed = signupSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   const { email, password, fullName, role } = parsed.data;
-  const next = role === "host" ? "/host/start" : "/account/dashboard";
+  const defaultNext = role === "host" ? "/host/start" : "/account/dashboard";
+  const next = formData.get("returnTo")
+    ? safeNext(formData.get("returnTo"), defaultNext)
+    : defaultNext;
   let hasSession = false;
   try {
     const supabase = await createClient();

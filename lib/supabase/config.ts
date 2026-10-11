@@ -2,7 +2,9 @@
 export function getSupabaseConfig() {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
-  if (!url || !key || key.startsWith("sb_secret_")) return null;
+  // This installation uses modern publishable keys. Reject legacy JWTs rather
+  // than risk accepting a service-role JWT in a browser-bound variable.
+  if (!url || !key?.startsWith("sb_publishable_")) return null;
   try {
     const parsed = new URL(url);
     if (parsed.username || parsed.password) return null;

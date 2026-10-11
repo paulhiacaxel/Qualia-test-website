@@ -38,7 +38,7 @@ port = 54324
 [storage]
 enabled = true
 file_size_limit = "10MiB"
-# No bucket is provisioned before phase 2's upload policies are implemented.
+# The phase 2 migration creates the private listing-photos bucket and its RLS policies.
 
 [auth]
 enabled = true

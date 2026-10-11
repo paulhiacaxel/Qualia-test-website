@@ -46,7 +46,15 @@ export function safeNext(value: unknown, fallback = "/account/dashboard"): strin
     "/admin",
     "/account/update-password",
     "/discover",
+    "/contact",
+    "/bookings",
+    "/host/calendar",
+    "/host/profile",
+    "/account/profile",
+    "/host/listings/new",
   ]);
+  const detail = value.match(/^\/(?:experiences|bookings)\/([^/]+)$/);
+  if (detail && z.uuid().safeParse(detail[1]).success) return value;
   return destinations.has(value) ? value : fallback;
 }
 

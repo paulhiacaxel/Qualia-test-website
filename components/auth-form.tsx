@@ -48,6 +48,7 @@ export function AuthForm({
   configured = true,
   next = "/account/dashboard",
   initialRole = "guest",
+  returnTo,
   tokenHash,
   confirmationType,
 }: {
@@ -55,6 +56,7 @@ export function AuthForm({
   configured?: boolean;
   next?: string;
   initialRole?: "guest" | "host";
+  returnTo?: string;
   tokenHash?: string;
   confirmationType?: string;
 }) {
@@ -76,6 +78,7 @@ export function AuthForm({
         aria-describedby={state.error ? "form-error" : undefined}
       >
         <input type="hidden" name="next" value={next} />
+        {returnTo ? <input type="hidden" name="returnTo" value={returnTo} /> : null}
         {mode === "confirm" ? (
           <>
             <input type="hidden" name="token_hash" value={tokenHash} />
