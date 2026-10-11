@@ -4,10 +4,12 @@ import { createClient } from "@/lib/supabase/server";
 import { authIsConfigured } from "@/lib/supabase/config";
 import { SupportForm } from "@/components/support/support-form";
 import type { SupportRequest } from "@/lib/support/types";
+import { getContactEmail } from "@/lib/contact/config";
 
 export const metadata = { title: "Contact Qualia" };
 
 export default async function ContactPage() {
+  const contactEmail = getContactEmail();
   const user = await getCurrentUser();
   let requests: SupportRequest[] = [];
   if (user?.email_confirmed_at) {
@@ -34,9 +36,20 @@ export default async function ContactPage() {
       <div className="dashboard-grid">
         <section className="panel">
           <h2>Contact &amp; concierge requests</h2>
+          {contactEmail ? (
+            <p>
+              Email the Qualia team at{" "}
+              <a className="text-link" href={`mailto:${encodeURIComponent(contactEmail)}`}>
+                {contactEmail}
+              </a>
+              .
+            </p>
+          ) : null}
           {!authIsConfigured() ? (
             <p className="notice">
-              Our contact workspace is opening soon. Please check back before sending a request.
+              {contactEmail
+                ? "Our contact workspace is opening soon. You can reach us by email."
+                : "Our contact workspace is opening soon. Please check back before sending a request."}
             </p>
           ) : user?.email_confirmed_at ? (
             <SupportForm />

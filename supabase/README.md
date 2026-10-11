@@ -1,6 +1,6 @@
 # Qualia database and workflow contracts
 
-This folder contains CLI-generated migrations and local configuration. It has **not been applied to a live Supabase project**. No hosted project exists yet in the connected account; no remote resources were created.
+This folder contains CLI-generated migrations and local configuration. The reviewed initial schema was applied on October 11, 2026 to the owner-created `Qualia` project (`fjotwcufttuccebrbgsp`, PostgreSQL 17.11). Initial migration filenames were aligned to the versions returned by the hosted migration tool; their SQL content is unchanged. This keeps later CLI migration comparisons consistent without editing hosted history.
 
 ## Identity contract
 
@@ -21,9 +21,9 @@ A publication constraint requires safety approval plus a completed or waived con
 
 Run `npm test` for all workflow tests, or `npm run test:database` for the foundational RLS suite. The suite loads the migrations into PGlite, a real PostgreSQL engine, with minimal simulated Supabase Auth identities and legacy automatic grants. It tests read isolation, allowed profile edits, forged role metadata, host opt-in, privilege escalation, publication constraints, private addresses, and forbidden workflow writes.
 
-These tests do **not** simulate GoTrue email flows, JWT validation/revocation, PostgREST schema exposure, storage, SMTP, or the hosted project's default privileges/settings. They are not evidence of live integration. Docker is unavailable in the current environment, so the full local Supabase stack and live advisor checks have not run.
+These tests do **not** simulate GoTrue email flows, JWT validation/revocation, PostgREST schema exposure, storage, SMTP, or the hosted project's default privileges/settings. They are not evidence of live integration. Docker is unavailable in the current environment, so the full local Supabase stack has not run. Hosted advisor checks have run; private tables with no row policies intentionally deny direct access, and unused-index notices are expected on an empty project. See the hosted acceptance record below.
 
-When the user creates the project, use the pinned CLI's `--help` to discover linking and migration commands, compare PostgreSQL versions, inspect migration history, then apply the reviewed migration. Run Supabase security/performance advisors and the hosted auth/authorization checks before treating phase 1 as live-verified.
+For future changes, use the pinned CLI's `--help` to discover linking and migration commands, compare PostgreSQL versions, and inspect migration history before applying a reviewed migration. Run Supabase security/performance advisors and the hosted auth/authorization checks before treating phase 1 as live-verified.
 
 ## Deployment settings
 
@@ -53,3 +53,11 @@ Use the Storage API to remove bytes before removing photo metadata. Draft deleti
 ## Financial and email operations
 
 Read [the financial RPC contract](../docs/financial-rpc-contract.md) and [email setup](../docs/email-setup.md) before configuring workers. Financial and queue tables stay in the private, unexposed schema with RLS. Service-role-only commands accept an actor ID only from verified server sessions and recheck participants/admins in SQL. Browser clients cannot write money or delivery state. See [launch setup](../docs/launch-setup.md) for hosted acceptance and concurrent-connection tests.
+
+## Hosted acceptance record — October 11, 2026
+
+- All marketplace tables have RLS enabled; privileged financial/email operations remain service-role-only. No seed listings, commercial policy or administrator has been inserted.
+- Public REST listing reads return HTTP 200 and an empty catalogue. Auth settings return HTTP 200 with email enabled, signup enabled, anonymous users disabled and email auto-confirmation disabled.
+- Auth Site URL/redirect allowlist, custom SMTP, email delivery and browser session rehearsal remain pending owner dashboard setup. These cannot be set by the available Supabase connector.
+- The initial security advisor found informational private-table no-policy notices only. These are intentional deny-by-default tables accessed through narrowly granted commands, not missing public access rules. [Advisor explanation](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy).
+- Follow-up migration adds covering foreign-key indexes and consolidates duplicate authenticated read policies without widening access. Final hosted advisors report no warnings/errors; remaining performance notices are [unused indexes on the empty database](https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index).

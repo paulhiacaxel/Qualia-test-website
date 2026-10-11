@@ -7,6 +7,7 @@ import "@fontsource/ibm-plex-mono/500.css";
 import "./globals.css";
 import { SiteHeader } from "@/components/site-header";
 import Link from "next/link";
+import { getContactEmail } from "@/lib/contact/config";
 
 export const metadata: Metadata = {
   title: { default: "Qualia — One person. A whole new world.", template: "%s — Qualia" },
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const contactEmail = getContactEmail();
   return (
     <html lang="en">
       <body>
@@ -37,6 +39,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <Link href="/host/start">Host with Qualia</Link>
               <Link href="/help">Help &amp; concierge</Link>
               <Link href="/contact">Contact us</Link>
+              {contactEmail ? (
+                <a href={`mailto:${encodeURIComponent(contactEmail)}`}>{contactEmail}</a>
+              ) : null}
             </nav>
           </div>
         </footer>

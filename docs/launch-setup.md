@@ -4,27 +4,27 @@
 
 The code implements the guest, host, review, booking, payment, email, and support workflows. The original static demo is retained as reference but is not served by Next.js. Empty published inventory produces a truthful pre-launch page. Upload only photos the host has authorized; do not use example experiences, fabricated reviews, or third-party portfolios as live inventory.
 
-At the current checkpoint, the connected Supabase organization has no project. Only a live Stripe account is visible; no sandbox credentials are configured. No domain has been purchased and no sender has been authenticated. No live payments, payouts, outreach, or emails have been sent. The current production build and TypeScript checks pass, and all 111 offline tests pass. The production dependency audit reports no known vulnerabilities. Local PostgreSQL and code tests are not substitutes for the acceptance checks below.
+At the October 11, 2026 checkpoint, the owner-created Supabase project `Qualia` (`fjotwcufttuccebrbgsp`, us-east-1) has the reviewed schema applied. Public PostgREST reads and Auth settings respond successfully; signup is enabled and email confirmation is required. The owner purchased `bookqualia.com`. Production connection variables are configured. Only a live Stripe account is visible; sandbox credentials and an authenticated email sender are still missing. Signup email delivery, browser sessions, payment flows and the full hosted rehearsal remain unverified. No live payments, payouts, outreach, or emails have been sent. The current production build and TypeScript checks pass, and all 111 offline tests pass. The production dependency audit reports no known vulnerabilities. Local PostgreSQL and code tests are not substitutes for the acceptance checks below.
 
 ## Owner decisions
 
-| Decision                                                                                 | Where it is applied                                                                                            |
-| ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
-| Canonical domain                                                                         | Vercel project domain, `NEXT_PUBLIC_SITE_URL`, Supabase Auth URLs, sender DNS                                  |
-| Standard and lifetime founding commission                                                | `/admin/commercial`; proposal for review is 15% standard / 10% founding, not configured                        |
-| Who pays actual Stripe processing costs                                                  | `/admin/commercial`; zero commission is not zero payment-processing cost                                       |
-| Founder enrollment time, referral grant/cap, refunded credit restoration                 | Explicit admin controls; no host is automatically enrolled                                                     |
-| Cancellation/refund/no-show terms and payout delay                                       | Versioned commercial policy, guest checkout disclosure, host agreement                                         |
-| Request and payment deadlines                                                            | `/admin/settings`; allow enough payment time for Stripe's 30-minute minimum Checkout expiration plus a margin  |
-| Legal identity, Terms, Privacy, host agreement, age policy, category safety/waiver rules | Counsel-approved documents and product rules before opening paid bookings                                      |
-| Insurance and permits                                                                    | Category-specific broker/legal review; a waiver or Stripe identity check does not establish coverage or safety |
-| Qualia support/outreach mailbox and postal address                                       | Auth SMTP, transactional sender, outreach signature and suppression process                                    |
+| Decision                                                                                 | Where it is applied                                                                                              |
+| ---------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Canonical domain                                                                         | Vercel project domain, `NEXT_PUBLIC_SITE_URL`, Supabase Auth URLs, sender DNS                                    |
+| Standard and lifetime founding commission                                                | `/admin/commercial`; owner approved 17.5% standard / 10% lifetime founding; active policy awaits remaining terms |
+| Who pays actual Stripe processing costs                                                  | `/admin/commercial`; zero commission is not zero payment-processing cost                                         |
+| Founder enrollment time, referral grant/cap, refunded credit restoration                 | Explicit admin controls; no host is automatically enrolled                                                       |
+| Cancellation/refund/no-show terms and payout delay                                       | Versioned commercial policy, guest checkout disclosure, host agreement                                           |
+| Request and payment deadlines                                                            | `/admin/settings`; allow enough payment time for Stripe's 30-minute minimum Checkout expiration plus a margin    |
+| Legal identity, Terms, Privacy, host agreement, age policy, category safety/waiver rules | Counsel-approved documents and product rules before opening paid bookings                                        |
+| Insurance and permits                                                                    | Category-specific broker/legal review; a waiver or Stripe identity check does not establish coverage or safety   |
+| Qualia support/outreach mailbox and postal address                                       | Auth SMTP, transactional sender, outreach signature and suppression process                                      |
 
-`bookqualia.com` was available at the read-only October 11, 2026 check. Availability is not a reservation. Buy through the owner's registrar account; do not place passwords, billing details, or API secrets in source control or chat. Using the same domain for a real Qualia mailbox will make the outreach more recognizable.
+The owner purchased `bookqualia.com` through Vercel. Use a real monitored Qualia mailbox; `hello@bookqualia.com` is proposed but has not been created or configured. Set `CONTACT_EMAIL` only after mail receipt works. Follow [owner setup](owner-setup.md) for the remaining dashboard steps; never place passwords, billing details, or API secrets in source control or chat.
 
-## 1. Supabase development project
+## 1. Supabase configuration and acceptance
 
-Follow [authentication setup](phase-1-setup.md). Review and apply every migration in timestamp order to a dedicated development project. Use `supabase db push --dry-run` before `db push`; never reset a hosted database. Set URL/publishable key, canonical preview origin, and server-only secret key in the appropriate Vercel environment.
+Follow [authentication setup](phase-1-setup.md). The initial migrations have been applied to the fresh owner-created project; filenames match the hosted migration ledger. For future changes, use a separate development project and `supabase db push --dry-run` before `db push`; never reset a hosted database. Production URL/publishable key and canonical origin are set. The server-only secret key is still required for financial/email workers. Preview deployments intentionally do not receive the production connection.
 
 Configure verified-email authentication and a domain-authenticated SMTP sender. Verify signup, confirmation, password reset and logout in real browsers. Add the owner's confirmed UUID to the private admin membership table through a trusted database-owner session. Run the hosted security/performance advisors and resolve material findings.
 
@@ -60,11 +60,11 @@ Follow `docs/email-setup.md` once configuring the provider. Set a verified sende
 
 No schedule is enabled automatically. Choose a schedule supported by the actual Vercel plan or a separately approved scheduler, authenticate the worker calls, and verify request, acceptance, paid confirmation, cancellation and reminder delivery. Test duplicate worker calls, provider timeouts, cancelled reminders and retries. Booking confirmation must originate from verified paid state. Host outreach uses a separate approval and suppression process; do not feed the prospect list into transactional jobs.
 
-## 6. Production and real domain
+## 6. Pre-launch deployment and paid-launch gates
 
-After the above gates, configure separate production Supabase and Stripe live credentials, authenticated mail, approved policy and legal pages. Scope secrets per Vercel environment. Confirm the intended deployment/commit, attach the purchased domain, set the registrar-provided DNS records, and verify TLS and apex/`www` canonical redirects. Update Auth allowlists and mail links to the canonical origin.
+The real domain can serve the honest pre-launch site with no published inventory and payments disabled. Before opening paid bookings, complete the above gates, configure Stripe live credentials, authenticated mail, approved policy and legal pages. Scope secrets per Vercel environment; do not give unrelated previews production database access. Confirm the intended deployment/commit, attach the purchased domain, set the registrar-provided DNS records, and verify TLS and apex/`www` canonical redirects. Update Auth allowlists and mail links to the canonical origin.
 
-Do not promote the unconfigured preview as a functioning marketplace. Test the entire guest-to-host flow on the actual domain, complete a permitted small live payment/refund only with owner authorization, verify delivery and reconciliation, and then open requests/payments deliberately. Keep outreach unsent until the owner approves the workbook messages, sender, incentive terms and first batch.
+A reachable pre-launch site is not evidence of a verified paid marketplace. Test the entire guest-to-host flow on the actual domain, complete a permitted small live payment/refund only with owner authorization, verify delivery and reconciliation, and then open requests/payments deliberately. Keep outreach unsent until the owner approves the workbook messages, sender, incentive terms and first batch.
 
 ## Deferred enhancements
 
