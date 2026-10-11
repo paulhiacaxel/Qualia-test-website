@@ -4,7 +4,7 @@ This document preserves the authentication setup detail. See [launch setup](laun
 
 ## Current boundary
 
-This is a reviewable implementation, not a claim that hosted accounts work. At implementation time the connected Supabase organization had no project, and its project-cost lookup was unavailable. No paid resources were created. No live migration, real email delivery, or browser end-to-end check has been completed.
+The owner-created Qualia project now has eight reviewed migrations applied, and the deployed guest/host signup forms are enabled at https://bookqualia.com. Hosted Auth confirms email signup is enabled and email verification is required. Custom SMTP, Auth URLs, real confirmation/recovery delivery and browser end-to-end checks still need completion. No paid resources were created by the agent; the owner purchased the domain. See [deployment checkpoint](deployment-checkpoint.md).
 
 The original repository's `frontend-design` skill and Windows screenshot tooling are unavailable in this environment. The supplied brand assets and guidelines were retained. Desktop/mobile screenshot comparison remains a required review step before launch.
 
@@ -24,14 +24,14 @@ The original repository's `frontend-design` skill and Windows screenshot tooling
 
 3. Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and `NEXT_PUBLIC_SITE_URL` in `.env.local`. Set the same values independently in Vercel's Preview environment when creating a preview. Never put a service-role/secret key in a public variable.
 4. In hosted Auth settings, enable email confirmations and require passwords of at least 12 characters. Disable anonymous signup. The checked-in CLI settings configure local development only; they do not automatically configure a hosted project.
-5. Set Auth's Site URL to the canonical app origin. Allow the exact app callback routes and their expected `next` query values, using the list in `supabase/config.toml` as a reference. Replace the localhost origin with the selected preview/production domain, never a wildcard covering other people's domains.
+5. Set Auth's Site URL to the canonical app origin. Allow the exact app callback routes and their expected `next` query values, using [owner setup](owner-setup.md) for the production callback pattern and `supabase/config.toml` for local development. Replace the localhost origin with the selected preview/production domain, never a wildcard covering other people's domains.
 6. Configure a domain-authenticated SMTP sender before inviting real users. Supabase's built-in mail service is restricted and is not a production delivery solution. Complete SPF/DKIM/DMARC setup with the chosen provider. Confirmation/recovery emails are part of auth and must work before Phase 1 is considered complete.
 
 ## Confirmation and recovery links
 
 The default PKCE callback (`/auth/callback`) requires the browser that initiated signup/reset. For reliable cross-device links, configure custom templates after custom SMTP is enabled:
 
-- Signup: `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup`
+- Signup: `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`
 - Recovery: `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery`
 
 The app's confirmation page requires a button press before consuming the token, so email preview scanners do not consume it on GET. Without `next`, confirmed accounts go to their guest dashboard and can enter host mode there. Do not log token URLs or put analytics on auth pages. The published template editor may be unavailable on new Free projects until custom SMTP is configured.

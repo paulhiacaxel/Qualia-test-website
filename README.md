@@ -2,6 +2,8 @@
 
 One-on-one experiences in Miami and Miami Beach. This branch implements the MVP application; **hosted setup and end-to-end acceptance are still required before launch**. Unconfigured services fail closed, and the public catalogue contains no demo hosts or invented reviews.
 
+Pre-launch deployment: [bookqualia.com](https://bookqualia.com). [Deployment checks and outstanding integrations](docs/deployment-checkpoint.md).
+
 ## What changed
 
 - Next.js App Router with TypeScript, the existing aperture artwork, original palette, and locally bundled Fraunces, Inter, and IBM Plex Mono.

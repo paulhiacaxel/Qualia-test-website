@@ -89,7 +89,7 @@ Keep `STRIPE_ENVIRONMENT=sandbox` and `STRIPE_LIVE_PAYMENTS_ENABLED=false`. In Q
 | `RESEND_API_KEY`                       | Booking email sending key, saved as Secret                                                                                                            |
 | `EMAIL_FROM`                           | Proposed `Qualia <hello@bookqualia.com>`, only after sender/mailbox verification                                                                      |
 | `CONTACT_EMAIL`                        | `hello@bookqualia.com` only after incoming mail and replies work; this enables the website links                                                      |
-| `CRON_SECRET`                          | At least 32 random characters, saved as Secret                                                                                                        |
+| `CRON_SECRET`                          | Already securely generated in Vercel Production; no schedule enabled. A redeploy loads it with the other remaining settings.                          |
 | `TRANSACTIONAL_EMAIL_ENABLED`          | Keep `false` until sender, approved test delivery and scheduling are verified                                                                         |
 
 The booking worker needs an authenticated scheduler calling `GET /api/jobs/email`; a frequent supported schedule must be selected before enabling booking emails. No schedule has been created by this checklist. Supabase Auth emails use its SMTP settings and are separate from that worker. See [email-setup.md](email-setup.md) for retries, monitoring and scheduling limits.
