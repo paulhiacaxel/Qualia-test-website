@@ -1,0 +1,39 @@
+import type { Metadata } from "next";
+import "@fontsource-variable/fraunces";
+import "@fontsource-variable/fraunces/standard-italic.css";
+import "@fontsource-variable/inter";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+import "./globals.css";
+import { SiteHeader } from "@/components/site-header";
+
+export const metadata: Metadata = {
+  title: { default: "Qualia — One person. A whole new world.", template: "%s — Qualia" },
+  description: "One-on-one experiences with independent hosts. Launching in Miami and Miami Beach.",
+  icons: { icon: "/brand_assets/qualia-mark.svg" },
+  robots: { index: false, follow: false },
+};
+
+// Authenticated navigation and session refresh must never be statically cached.
+export const dynamic = "force-dynamic";
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html lang="en">
+      <body>
+        <a className="skip-link" href="#main-content">
+          Skip to content
+        </a>
+        <SiteHeader />
+        {children}
+        <footer className="site-footer">
+          <div className="container footer-inner">
+            <span className="wordmark">Qualia</span>
+            <span className="eyebrow">One-on-one. Human to human.</span>
+            <span className="footer-note">Pre-launch · Miami / Miami Beach</span>
+          </div>
+        </footer>
+      </body>
+    </html>
+  );
+}

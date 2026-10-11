@@ -1,0 +1,55 @@
+# Phase 1: setup and live verification
+
+## Current boundary
+
+This is a reviewable implementation, not a claim that hosted accounts work. At implementation time the connected Supabase organization had no project, and its project-cost lookup was unavailable. No paid resources were created. No live migration, real email delivery, or browser end-to-end check has been completed.
+
+The original repository's `frontend-design` skill and Windows screenshot tooling are unavailable in this environment. The supplied brand assets and guidelines were retained. Desktop/mobile screenshot comparison remains a required review step before launch.
+
+## Connect a Supabase project
+
+1. Select or create a dedicated Qualia project in the owner's organization. Use a development project first. Keep the production database password in a password manager.
+2. Review the migration in `supabase/migrations/`. Apply it to the selected development project with the Supabase integration or CLI:
+
+   ```sh
+   npx supabase login
+   npx supabase link --project-ref YOUR_PROJECT_REF
+   npx supabase db push --dry-run
+   npx supabase db push
+   ```
+
+   Confirm the linked project before running `db push`. Do not reset a hosted database.
+3. Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, and `NEXT_PUBLIC_SITE_URL` in `.env.local`. Set the same values independently in Vercel's Preview environment when creating a preview. Never put a service-role/secret key in a public variable.
+4. In hosted Auth settings, enable email confirmations and require passwords of at least 12 characters. Disable anonymous signup. The checked-in CLI settings configure local development only; they do not automatically configure a hosted project.
+5. Set Auth's Site URL to the canonical app origin. Allow the exact app callback routes and their expected `next` query values, using the list in `supabase/config.toml` as a reference. Replace the localhost origin with the selected preview/production domain, never a wildcard covering other people's domains.
+6. Configure a domain-authenticated SMTP sender before inviting real users. Supabase's built-in mail service is restricted and is not a production delivery solution. Complete SPF/DKIM/DMARC setup with the chosen provider. Confirmation/recovery emails are part of auth and must work before Phase 1 is considered complete.
+
+## Confirmation and recovery links
+
+The default PKCE callback (`/auth/callback`) requires the browser that initiated signup/reset. For reliable cross-device links, configure custom templates after custom SMTP is enabled:
+
+- Signup: `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup`
+- Recovery: `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery`
+
+The app's confirmation page requires a button press before consuming the token, so email preview scanners do not consume it on GET. Without `next`, confirmed accounts go to their guest dashboard and can enter host mode there. Do not log token URLs or put analytics on auth pages. The published template editor may be unavailable on new Free projects until custom SMTP is configured.
+
+## First admin
+
+Create and confirm the owner's normal account. Copy its UUID from the trusted Supabase Auth dashboard. Admin membership belongs in the private schema and cannot be assigned from signup metadata or a public profile update. A database owner can use the SQL editor to insert that verified UUID into `private.admin_memberships` according to the migration's column names. Do not expose an admin-grant endpoint or public invitation code. Record who authorized each admin addition.
+
+## Required live acceptance checks
+
+- A guest signs up, receives a real email, confirms, signs in, refreshes the page, signs out, and cannot reopen a protected dashboard.
+- Duplicate signup and password-reset requests do not disclose private account data. Invalid/expired links offer recovery.
+- Recovery works from the same browser; the optional token-hash template also works from a different browser. The old password fails after a successful change.
+- A confirmed guest can enable host mode and retains guest access. Editing user metadata cannot grant admin or publication rights.
+- A second user cannot read another user's private profile, draft, address, or booking through the Data API. Anonymous users see only deliberately published content.
+- The owner can access `/admin`; a normal host cannot. The review queue itself is Phase 3.
+- Run Supabase security/performance advisors against the actual project and resolve material findings.
+- Review the login/signup/recovery and dashboard screens on mobile and desktop, including keyboard navigation, visible errors, and loading states.
+
+## Next phases
+
+Marketplace tables are reserved foundations. Payment and review transitions remain locked until their audited server workflows are implemented. No card charging, payouts, outreach sending, or booking-confirmation emails are active in Phase 1.
+
+Use Stripe sandbox credentials when Phase 5 begins. The owner still needs to choose standard/founding commission rates and whether processing fees are separate. The launch domain, Qualia outreach mailbox, postal address for email outreach, and final legal policies also remain owner inputs.
