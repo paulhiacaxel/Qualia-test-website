@@ -30,7 +30,7 @@ The application is deployed and reachable. This is a pre-launch checkpoint, not 
 3. Host profile/photo/listing → review → calendar/request → sandbox payment/refund/release and real transactional-delivery rehearsal with two approved accounts. Verify cross-account isolation through the hosted API and actual concurrent connections.
 4. Vercel visibly confirms Qualia is now on Pro. The reviewed price was $20 immediately/$20-month baseline plus taxes/metered usage. Scheduler/diagnostic release `77726e2` is READY and owner diagnostic delivery is verified. The newer worker-enable/logging release is READY and an authenticated zero-work scheduled invocation is verified. Continue monitoring; one successful run does not establish a full booking-email lifecycle. Configure backup/recovery operations before meaningful production data accumulates.
 5. Complete commercial and legal decisions before paid bookings: the owner approved revised rates and incentives in [launch decisions](launch-decisions-proposed.md). The versioned sandbox policy is saved and disabled; legal identity/documents and category safety/insurance requirements remain required.
-6. The first 20 recipient selection and remaining body copy are approved subject to the requested edits. Do not repeat that approval request. Qualia Gmail and diagnostic inbox receipt are verified. The owner confirmed completed/notarized Form 1583 and approved the exact proposed footer on October 12 at 14:07 EDT; no repeat approval or new activation gate is needed. Provider/contact suitability remains unresolved. The other 80 leads have no sending approval and remaining qualification stays open. No prospect outreach has been sent.
+6. The first 20 recipients, body and exact postal/unsubscribe footer were approved, then the owner authorized sending at 14:12:47 EDT. Gmail accepted all 20 individual messages as SENT with unique IDs; monitor replies, bounces and opt-outs. One known hard bounce, Q039, is suppressed; 19 have no immediate failure, not verified delivery. The other 80 remain unsent/unapproved with remaining qualification open.
 
 ## Historical October 12 provider configuration
 
@@ -108,10 +108,22 @@ The first 20 recipients and remaining body copy remain approved subject to reque
 
 A test from `axel@bookqualia.com` reached the confirmed owner inbox at **2026-10-12 17:40:02 UTC**, INBOX, SPF/DKIM passing for `bookqualia.com`; Qualia sent message `1a1313339ac5fe53`, received message `1a1313345991cc9d`. The reply reached the Qualia INBOX at **17:40:33 UTC**, message `1a13133b6788a6c2`, with SPF/DKIM passing. This verifies the owner-only outbound and reply path. Arbitrary prospect inbox placement, provider suitability and a full booking-message lifecycle remain unverified; no prospect emails were sent. Postal activation and final-footer requirements remain unchanged.
 
-## Current footer approval and pacing — October 12, 14:07 EDT
+## Historical footer approval and pacing — October 12, 14:07 EDT
 
 The owner confirmed Form 1583 was completed/notarized and approved the exact proposed footer: the assigned business address in the workbook plus **Unsubscribe by email**, using the return-email link documented in [launch decisions](launch-decisions-proposed.md#outreach-and-activation-gates). Do not re-request notarization or footer approval. The earlier contradictory welcome message is historical; no later provider-state read was performed, and this does not introduce a manual provider-activation approval gate.
 
 First-20 recipient/body approval remains valid, and the Qualia owner-only outbound/reply path is verified. Provider/contact suitability remains the actual unresolved sending issue; other 80 leads have no sending approval and remaining qualification stays open. No prospect emails have been sent.
 
 The roughly 20/day pacing comes verbatim from the original user task, “send in batches (no more than ~20/day)”, not from Gmail limits. The owner asked where this came from without explicitly replacing the cap; preserve that instruction and the one-follow-up limit unless changed.
+
+## Current outreach send checkpoint — October 12
+
+The owner authorized sending at **14:12:47 EDT** (“ok lets do it !”). The approved first **20 messages were sent individually** from **Axel at Qualia <axel@bookqualia.com>**. All 20 returned successful Gmail SENT results with unique message IDs, recorded in the outreach workbook and send log. This establishes send acceptance, **not recipient delivery, inbox placement or reading**. Post-send checking found one hard bounce: Q039, SMTP **550 5.1.1 address not found**, DSN at `2026-10-12T18:16:22Z`. The address is suppressed and must receive no follow-up. The other **19 have no immediate failure**, which is not delivery confirmation. More bounces may arrive; no prospect reply is established by this checkpoint.
+
+Preflight verified the current Qualia Gmail profile and resolved all 20 public contacts; no existing messages, opt-outs or delivery errors were found. Each message used the approved individualized body, business-address/return-email unsubscribe footer and same approved subject, with one To recipient, no BCC and a maximum of 110 words including the footer. This is an evidence record of the authorized send, not Google certification of the campaign or blanket future provider permission.
+
+The other **80 leads remain unsent and not approved for a batch**. Track replies, bounces, opt-outs and any qualification changes in the workbook; prior all-prospect HOLD/no-send statements above describe historical checkpoints. The original roughly 20/day pacing and at-most-one-follow-up instruction remain in effect. The immediate check records the one hard bounce above; no automation outcome is recorded here until separately verified.
+
+## Outreach monitoring
+
+The **Qualia host replies** automation is created and enabled for **08:00 America/New_York daily, starting October 13**. It monitors the 20 outreach threads for replies, bounces and opt-outs, updates the workbook and drafts responses for owner review. It does not send automatically. For a thread with no reply, bounce or opt-out, it may draft only one follow-up after at least seven days. The latest immediate check found no human replies; the known hard-bounced address remains suppressed.
