@@ -13,6 +13,7 @@ import {
   type PaymentActionState,
 } from "./contracts";
 import { paymentCommand } from "./store";
+import { checkoutWindow } from "@/lib/booking/payment-window";
 
 export async function createBookingCheckout(
   _previous: PaymentActionState,
@@ -24,12 +25,31 @@ export async function createBookingCheckout(
   if (!policyId.success || form.get("termsAccepted") !== "on")
     return { error: "Review and accept the cancellation terms before payment." };
   const user = await requireUser(`/bookings/${id.data}`);
-  if (!paymentConfig())
+  const config = paymentConfig();
+  if (!config)
     return {
       error: "Payments are not open yet. Please contact Qualia before your payment deadline.",
     };
   let url: string;
   try {
+    const terms = checkoutTermsSchema.parse(
+      await paymentCommand("pay_checkout_terms", {
+        p_actor_id: user.id,
+        p_booking_id: id.data,
+        p_environment: config.environment,
+      }),
+    );
+    const window = checkoutWindow(terms);
+    if (window.mode === "closed")
+      return {
+        error:
+          "There is not enough time left to open a new checkout. Contact Qualia or cancel this unpaid request and choose a later time.",
+      };
+    if (window.mode === "reconciling")
+      return {
+        error:
+          "Your existing payment is being checked. Refresh the booking shortly or contact Qualia; do not make another payment.",
+      };
     url = await bookingCheckout(user.id, id.data, policyId.data);
   } catch {
     return {

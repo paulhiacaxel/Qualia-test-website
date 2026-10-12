@@ -31,11 +31,19 @@ export const hostPaymentsSchema = z.object({
       terms_version: z.string(),
       standard_fee_bps: z.number(),
       founder_fee_bps: z.number(),
+      founder_free_bookings: z.number().int().min(0).max(100),
+      founder_duration_months: z.number().int().min(1).max(24),
       processing_allocation: z.string(),
       payout_delay_hours: z.number(),
       cancellation_terms: z.string(),
       founder: z
-        .object({ lifetime_fee_bps: z.number(), starts_at: z.string(), ends_at: z.string() })
+        .object({
+          lifetime_fee_bps: z.number(),
+          free_booking_limit: z.number().int().min(0).max(100),
+          duration_months: z.number().int().min(1).max(24),
+          starts_at: z.string(),
+          ends_at: z.string(),
+        })
         .nullable(),
       founder_credits_consumed: z.number(),
       founder_credits_reserved: z.number(),

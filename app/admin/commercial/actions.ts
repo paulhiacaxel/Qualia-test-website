@@ -71,6 +71,7 @@ export async function enrollFounder(
     .object({
       environment: environmentSchema,
       host_id: z.uuid(),
+      policy_id: z.uuid(),
       started_at: z.string(),
       approved: z.literal("on"),
     })
@@ -78,7 +79,7 @@ export async function enrollFounder(
   if (!parsed.success)
     return {
       error:
-        "Enter the verified host UUID, an agreed start time, and confirm the host's agreement.",
+        "Enter the verified host UUID, an agreed activation time, and confirm the host's agreement.",
     };
   let startedAt: string;
   try {
@@ -92,6 +93,7 @@ export async function enrollFounder(
       p_host_id: parsed.data.host_id,
       p_environment: parsed.data.environment,
       p_started_at: startedAt,
+      p_policy_id: parsed.data.policy_id,
     },
     "Founding terms recorded for this host. The reduced lifetime rate is locked to this enrollment.",
   );

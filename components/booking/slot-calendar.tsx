@@ -44,6 +44,10 @@ export function SlotCalendar({
         {formatMoney(priceCents)} <small>/ session</small>
       </div>
       <p className="booking-price-note">For one guest · Miami time</p>
+      <p className="booking-helper">
+        Requests close 32 minutes before the start to leave time for payment. Request ahead so your
+        host has time to respond.
+      </p>
       <div className="calendar-heading">
         <h2>{calendar.label}</h2>
         <div className="calendar-controls">

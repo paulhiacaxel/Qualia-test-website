@@ -85,10 +85,14 @@ export function renderBookingEmail(
   const [subject, body, cta] = copy[context.kind];
   const title = context.title.trim() || "Your private experience";
   const time = miamiTime(context.starts_at);
-  const deadline =
-    context.kind === "accepted" && context.payment_deadline_at
-      ? `Complete checkout by ${miamiTime(context.payment_deadline_at)}.`
-      : "";
+  let deadline = "";
+  if (context.kind === "accepted" && context.payment_deadline_at) {
+    // Keep the start-payment cutoff separate from completion, just as on the
+    // booking page. Existing provider_payload rows remain frozen by the worker.
+    const payBy = Math.min(Date.parse(context.starts_at), Date.parse(context.payment_deadline_at));
+    const openBy = new Date(payBy - 31 * 60_000).toISOString();
+    deadline = `Start a new checkout before ${miamiTime(openBy)}. Complete payment by ${miamiTime(new Date(payBy).toISOString())}. If you have already opened checkout, return to your booking to resume it and check its current expiry.`;
+  }
   const text = `QUALIA\n\n${subject}\n\n${title}\n${time}\n\n${body}${deadline ? `\n\n${deadline}` : ""}\n\n${cta}: ${href}\n\nThis is a service message about your booking. Sign in to see private meeting details.`;
   const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"></head><body style="margin:0;background:#f4f1e8;color:#26372d;font-family:Inter,Arial,sans-serif"><table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td style="padding:32px 16px"><table role="presentation" style="max-width:560px;margin:auto;background:#fffdf7;border:1px solid #d9dccf" cellpadding="0" cellspacing="0" width="100%"><tr><td style="padding:32px"><p style="font-family:'IBM Plex Mono',monospace;letter-spacing:4px;color:#56644a">QUALIA</p><h1 style="font-family:Fraunces,Georgia,serif;font-weight:500;font-size:30px">${escapeHtml(subject)}</h1><h2 style="font-family:Fraunces,Georgia,serif;font-weight:400">${escapeHtml(title)}</h2><p>${escapeHtml(time)}</p><p style="line-height:1.7">${escapeHtml(body)}</p>${deadline ? `<p>${escapeHtml(deadline)}</p>` : ""}<p style="margin:28px 0"><a href="${escapeHtml(href)}" style="display:inline-block;background:#4d614b;color:#fffdf7;padding:14px 22px;border-bottom:3px solid #bba165;text-decoration:none">${escapeHtml(cta)}</a></p><p style="font-size:12px;color:#68705f;line-height:1.6">This is a service message about your booking. Sign in to see private meeting details.</p></td></tr></table></td></tr></table></body></html>`;
   return { subject, text, html };

@@ -18,6 +18,8 @@ function harness(options = {}) {
   const client = {
     rpc: async (name, args) => {
       calls.push([name, args]);
+      if (name === "expire_due_bookings")
+        return options.expiryError ? { error: { message: "Unavailable" } } : { data: 2 };
       if (name === "email_claim_jobs")
         return {
           data: [
@@ -68,9 +70,23 @@ test("worker resolves Auth-owned recipient and persists provider acceptance", as
   const h = harness();
   const result = await h.run();
   assert.equal(result.accepted, 1);
+  assert.equal(result.expired, 2);
+  assert.deepEqual(
+    h.calls.slice(0, 2).map(([name]) => name),
+    ["expire_due_bookings", "email_claim_jobs"],
+  );
   assert.equal(h.deliveries[0].payload.to[0], "verified@example.test");
   assert.equal(h.deliveries[0].key, "qualia-booking/job-id");
   assert.equal(h.calls.at(-1)[1].p_outcome, "accepted");
+});
+test("failed deadline reconciliation stops queue claims and sends", async () => {
+  const h = harness({ expiryError: true });
+  await assert.rejects(h.run, /Booking deadlines/);
+  assert.deepEqual(
+    h.calls.map(([name]) => name),
+    ["expire_due_bookings"],
+  );
+  assert.equal(h.deliveries.length, 0);
 });
 test("cancellation after claim but before provider preflight prevents reminder", async () => {
   const h = harness({ cancelBeforeSend: true });

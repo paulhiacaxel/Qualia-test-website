@@ -4,9 +4,14 @@ import { effectiveStatus } from "@/lib/booking/validation";
 import { formatMiamiDate } from "@/lib/host/validation";
 import type { Booking } from "@/lib/booking/types";
 import { BookingPaymentPanel } from "@/components/payments/booking-payment";
+import { hostCanAcceptPaymentWindow } from "@/lib/booking/payment-window";
 
 export function BookingActions({ booking, isHost }: { booking: Booking; isHost: boolean }) {
   const status = effectiveStatus(booking);
+  const canAccept = hostCanAcceptPaymentWindow(
+    booking.starts_at,
+    booking.policy_payment_deadline_minutes,
+  );
   if (!["requested", "awaiting_payment"].includes(status)) return null;
   if (status === "awaiting_payment" && booking.payment_hold_active) {
     return (
@@ -48,10 +53,17 @@ export function BookingActions({ booking, isHost }: { booking: Booking; isHost: 
           ) : null}
           {isHost ? (
             <div className="booking-decision-buttons">
-              <ActionForm action={respondToBooking} label="Accept request">
-                <input type="hidden" name="bookingId" value={booking.id} />
-                <input type="hidden" name="decision" value="accept" />
-              </ActionForm>
+              {canAccept ? (
+                <ActionForm action={respondToBooking} label="Accept request">
+                  <input type="hidden" name="bookingId" value={booking.id} />
+                  <input type="hidden" name="decision" value="accept" />
+                </ActionForm>
+              ) : (
+                <p className="notice">
+                  There is not enough time left to start payment. Decline this request or ask the
+                  guest to request a later time.
+                </p>
+              )}
               <ActionForm action={respondToBooking} label="Decline request" danger>
                 <input type="hidden" name="bookingId" value={booking.id} />
                 <input type="hidden" name="decision" value="decline" />

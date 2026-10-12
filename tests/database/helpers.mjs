@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile, readdir } from "node:fs/promises";
 import { PGlite } from "@electric-sql/pglite";
 
-export async function createTestDatabase() {
+export async function createTestDatabase({ beforeMigration } = {}) {
   const db = new PGlite();
   await db.exec(`
     create role anon nologin;
@@ -44,6 +44,8 @@ export async function createTestDatabase() {
   `);
   const migrationDir = new URL("../../supabase/migrations/", import.meta.url);
   for (const name of (await readdir(migrationDir)).filter((file) => file.endsWith(".sql")).sort()) {
+    // Optional fixture hook verifies upgrades against rows created under the old schema.
+    await beforeMigration?.(db, name);
     await db.exec(await readFile(new URL(name, migrationDir), "utf8"));
   }
   return db;

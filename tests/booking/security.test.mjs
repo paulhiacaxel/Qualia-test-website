@@ -83,17 +83,17 @@ test("booking remains closed without an owner-approved policy, and only verified
     payment_deadline_minutes: null,
   });
   await rejected(() => request(listing));
-  await as("guest", () => denied(() => rpc("admin_set_booking_policy", [120, 30, true])));
+  await as("guest", () => denied(() => rpc("admin_set_booking_policy", [120, 60, true])));
   await as("admin", async () => {
     await rejected(() => rpc("admin_set_booking_policy", [null, null, true]), "22023");
     await rejected(() => rpc("admin_set_booking_policy", [0, 10081, true]), "22023");
     await rpc("admin_set_booking_policy", [null, null, false]);
-    await rpc("admin_set_booking_policy", [120, 30, true]);
+    await rpc("admin_set_booking_policy", [120, 60, true]);
   });
   assert.deepEqual(await as("guest", () => value("get_booking_policy")), {
     enabled: true,
     request_expiry_minutes: 120,
-    payment_deadline_minutes: 30,
+    payment_deadline_minutes: 60,
   });
   assert.equal(
     (await db.query("select count(*)::int as count from private.booking_policy_history")).rows[0]
@@ -181,7 +181,7 @@ test("request captures server-side price, content, address and policy deadlines;
   assert.equal(detail.listing.title, "A private lesson");
   assert.equal(detail.listing.neighborhood, "Wynwood");
   assert.equal(detail.booking.policy_request_expiry_minutes, 120);
-  assert.equal(detail.booking.policy_payment_deadline_minutes, 30);
+  assert.equal(detail.booking.policy_payment_deadline_minutes, 60);
   assert.equal(detail.meeting_location, null);
   await as("guest", () =>
     denied(() =>

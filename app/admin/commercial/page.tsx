@@ -4,6 +4,7 @@ import { AdminNav } from "@/components/admin/admin-nav";
 import { requireAdmin } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { commercialPolicySchema } from "@/lib/admin/commercial-validation";
+import { foundingOfferSummary } from "@/lib/payments/incentives";
 import { CommercialForm, IncentiveForm, PauseForm } from "./policy-form";
 
 export const metadata = { title: "Commercial policy" };
@@ -56,11 +57,33 @@ export default async function CommercialPage({
         <section className="panel">
           <h2>Founding hosts</h2>
           <p>
-            Enroll after the host agrees to the written terms. The first ten commission-free
-            bookings expire six calendar months after the agreed enrollment time, whichever comes
-            first.
+            {result.data.policy
+              ? foundingOfferSummary({
+                  freeBookings: result.data.policy.founder_free_bookings,
+                  durationMonths: result.data.policy.founder_duration_months,
+                  lifetimeFeeBps: result.data.policy.founder_fee_bps,
+                })
+              : "Save explicit commercial terms before enrolling a founding host."}{" "}
+            Activate only after an approved listing is live and the host agrees to the written terms
+            and activation time. Use a backdated activation time only when the displayed policy
+            matches the original agreement. Later policy changes apply to new enrollments; existing
+            hosts keep their agreed offer.
           </p>
-          <IncentiveForm kind="founder" environment={environment} />
+          {result.data.policy && (
+            <p>
+              {result.data.policy.founder_cohort_cap === null
+                ? "This legacy policy has no cohort cap. Choose an explicit cap when saving a new policy."
+                : `Cohort cap: ${result.data.policy.founder_cohort_cap} hosts in this environment, counting enrollments across all policy versions.`}
+            </p>
+          )}
+          {result.data.policy && (
+            <IncentiveForm
+              key={result.data.policy.id}
+              kind="founder"
+              environment={environment}
+              policyId={result.data.policy.id}
+            />
+          )}
         </section>
         <section className="panel">
           <h2>Qualified referrals</h2>

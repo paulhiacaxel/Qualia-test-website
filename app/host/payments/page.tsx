@@ -1,3 +1,4 @@
+import { foundingOfferSummary } from "@/lib/payments/incentives";
 import Link from "next/link";
 import { requireHost } from "@/lib/auth/session";
 import { DashboardShell } from "@/components/dashboard-shell";
@@ -54,17 +55,26 @@ export default async function HostPaymentsPage() {
             {data.commercial.founder ? (
               <>
                 <p>
-                  Your founding rate after free credits:{" "}
-                  {(data.commercial.founder.lifetime_fee_bps / 100).toFixed(2)}%, locked in for your
-                  founding membership. Your first ten free bookings are available from{" "}
-                  {new Date(data.commercial.founder.starts_at).toLocaleDateString("en-US", {
+                  {foundingOfferSummary({
+                    freeBookings: data.commercial.founder.free_booking_limit,
+                    durationMonths: data.commercial.founder.duration_months,
+                    lifetimeFeeBps: data.commercial.founder.lifetime_fee_bps,
+                  })}{" "}
+                  Agreed activation:{" "}
+                  {new Date(data.commercial.founder.starts_at).toLocaleString("en-US", {
                     timeZone: "America/New_York",
                   })}{" "}
-                  until{" "}
-                  {new Date(data.commercial.founder.ends_at).toLocaleDateString("en-US", {
-                    timeZone: "America/New_York",
-                  })}
-                  , or until ten bookings have used them.
+                  Miami time.
+                  {data.commercial.founder.free_booking_limit > 0 && (
+                    <>
+                      {" "}
+                      Unused commission-free credits expire at{" "}
+                      {new Date(data.commercial.founder.ends_at).toLocaleString("en-US", {
+                        timeZone: "America/New_York",
+                      })}{" "}
+                      Miami time.
+                    </>
+                  )}
                 </p>
                 <p>
                   Founding credits used: {data.commercial.founder_credits_consumed} · Reserved by

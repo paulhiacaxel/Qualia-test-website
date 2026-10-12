@@ -27,6 +27,9 @@ const settings = (override = {}) => ({
   enabled: true,
   standard_fee_bps: 1500,
   founder_fee_bps: 1000,
+  founder_free_bookings: 10,
+  founder_duration_months: 6,
+  founder_cohort_cap: 1000,
   processing_allocation: "platform_absorbs",
   payout_delay_hours: 0,
   restore_refunded_credit: true,
@@ -59,16 +62,29 @@ async function makeUser({ host = false } = {}) {
 async function enablePolicy(override = {}) {
   return member(admin, () => value("admin_set_commercial_policy", [settings(override)]));
 }
+async function enrollFounder(host, startedAt, policyId) {
+  const expected = policyId ?? (await value("admin_get_commercial_policy", ["sandbox"])).policy.id;
+  return rpc("admin_enroll_founder", [host, "sandbox", startedAt, expected]);
+}
+async function publishListing(host) {
+  const listing = randomUUID();
+  await db.query(
+    `insert into public.listings(id,host_id,title,description,category,price_cents,duration_minutes,city,neighborhood,status,safety_status,consultation_status,published_at)
+    values($1,$2,'Synthetic founding listing','Synthetic approved listing.','art',10000,60,'Miami','Wynwood','published','approved','waived',now())`,
+    [listing, host],
+  );
+  return listing;
+}
 async function hostFixture({ founder = false, startedAt } = {}) {
   const host = await makeUser({ host: true });
   const account = await server(() => value("pay_prepare_account", [host, "sandbox"]));
   const accountId = token("acct");
   await server(() => rpc("pay_attach_account", [account.operation_id, accountId]));
   await server(() => rpc("pay_sync_account", [accountId, "sandbox", true, true, []]));
-  if (founder)
-    await member(admin, () =>
-      rpc("admin_enroll_founder", [host, "sandbox", startedAt ?? new Date().toISOString()]),
-    );
+  if (founder) {
+    await publishListing(host);
+    await member(admin, () => enrollFounder(host, startedAt ?? new Date().toISOString()));
+  }
   return { host, accountId };
 }
 async function acceptedBooking(host, { amount = 10000, guestId = guest } = {}) {
@@ -697,5 +713,254 @@ test("nonfounder referral refunds use the captured policy, not the presence of f
     ).rows[0].state,
     "released",
   );
+  await enablePolicy();
+});
+
+test("custom founding limits reserve the final credit, release failures, and freeze each enrollment", async () => {
+  await enablePolicy({ founder_free_bookings: 2, founder_duration_months: 3 });
+  const host = await hostFixture({ founder: true });
+  const first = await paidBooking(host.host);
+  assert.equal(first.attempt.commission_cents, 0);
+  const last = await attach(await reserve(await acceptedBooking(host.host)));
+  const waiting = await acceptedBooking(host.host);
+  await rejected(() => reserve(waiting));
+  await apply(last, { state: "failed" });
+  const retry = await attach(await reserve(waiting));
+  assert.equal(retry.commission_cents, 0);
+  await apply(retry);
+  assert.equal((await reserve(await acceptedBooking(host.host))).commission_cents, 1000);
+  await enablePolicy({
+    founder_free_bookings: 1,
+    founder_duration_months: 1,
+    founder_fee_bps: 500,
+  });
+  const snapshot = await server(() => value("pay_read_host", [host.host, "sandbox"]));
+  assert.equal(snapshot.commercial.founder_free_bookings, 1);
+  assert.equal(snapshot.commercial.founder.free_booking_limit, 2);
+  assert.equal(snapshot.commercial.founder.duration_months, 3);
+  assert.equal(snapshot.commercial.founder.lifetime_fee_bps, 1000);
+  await member(admin, () =>
+    rejected(() => enrollFounder(host.host, new Date().toISOString()), "23505"),
+  );
+  const nextHost = await hostFixture({ founder: true });
+  const newSnapshot = await server(() => value("pay_read_host", [nextHost.host, "sandbox"]));
+  assert.equal(newSnapshot.commercial.founder.free_booking_limit, 1);
+  assert.equal(newSnapshot.commercial.founder.duration_months, 1);
+  await enablePolicy();
+});
+
+test("custom calendar duration handles month ends/DST and checkout remains frozen across cutoff and policy changes", async () => {
+  await enablePolicy({ founder_free_bookings: 2, founder_duration_months: 1 });
+  const calendar = await hostFixture({ founder: true, startedAt: "2026-01-31T17:00:00.000Z" });
+  let terms = (
+    await db.query("select ends_at from private.host_incentive_terms where host_id=$1", [
+      calendar.host,
+    ])
+  ).rows[0];
+  assert.equal(new Date(terms.ends_at).toISOString(), "2026-02-28T17:00:00.000Z");
+  const dst = await hostFixture({ founder: true, startedAt: "2026-02-15T17:00:00.000Z" });
+  terms = (
+    await db.query("select ends_at from private.host_incentive_terms where host_id=$1", [dst.host])
+  ).rows[0];
+  assert.equal(new Date(terms.ends_at).toISOString(), "2026-03-15T16:00:00.000Z");
+  const startedAt = (
+    await db.query(
+      "select (((now() at time zone 'America/New_York') - interval '1 month' + interval '2 minutes') at time zone 'America/New_York') as value",
+    )
+  ).rows[0].value;
+  const host = await hostFixture({ founder: true, startedAt });
+  const booking = await acceptedBooking(host.host);
+  const quoted = await attach(await reserve(booking));
+  await db.query(
+    "update private.host_incentive_terms set ends_at=now()-interval '1 second' where host_id=$1",
+    [host.host],
+  );
+  await enablePolicy({
+    founder_free_bookings: 0,
+    founder_duration_months: 2,
+    founder_fee_bps: 500,
+  });
+  const reused = await reserve(booking);
+  assert.equal(reused.attempt_id, quoted.attempt_id);
+  assert.equal(reused.policy_version, quoted.policy_version);
+  assert.equal(reused.commission_cents, 0);
+  await apply(quoted);
+  assert.equal((await reserve(await acceptedBooking(host.host))).commission_cents, 1000);
+  const noCredits = await hostFixture({ founder: true });
+  assert.equal((await reserve(await acceptedBooking(noCredits.host))).commission_cents, 500);
+  assert.equal(
+    (
+      await db.query(
+        "select count(*)::int as n from private.incentive_reservations where host_id=$1",
+        [noCredits.host],
+      )
+    ).rows[0].n,
+    0,
+  );
+  await enablePolicy();
+});
+
+test("custom founding refunds restore only a full refund when the enrolled policy allows it", async () => {
+  for (const restore of [true, false]) {
+    await enablePolicy({
+      founder_free_bookings: 1,
+      founder_duration_months: 2,
+      restore_refunded_credit: restore,
+    });
+    const host = await hostFixture({ founder: true });
+    const { booking, attempt } = await paidBooking(host.host);
+    await enablePolicy({
+      founder_free_bookings: 8,
+      founder_duration_months: 12,
+      restore_refunded_credit: !restore,
+    });
+    for (const amount of [4000, 6000]) {
+      const operation = randomUUID();
+      await server(() =>
+        value("pay_prepare_refund", [
+          admin,
+          booking,
+          amount,
+          "Synthetic refund",
+          operation,
+          attempt.attempt_id,
+        ]),
+      );
+      await server(() => rpc("pay_record_operation", [operation, token("re"), "succeeded", null]));
+      const state = (
+        await db.query("select state from private.incentive_reservations where attempt_id=$1", [
+          attempt.attempt_id,
+        ])
+      ).rows[0].state;
+      assert.equal(state, amount === 6000 && restore ? "released" : "consumed");
+    }
+    assert.equal(
+      (await reserve(await acceptedBooking(host.host))).commission_cents,
+      restore ? 0 : 1000,
+    );
+  }
+  await enablePolicy();
+});
+
+test("SQL rejects omitted, fractional and out-of-range founding terms without changing the saved policy", async () => {
+  const before = (
+    await db.query("select policy_id from private.commercial_settings where environment='sandbox'")
+  ).rows[0].policy_id;
+  for (const field of ["founder_free_bookings", "founder_duration_months", "founder_cohort_cap"]) {
+    const missing = settings();
+    delete missing[field];
+    await member(admin, () =>
+      rejected(() => rpc("admin_set_commercial_policy", [missing]), "22023"),
+    );
+    for (const input of [null, 1.5, "", "1.2"])
+      await member(admin, () =>
+        rejected(() => rpc("admin_set_commercial_policy", [settings({ [field]: input })]), "22023"),
+      );
+  }
+  for (const patch of [
+    { founder_free_bookings: 101 },
+    { founder_cohort_cap: 0 },
+    { founder_cohort_cap: 10001 },
+    { founder_duration_months: 0 },
+    { founder_duration_months: 25 },
+  ])
+    await member(admin, () =>
+      rejected(() => rpc("admin_set_commercial_policy", [settings(patch)]), "23514"),
+    );
+  assert.equal(
+    (
+      await db.query(
+        "select policy_id from private.commercial_settings where environment='sandbox'",
+      )
+    ).rows[0].policy_id,
+    before,
+  );
+});
+
+test("founding activation requires a published listing and cohort cap counts all policy versions", async () => {
+  await enablePolicy();
+  const unpublished = await hostFixture();
+  await member(admin, () =>
+    rejected(() => enrollFounder(unpublished.host, new Date().toISOString())),
+  );
+  const count = (
+    await db.query(
+      "select count(*)::int as n from private.host_incentive_terms where environment='sandbox'",
+    )
+  ).rows[0].n;
+  await enablePolicy({
+    founder_cohort_cap: count + 1,
+    founder_free_bookings: 3,
+    founder_duration_months: 3,
+  });
+  await publishListing(unpublished.host);
+  const agreed = "2026-01-20T17:00:00.000Z";
+  await member(admin, () => enrollFounder(unpublished.host, agreed));
+  const enrolled = (
+    await db.query(
+      "select starts_at,free_booking_limit from private.host_incentive_terms where host_id=$1",
+      [unpublished.host],
+    )
+  ).rows[0];
+  assert.equal(new Date(enrolled.starts_at).toISOString(), agreed);
+  assert.equal(enrolled.free_booking_limit, 3);
+  const overflow = await hostFixture();
+  await publishListing(overflow.host);
+  await enablePolicy({ founder_cohort_cap: count + 1, founder_free_bookings: 1 });
+  await member(admin, () => rejected(() => enrollFounder(overflow.host, new Date().toISOString())));
+  // Lowering a later cap preserves admitted hosts and still denies new admissions.
+  await enablePolicy({ founder_cohort_cap: 1 });
+  await member(admin, () => rejected(() => enrollFounder(overflow.host, new Date().toISOString())));
+  assert.equal(
+    (
+      await db.query(
+        "select count(*)::int as n from private.host_incentive_terms where environment='sandbox'",
+      )
+    ).rows[0].n,
+    count + 1,
+  );
+  await enablePolicy();
+});
+
+test("founder enrollment rejects changed visible policy and accepts only reviewed current terms", async () => {
+  const shownPolicy = await enablePolicy({ founder_free_bookings: 3, founder_duration_months: 3 });
+  const host = await hostFixture();
+  await publishListing(host.host);
+  const agreed = new Date().toISOString();
+  const replacement = await enablePolicy({
+    founder_free_bookings: 1,
+    founder_duration_months: 1,
+    founder_fee_bps: 1250,
+  });
+  await member(admin, () => rejected(() => enrollFounder(host.host, agreed, shownPolicy), "22023"));
+  assert.equal(
+    (
+      await db.query(
+        "select count(*)::int as n from private.host_incentive_terms where host_id=$1",
+        [host.host],
+      )
+    ).rows[0].n,
+    0,
+  );
+  await member(admin, () =>
+    rejected(() => rpc("admin_enroll_founder", [host.host, "sandbox", agreed, null]), "22023"),
+  );
+  // Old clients cannot fall back to enrollment without a reviewed policy ID.
+  await member(admin, () =>
+    rejected(() => rpc("admin_enroll_founder", [host.host, "sandbox", agreed]), "42883"),
+  );
+  await member(admin, () => enrollFounder(host.host, agreed, replacement));
+  const enrolled = (
+    await db.query(
+      "select policy_id,free_booking_limit,duration_months,lifetime_fee_bps from private.host_incentive_terms where host_id=$1",
+      [host.host],
+    )
+  ).rows[0];
+  assert.deepEqual(enrolled, {
+    policy_id: replacement,
+    free_booking_limit: 1,
+    duration_months: 1,
+    lifetime_fee_bps: 1250,
+  });
   await enablePolicy();
 });

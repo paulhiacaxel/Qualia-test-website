@@ -41,6 +41,8 @@ export type Booking = {
   guest_message: string;
   request_expires_at: string | null;
   payment_deadline_at: string | null;
+  /** Present on booking details; list summaries may omit the policy snapshot. */
+  policy_payment_deadline_minutes?: number | null;
   /** Server-derived: a checkout/payment can still settle after its booking deadline. */
   payment_hold_active?: boolean;
   created_at: string;

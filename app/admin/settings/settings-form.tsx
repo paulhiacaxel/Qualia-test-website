@@ -49,7 +49,7 @@ export function SettingsForm({ policy }: { policy: BookingPolicy }) {
           id="payment-deadline"
           name="paymentDeadlineMinutes"
           type="number"
-          min={1}
+          min={32}
           max={10080}
           step={1}
           required={enabled}
@@ -57,7 +57,9 @@ export function SettingsForm({ policy }: { policy: BookingPolicy }) {
           aria-describedby="payment-hint"
         />
         <p className="field-hint" id="payment-hint">
-          How long a guest has to pay after the host accepts. Choose 1–10,080 minutes.
+          How long a guest has to pay after the host accepts. Choose 32–10,080 minutes. A new
+          checkout must be opened at least 31 minutes before this deadline; allow guests enough time
+          to see the acceptance and start payment.
         </p>
       </div>
       <fieldset className={styles.checklist}>
@@ -77,6 +79,12 @@ export function SettingsForm({ policy }: { policy: BookingPolicy }) {
         existing bookings keep their captured deadlines and can continue through their current
         workflow.
       </p>
+      {policy.payment_deadline_minutes !== null && policy.payment_deadline_minutes < 32 ? (
+        <p className="notice">
+          The saved payment window is too short. New requests stay closed until you choose at least
+          32 minutes. Existing deadlines have not been extended.
+        </p>
+      ) : null}
       {state.error ? (
         <p className="form-error" role="alert">
           {state.error}

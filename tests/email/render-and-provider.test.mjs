@@ -61,6 +61,30 @@ test("job authorization fails closed and requires exact bearer secret", () => {
     assert.equal(isEmailJobAuthorized(header, value), false);
 });
 
+test("acceptance email separates the opening cutoff from completion and preserves resume guidance", () => {
+  const result = renderBookingEmail(context, "https://qualia.example");
+  for (const content of [result.text, result.html]) {
+    assert.match(content, /Start a new checkout before Saturday, November 28, 2026 at 12:29 PM/);
+    assert.match(content, /Complete payment by Saturday, November 28, 2026 at 1:00 PM/);
+    assert.match(content, /already opened checkout, return to your booking to resume it/);
+  }
+  const startLimited = renderBookingEmail(
+    {
+      ...context,
+      starts_at: "2026-12-01T17:00:00Z",
+      payment_deadline_at: "2026-12-01T18:00:00Z",
+    },
+    "https://qualia.example",
+  );
+  assert.match(
+    startLimited.text,
+    /Start a new checkout before Tuesday, December 1, 2026 at 11:29 AM/,
+  );
+  assert.match(startLimited.text, /Complete payment by Tuesday, December 1, 2026 at 12:00 PM/);
+  const confirmed = renderBookingEmail({ ...context, kind: "confirmed" }, "https://qualia.example");
+  assert.ok(!confirmed.text.includes("Start a new checkout"));
+});
+
 test("Resend uses fixed API origin, frozen payload and idempotency header, returning acceptance only", async () => {
   const sent = [];
   const fakeFetch = async (url, init) => {

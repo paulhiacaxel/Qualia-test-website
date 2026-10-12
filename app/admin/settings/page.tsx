@@ -34,6 +34,11 @@ export default async function BookingSettingsPage() {
             payment deadline starts when a host accepts.
           </p>
           <p>
+            New requests close no later than 32 minutes before the experience starts, leaving time
+            for the guest to open payment. Accepting an older request cannot extend its captured
+            payment window.
+          </p>
+          <p>
             These settings apply to new booking requests. Changing them does not rewrite deadlines
             already agreed on existing bookings.
           </p>

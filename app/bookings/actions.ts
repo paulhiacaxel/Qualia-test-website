@@ -37,6 +37,11 @@ export async function requestBooking(
       p_guest_message: parsed.data.guestMessage,
     });
     if (error) {
+      if (error.code === "QL001")
+        return {
+          error:
+            "This time is too close to the start to complete a booking. Refresh the calendar and choose a later time.",
+        };
       if (error.code === "23P01" || error.code === "23505")
         return {
           error:
@@ -75,6 +80,11 @@ export async function respondToBooking(
       p_booking_id: parsed.data.bookingId,
       p_decision: parsed.data.decision,
     });
+    if (error?.code === "QL001")
+      return {
+        error:
+          "This request no longer leaves enough time to start payment. Decline it or ask the guest to request a later time.",
+      };
     if (error)
       return {
         error:

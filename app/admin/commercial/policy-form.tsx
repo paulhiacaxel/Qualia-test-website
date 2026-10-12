@@ -67,6 +67,27 @@ export function CommercialForm({
               "0.01",
             ],
             [
+              "founder_free_bookings",
+              "Founding commission-free paid bookings · 0 means none",
+              policy?.founder_free_bookings ?? "",
+              100,
+              "1",
+            ],
+            [
+              "founder_duration_months",
+              "Founding credit period · calendar months",
+              policy?.founder_duration_months ?? "",
+              24,
+              "1",
+            ],
+            [
+              "founder_cohort_cap",
+              "Founding host cohort cap · all policy versions",
+              policy?.founder_cohort_cap ?? "",
+              10000,
+              "1",
+            ],
+            [
               "payout_delay_hours",
               "Transfer delay after completion · hours",
               policy?.payout_delay_hours ?? "",
@@ -98,7 +119,7 @@ export function CommercialForm({
               id={name}
               name={name}
               type="number"
-              min="0"
+              min={name === "founder_duration_months" || name === "founder_cohort_cap" ? 1 : 0}
               max={max}
               step={step}
               required
@@ -167,7 +188,8 @@ export function CommercialForm({
         <legend>Review the supported policy</legend>
         <label>
           <input type="checkbox" name="incentive_start" value="host_enrollment" required />
-          Founding benefits begin at the recorded host enrollment time.
+          Founding benefits begin at the agreed activation time recorded when a host with an
+          approved live listing is enrolled.
         </label>
         <label>
           <input
@@ -212,9 +234,11 @@ export function CommercialForm({
 export function IncentiveForm({
   kind,
   environment,
+  policyId,
 }: {
   kind: "founder" | "referral";
   environment: string;
+  policyId?: string;
 }) {
   const [state, action] = useActionState<CommercialState, FormData>(
     kind === "founder" ? enrollFounder : grantReferral,
@@ -225,12 +249,13 @@ export function IncentiveForm({
       <input type="hidden" name="environment" value={environment} />
       {kind === "founder" ? (
         <>
+          <input type="hidden" name="policy_id" value={policyId ?? ""} />
           <label className="field-label" htmlFor="founder-host">
             Host account UUID
           </label>
           <input className="field-input" id="founder-host" name="host_id" required />
           <label className="field-label" htmlFor="founder-start">
-            Agreed start · Miami time
+            Agreed founding activation time · Miami time
           </label>
           <input
             className="field-input"
@@ -241,7 +266,8 @@ export function IncentiveForm({
           />
           <label>
             <input type="checkbox" name="approved" required />
-            The host has agreed to these founding terms.
+            The host has an approved live listing and has agreed to these founding terms and
+            activation time.
           </label>
         </>
       ) : (

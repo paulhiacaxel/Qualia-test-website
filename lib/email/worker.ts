@@ -12,9 +12,22 @@ type Dependencies = {
 
 /** The only caller is an authenticated server job. Dependencies keep tests offline. */
 export async function runEmailBatch({ client, from, render, send }: Dependencies) {
+  // Deadlines must close requests without depending on a participant's next
+  // visit. The RPC holds the same host lock as checkout and preserves payments
+  // that Stripe may still settle. Its trigger queues closure notifications.
+  const expired = await client.rpc("expire_due_bookings", { p_limit: 100 });
+  if (expired.error) throw new Error("Booking deadlines could not be reconciled.");
   const claimed = await client.rpc("email_claim_jobs", { p_limit: 5 });
   if (claimed.error) throw new Error("Email queue unavailable.");
-  const stats = { claimed: 0, accepted: 0, skipped: 0, retried: 0, failed: 0, errors: 0 };
+  const stats = {
+    expired: (expired.data as number) ?? 0,
+    claimed: 0,
+    accepted: 0,
+    skipped: 0,
+    retried: 0,
+    failed: 0,
+    errors: 0,
+  };
   for (const job of (claimed.data ?? []) as Job[]) {
     stats.claimed++;
     const finish = async (

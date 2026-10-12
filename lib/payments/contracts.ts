@@ -52,6 +52,12 @@ export const checkoutTermsSchema = z.object({
   policy_id: z.uuid(),
   terms_version: z.string(),
   cancellation_terms: z.string(),
+  booking_status: z.string(),
+  starts_at: z.string(),
+  payment_deadline_at: z.string().nullable(),
+  checkout_state: z.string().nullable(),
+  checkout_session_exists: z.boolean(),
+  checkout_expires_at: z.string().nullable(),
 });
 export type CheckoutTerms = z.infer<typeof checkoutTermsSchema>;
 export type CheckoutTermsState = PaymentActionState & { terms?: CheckoutTerms };

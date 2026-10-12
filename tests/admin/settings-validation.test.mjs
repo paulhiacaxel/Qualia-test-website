@@ -45,3 +45,24 @@ test("booking deadline settings reject fractional, negative, zero, malformed, an
     true,
   );
 });
+
+test("new payment windows need 32 minutes while response windows may be shorter", () => {
+  for (const payment of ["1", "30", "31"]) {
+    assert.equal(
+      bookingPolicyInputSchema.safeParse({
+        enabled: true,
+        requestExpiryMinutes: "1",
+        paymentDeadlineMinutes: payment,
+      }).success,
+      false,
+    );
+  }
+  assert.equal(
+    bookingPolicyInputSchema.safeParse({
+      enabled: true,
+      requestExpiryMinutes: "1",
+      paymentDeadlineMinutes: "32",
+    }).success,
+    true,
+  );
+});
