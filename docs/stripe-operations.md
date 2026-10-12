@@ -4,37 +4,47 @@ Implementation: stripe-node 23.0.0, API `2026-09-30.endive`, Accounts v2 Express
 
 ## Current sandbox configuration — October 12, 2026
 
-The connected sandbox is `acct_1SKPOxDIzwThjgQA`, with `livemode=false`. The three original signing secrets below are stored as Sensitive Production variables in Vercel. This is configuration progress, not a working payment integration: `STRIPE_RESTRICTED_KEY` is still missing and no sandbox payment/webhook rehearsal has run. READY deployment `dpl_5LvYYrM2tCCLk76D546eRAFtiB41` now loads the saved original signing secrets.
+The sandbox is `acct_1SKPOxDIzwThjgQA`, with `livemode=false` and **Connect Marketplace enabled**. After renewed browser approval, the earlier SMS attempt was found to have succeeded despite the authentication tool's failure report. All configuration below was performed in the sandbox.
 
-| Destination                 | Provider ID                                            | Current status                                                                                 |
-| --------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
-| Platform snapshots          | `we_1UPjZeDIzwThjgQAclqYI3H5`                          | Original signing secret stored as `STRIPE_WEBHOOK_SECRET_PLATFORM`                             |
-| Connect payout snapshots    | `we_1UPjaKDIzwThjgQAinUcI1AR`                          | Original signing secret stored as `STRIPE_WEBHOOK_SECRET_CONNECT`; source read-back unresolved |
-| Accounts v2 thin events     | `ed_test_61VZ7YBgatG2p8hK916TTnMJSmSQozILacixY42JEPZY` | Signing secret stored as `STRIPE_WEBHOOK_SECRET_ACCOUNTS_V2`                                   |
-| Duplicate Connect snapshots | `we_1UPjeCDIzwThjgQAzDVeQRVx`                          | Enabled; its secret has not replaced the original Connect secret                               |
+Dedicated restricted key **Qualia sandbox app** (`mk_1UPkb4DIzwThjgQARHnBkBjC`) is stored as Sensitive Production `STRIPE_RESTRICTED_KEY`. READY deployment `dpl_9yJzNLFZVPaL1ggki4o9Q3xBF2LC` loads it and the three active signing secrets at reviewed commit `407a220d66a2d24abe3af4c9bc6f4d76c80fbb23`. Secret values remain outside the repository; temporary transfer files were deleted.
 
-Both Connect destination reads report `@self`, although the first was created with `connect=true` and the duplicate with explicit `@accounts`. Do not assume either read-back proves connected-account scope. Automatic approval review rejected disabling the duplicate, so both remain enabled pending a Stripe Dashboard source check. Confirm **Connected accounts / Snapshot**, retain one matching destination/secret, and disable the duplicate before testing. The Accounts v2 thin destination should remain **Your account / Thin**. Do not create further duplicates to troubleshoot this ambiguity.
+| Destination | ID | Verified state |
+| --- | --- | --- |
+| Platform snapshots | `we_1UPjZeDIzwThjgQAclqYI3H5` | Existing platform destination; `STRIPE_WEBHOOK_SECRET_PLATFORM` loaded |
+| Corrected Connect payout snapshots | `we_1UPkTKDIzwThjgQAIQtjmXFc` | Enabled, `@accounts` / snapshot; corrected `STRIPE_WEBHOOK_SECRET_CONNECT` loaded |
+| Accounts v2 thin events | `ed_test_61VZ7YBgatG2p8hK916TTnMJSmSQozILacixY42JEPZY` | Existing Your account / thin destination; `STRIPE_WEBHOOK_SECRET_ACCOUNTS_V2` loaded |
+| Incorrect original payout destination | `we_1UPjaKDIzwThjgQAinUcI1AR` | Disabled, `@self` / snapshot |
+| Incorrect duplicate payout destination | `we_1UPjeCDIzwThjgQAzDVeQRVx` | Disabled, `@self` / snapshot |
 
-A fresh browser login progressed through the existing Axel Google account to an SMS challenge, but the browser authentication tool returned `submission_failed`. Automatic approval review then rejected the required state check as post-failure authentication access without renewed approval. The login outcome is unknown; no retry/workaround was attempted. This supersedes the earlier declined-sign-in status. Obtain renewed browser approval before continuing authentication. The existing connector sandbox remains connected.
+Dashboard inspection confirmed both earlier payout destinations had **Your account** scope. The supported update APIs cannot change this source: [V2 event-destination update](https://docs.stripe.com/api/v2/core/event_destinations/update) states event scopes are configured at creation, and [V1 webhook update](https://docs.stripe.com/api/webhook_endpoints/update) has no `connect` parameter. After enabling sandbox Connect, the replacement was created with **Connected accounts / Snapshot**, API version `2026-09-30.endive`, the six payout events below and the existing Connect URL. Both incorrect destinations were then reversibly disabled. V1 and V2 API read-back confirmed the replacement remains enabled and its source is `@accounts`.
+
+The initial runtime-key Accounts v2 read failed with HTTP 403 until the separate **Accounts v2: Read** and **Recipient Configuration: Write** grants were added. The key value was unchanged, so no further redeploy was needed. With API version `2026-09-30.endive`, actual runtime-key reads now return HTTP 200 and empty lists for `/v2/core/accounts?limit=1` (`req_v2qvgDoH9T9OBTzgq`) and `/v1/checkout/sessions?limit=1` (`req_R0Dbk4rOqnXYYz`). All three deployed webhook routes reject missing and invalid signatures with HTTP 400. These are configuration and negative checks, not a completed payment/webhook rehearsal: no account, checkout payment, refund, transfer or payout was created by these checks. Full sandbox acceptance remains pending approved fixtures and explicit commercial/booking policies.
 
 ## Before sandbox use
 
 Use the owner checklist in [owner-setup.md](owner-setup.md). The production origin is `https://bookqualia.com`; configuring that origin does not enable real payments.
 
 1. In the [Stripe Dashboard](https://dashboard.stripe.com/), select the existing sandbox identified above and check that the sandbox banner is visible. Sandbox access is verified through the connected tools; there is no need to create another one.
-2. Complete the sandbox's Connect setup if Stripe requests it. The integration is a marketplace: Qualia collects the guest payment, hosts use an Express dashboard, Qualia manages pricing and negative balance liability, and separate charges/transfers support release after completion. The owner supplies business facts and accepts any required agreements; do not invent or pre-accept these.
-3. In the sandbox's [API keys](https://dashboard.stripe.com/apikeys), choose **Create restricted key**, start from no permissions, and name it **Qualia staging app**. Grant only the resource access below. Write includes Read; Dashboard grouping may combine related resources.
+2. The existing sandbox's Connect Marketplace setup is complete. For another sandbox, complete Connect setup if Stripe requests it. The integration is a marketplace: Qualia collects the guest payment, hosts use an Express dashboard, Qualia manages pricing and negative balance liability, and separate charges/transfers support release after completion. The owner supplies business facts and accepts any required agreements; do not invent or pre-accept these.
+3. The existing sandbox key is **Qualia sandbox app**. Do not create a duplicate. Its persisted Dashboard grants are recorded below. For another environment, start with no permissions and grant only the resources required. Write includes Read. The connected-account column appeared after Connect Marketplace was enabled in this sandbox.
 
-| Resource used by this code                              | Platform permission | Connected-account permission |
-| ------------------------------------------------------- | ------------------- | ---------------------------- |
-| Accounts v2, Account Links and Express login links      | Write               | None                         |
-| Checkout Sessions                                       | Write               | None                         |
-| Transfers and transfer reversals                        | Write               | None                         |
-| Refunds                                                 | Write               | None                         |
-| PaymentIntents, Charges, Balance Transactions, Disputes | Read                | None                         |
-| Payouts                                                 | None                | Read                         |
-| Other resources                                         | None                | None                         |
+| Dashboard resource | Platform permission | Connected-account permission |
+| --- | --- | --- |
+| Balance | Read | None |
+| Charges and Refunds (grouped) | Write | None |
+| Payment Disputes | Read | None |
+| Payment Intents | Read | None |
+| Checkout Sessions | Write | None |
+| Accounts (V1) | Write | None |
+| Account Links | Write | None |
+| Login Links | Write | None |
+| Transfers | Write | None |
+| Accounts v2 | Read | Mirrored by Stripe; disabled control |
+| Recipient Configuration | Write | Mirrored by Stripe; disabled control |
+| Payouts | None | Read |
+| Other resources, including Customer/Merchant Configuration | None | None |
 
+The V2 connected-account cells are gray and automatically mirror the selected platform grants; they cannot be controlled independently in this UI. Charges and Refunds is a grouped Write grant because refunds are created; the code only reads Charges. Accounts (V1) Write remains in the verified saved configuration; its necessity for Express login links has not been conclusively isolated. Do not describe untested grants as fully proven.
 The current code does not retrieve Events through the API and does not need an Events permission. A publishable Stripe key is not needed for the hosted Checkout redirect. Verify the restricted key against actual sandbox requests and use Workbench permission errors to identify a missing resource grant; do not replace it with unrestricted access.
 
 4. Copy the `rk_test_` value directly into the selected Vercel project's **Settings → Environment Variables**, using a **Sensitive** variable. Never paste keys into chat, source files, logs or browser configuration. Set these deployment variables:
@@ -54,7 +64,7 @@ The owner must explicitly save and enable a **sandbox** commercial policy at `/a
 
 ## Webhook destinations
 
-The current destinations already exist; reconcile their source scope and the duplicate described above before creating or replacing anything. The table below is the required mapping. For a separate staging installation, open its sandbox's [Workbench Webhooks](https://dashboard.stripe.com/webhooks) → **Create an event destination**, choose each stated source/payload and event list, and use the exact staging HTTPS origin plus the path. Use the API version above for both snapshot endpoints.
+The current destinations are configured and the two incorrect payout destinations are disabled; preserve that state. The table below is the required mapping. For a separate staging installation, open its sandbox's [Workbench Webhooks](https://dashboard.stripe.com/webhooks) → **Create an event destination**, choose each stated source/payload and event list, and use the exact staging HTTPS origin plus the path. Use the API version above for both snapshot endpoints.
 
 **Accounts v2 thin notifications use Your account.** They describe Account objects managed by the platform. Only the payout snapshot endpoint uses Connected accounts. These are three separate destinations with three separate signing secrets; do not reuse a CLI forwarding secret for a Dashboard destination.
 

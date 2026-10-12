@@ -22,7 +22,7 @@ These are documented business models, not evidence that a particular incentive p
 
 Honor the requested **no commission percentage on the public homepage**. “Free to list” can describe the listing fee. Before a host accepts terms or publishes, show their actual commission, processing-fee allocation, payout timing and founding offer in plain language; show guests their complete total before payment.
 
-Track the founding incentive in the host dashboard: completed eligible bookings remaining, end date and later rate. Owner decisions remain: standard rate; lifetime founding rate; when six months starts; treatment of cancellations/refunds; and the number, expiry and stacking rules for referral credits. Say precisely which charge is waived. Foregone commission is `eligible booking value × otherwise-applicable rate`; processing, refunds, support and acquisition still cost money. Avoid uncapped referral promises until those rules are approved.
+Track the founding incentive in the host dashboard: paid eligible bookings remaining, end date and later rate. The approved standard rate is 17.5%; the selected lifetime founding rate is 10%, following zero commission on the first ten paid bookings or six months, whichever comes first. Record the agreed host enrollment time as the start. Owner decisions remain: processing-cost allocation; treatment of cancellations/refunds and credit restoration; and the number, expiry and stacking rules for referral credits. Say precisely which charge is waived. Foregone commission is `eligible booking value × otherwise-applicable rate`; processing, refunds, support and acquisition still cost money. Avoid uncapped referral promises until those rules are approved.
 
 ## Insurance and waivers: questions to resolve before taking bookings
 
@@ -50,4 +50,4 @@ Start with approved activities and venues whose insurance and operating requirem
 
 Store accepted terms/waiver version, signer, booking and timestamp with restricted access. Define what triggers a new acceptance, document-expiry suspension or incident escalation. Public copy should describe the review accurately and make no blanket “fully insured” or safety guarantee.
 
-**Owner approvals needed:** fee and incentive rules; adults-only versus minors; initial activity scope; legal/broker spending allocation; and approved host terms/waiver process. All are unresolved decisions, not changes already made to Qualia.
+**Owner approvals needed:** remaining processing-cost and incentive rules (standard 17.5% and founding 10% rates are selected); adults-only versus minors; initial activity scope; legal/broker spending allocation; and approved host terms/waiver process. All are unresolved decisions, not changes already made to Qualia.

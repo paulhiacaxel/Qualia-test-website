@@ -1,6 +1,6 @@
 # Qualia — Phase 5 Stripe implementation plan
 
-Implementation research dated 2026-10-11. No financial resources were created during that research. The subsequent October 12 setup connected an existing sandbox and created webhook destinations; see [current Stripe operations](stripe-operations.md#current-sandbox-configuration--october-12-2026) for the unresolved Connect source/duplicate check and missing runtime key. No payments, transfers or payouts have been performed.
+Implementation research dated 2026-10-11. No financial resources were created during that research. The subsequent October 12 setup connected an existing sandbox and created webhook destinations; Connect Marketplace, the dedicated runtime key and corrected connected-account destination are now configured. See [current Stripe operations](stripe-operations.md#current-sandbox-configuration--october-12-2026) for verified grants, disabled incorrect destinations and the limited successful API reads. No payments, transfers or payouts have been performed.
 
 **Recommendation:** Stripe-hosted Checkout, Accounts v2 connected accounts, and **separate charges and transfers if hosts receive funds only after the experience is completed**. Keep live charging disabled until the owner approves payout timing, fees and commercial terms. If immediate transfer at payment is acceptable, destination charges are simpler; that is a different implementation choice, not a payout-delay setting.
 
@@ -117,7 +117,7 @@ Meaningful sandbox gates: failed payment and 3DS; delayed-method success/failure
 2. Record the approved 17.5% standard and selected 10% lifetime founding rates; decide who bears processing/Connect costs, referral grant and cap.
 3. Incentive start/time-zone/cutoff/refund rules, payment deadline and cancellation/no-show/refund policy.
 4. Confirm Qualia's customer-facing payment/support responsibility and acceptance of the proposed negative-balance responsibility.
-5. Finish the connected sandbox's runtime restricted key, resolve webhook source/duplicate configuration and redeploy any resulting key changes; later separately approve live enablement.
+5. Complete the full sandbox payment/refund/release rehearsal using the configured key and destinations after approving test fixtures and explicit sandbox policies; separately approve live enablement later.
 
 ## Primary references checked
 
