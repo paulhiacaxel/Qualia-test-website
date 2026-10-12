@@ -2,14 +2,14 @@
 
 This runner makes the real request → acceptance → hosted Stripe Checkout → signed webhook → refund/release check repeatable without putting synthetic listings on `bookqualia.com`. It uses a separate **local Supabase project**, the unchanged application, and a **dedicated Stripe sandbox**. It never creates Stripe objects itself, enables production settings, sends emails or resets a database. Normal application actions create only sandbox payments/transfers during the operator-led browser steps.
 
-The runner and its SQL are tested offline against all application migrations. **The actual Auth/Checkout/webhook/browser round trip has not been executed here:** this workspace has no Docker runtime. A green offline test is not a live-payment acceptance result.
+The loopback runner and its SQL are tested offline against all application migrations. This workspace has no Docker runtime, so that local runner has not been exercised end to end. A separately authorized **hosted isolated rehearsal** completed the core Auth/Checkout/webhook/refund/transfer browser round trip on October 12: see [evidence and remaining cases](rehearsal-evidence-2026-10-12.html). Its setup does not change the local-only runner guards below. A green offline test alone is not a provider acceptance result.
 
 ## Prerequisites and isolation
 
 - Use a clean local checkout with Node 24, `npm ci`, Docker running, and the repository's Supabase CLI 2.120.0. Do not run two rehearsals on its reserved ports at once.
 - Use a separate Stripe sandbox with Connect enabled, a restricted **`rk_test_`** key with the application permissions in [Stripe operations](stripe-operations.md), and an existing **sandbox** recipient whose transfers and payouts capabilities are active. The owner completes any hosted sandbox onboarding; the runner does not accept agreements or invent identity details.
 - In that sandbox's Workbench, inspect **both snapshot and thin event destinations**, including disabled entries. Confirm there are **no enabled destinations pointing to production or another installation**. Record the sandbox account ID, inspection date and result in the evidence record below. CLI local forwarding needs no Dashboard destination.
-- Do **not** reuse sandbox `acct_1SKPOxDIzwThjgQA`: it forwards events to the public Qualia deployment. Local fixture IDs would fail reconciliation there. The runner rejects that ID. For other IDs, `QUALIA_REHEARSAL_ISOLATED_SANDBOX=true` is an operator attestation, **not an automated inspection of remote destinations**. Its provider read verifies the platform ID, recipient access, `livemode=false` and active capabilities only.
+- Do **not** reuse sandbox `acct_1SKPOxDIzwThjgQA`: it now forwards events to the dedicated hosted rehearsal deployment; callbacks to bookqualia.com are disabled. Local fixture IDs would fail reconciliation in the separate hosted database. The runner rejects that ID. For other IDs, `QUALIA_REHEARSAL_ISOLATED_SANDBOX=true` is an operator attestation, **not an automated inspection of remote destinations**. Its provider read verifies the platform ID, recipient access, `livemode=false` and active capabilities only.
 - Install/authenticate the Stripe CLI against the dedicated sandbox. Check `stripe listen --help`; never add `--live`. Keep keys out of command arguments, shell history, chat, screenshots and source control.
 
 An already-ready recipient deliberately isolates the financial round trip. This does **not** validate new-host Connect onboarding or changed capabilities. Those require a separately approved HTTPS staging/browser check: Stripe Account Links require HTTPS return/refresh URLs even in a sandbox. Do not weaken the loopback runner or application guards to bypass that requirement.
@@ -69,7 +69,7 @@ Local login emails/passwords are saved in `.env.rehearsal-stack/fixture.json` wi
 
 Use separate browser profiles for the generated guest and host. The host is also the **local-only** operator. Keep the address bar on `http://localhost:3000` except for the Stripe-hosted **sandbox** Checkout page.
 
-1. Guest: log in at `/login`, open the printed listing URL, choose a slot and request it. Host: accept at `/host/bookings`. Confirm the guest sees the payment deadline and captured terms.
+1. Guest: log in at `/login`, open the printed listing URL, choose a slot and request it. Host: accept at `/host/calendar`. Confirm the guest sees the payment deadline and captured terms.
 2. Guest: review/accept the terms and open Checkout. Use Stripe's published [sandbox test payment details](https://docs.stripe.com/testing), never a real card. First try a documented decline and retry successfully within the same session. Confirm there is one successful charge/attempt, not a new attempt for the retry.
 3. Wait for the **real signed event** to confirm the booking. Do not mark a payment paid in SQL, rely on the return URL, or use `stripe trigger checkout.session.completed`: generic trigger fixtures are not this booking's Checkout session. Capture the booking UUID from its URL, then run:
 
