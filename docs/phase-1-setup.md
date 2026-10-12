@@ -53,4 +53,4 @@ The first owner account is confirmed and its owner-authorized private admin memb
 
 ## Related setup
 
-The branch now includes marketplace, review, payment, and email code. This does not establish that hosted services are configured or that live payments are enabled. Use the sandbox and complete the acceptance checks in [launch setup](launch-setup.md). Outreach still requires separate owner approval of the lead/message workbook before any sending.
+The branch now includes marketplace, review, payment, and email code. This does not establish that hosted services are configured or that live payments are enabled. Use the sandbox and complete the acceptance checks in [launch setup](launch-setup.md). The first 20 outreach recipient selection and remaining body copy are approved subject to requested edits. Sending remains HOLD for a newly agreed compliant postal/opt-out footer and verified sender/provider suitability; final-send readiness remains unresolved. Other leads have no sending approval and remaining qualification stays open.
