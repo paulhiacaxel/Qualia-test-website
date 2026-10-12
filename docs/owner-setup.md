@@ -4,7 +4,7 @@ Production domain: **https://bookqualia.com**. Supabase project: **fjotwcufttucc
 
 ## Owner scope update — October 12, 2026
 
-The owner wants guest payments active after the material launch checks are complete. **Minors and higher-risk activities are included**; hosts propose age limits and safeguards, and Qualia decides the approved range during listing review. Some listings may be 18+. There is no approved blanket adults-only pilot or category exclusion. Use the existing Qualia organization for rehearsal resources. The owner requested drafts and identification of remaining approvals; final legal wording and the proposed adult-account/guardian-booker model are not yet approved.
+The owner wants guest payments active after the material launch checks are complete. **Minors and higher-risk activities are included**; hosts propose age limits and safeguards, and Qualia decides the approved range during listing review. Some listings may be 18+. There is no approved blanket adults-only pilot or category exclusion. Use the existing Qualia organization for rehearsal resources. The owner requested drafts and identification of remaining approvals, then confirmed **Axel Paulhiac** as the operator using **Qualia** as the brand and approved **18+ account holders/bookers/hosts with parent or legal-guardian booking for eligible minors**. Final legal wording, guardian documentation and implementation remain open; do not ask again about the operator or adult-booker model.
 
 See [launch drafts and approval packet](launch-legal-drafts.html). It contains proposed guest terms, host commercial terms, cancellation policy, privacy notice, guardian-document brief and listing review fields. These are drafts, not published website terms. Previously approved numerical commercial decisions remain settled.
 
@@ -21,7 +21,7 @@ The coordinated live-onboarding cutover is complete. Production **https://bookqu
 
 See [Stripe operations](stripe-operations.md#current-live-configuration--october-12-2026) for destination IDs, exact grants, verification evidence and pause/recovery instructions. Do not repeat completed identity, Connect, key, email, Auth or sandbox provisioning. Keep secrets out of chat, source files and public browser variables.
 
-**Remaining launch gates:** the core hosted payment/refund/release rehearsal passed; complete its outstanding provider-level fault cases, finalize legal/operator and guardian decisions, and implement/publish the approved age/guardian/legal controls before enabling real checkout or transfers. Onboarding readiness does not enable booking requests or guest payments. To pause new live onboarding now that a real host exists, set `STRIPE_LIVE_ONBOARDING_ENABLED=false` and redeploy while keeping live credentials and live webhook reconciliation.
+**Remaining launch gates:** the core hosted payment/refund/release rehearsal passed; complete its outstanding provider-level fault cases, finalize legal wording and guardian documentation, and implement/publish the approved age/guardian/legal controls before enabling real checkout or transfers. Onboarding readiness does not enable booking requests or guest payments. To pause new live onboarding now that a real host exists, set `STRIPE_LIVE_ONBOARDING_ENABLED=false` and redeploy while keeping live credentials and live webhook reconciliation.
 
 ## Hosted payment rehearsal — core checks passed
 
