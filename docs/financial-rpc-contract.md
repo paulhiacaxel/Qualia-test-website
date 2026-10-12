@@ -37,7 +37,7 @@ Founders keep the recorded reduced lifetime rate across later policies. The host
 
 ## Configurable founding terms
 
-Migration `20261012161729_configurable_founding_incentives.sql` is **applied to hosted Supabase**; the matching application is deployed at `53bf519`. It seeds no policy or promotion. The [owner proposal](launch-decisions-proposed.md) is not configuration.
+Migration `20261012161729_configurable_founding_incentives.sql` is **applied to hosted Supabase**; the matching application is deployed at `471dc55`. It seeds no policy or promotion. The [owner-approved operating decisions](launch-decisions-proposed.md) were subsequently saved as a verified disabled sandbox policy through the owner-authenticated admin UI.
 
 - `admin_set_commercial_policy(p_settings jsonb)` keeps its signature and adds mandatory `founder_free_bookings` (integer 0–100), `founder_duration_months` (integer 1–24 calendar months), and `founder_cohort_cap` (integer 1–10000), alongside existing policy fields.
 - `admin_enroll_founder(p_host_id uuid,p_environment text,p_started_at timestamptz,p_policy_id uuid)` replaces the three-argument signature. A verified admin must submit the displayed current policy ID; stale consent fails with `22023` after acquiring the environment cohort lock. The host must be verified and have a published listing. The timestamp records explicitly agreed activation; backdating requires the displayed terms to match the originally agreed terms.
@@ -46,8 +46,8 @@ Migration `20261012161729_configurable_founding_incentives.sql` is **applied to 
 
 ## Scheduled expiry and payable deadlines
 
-Hosted migrations `20261012161739_booking_expiry_sweep.sql` and `20261012161747_payable_booking_deadlines.sql` are applied. They add the following without choosing business deadlines; the matching application is deployed at `53bf519`:
+Hosted migrations `20261012161739_booking_expiry_sweep.sql` and `20261012161747_payable_booking_deadlines.sql` are applied. They add the following without choosing business deadlines; the matching application is deployed at `471dc55`:
 
 - `expire_due_bookings(p_limit integer default 100) -> integer` is service-role-only, validates 1–100, and returns the number of newly persisted expirations. It skips financial holds and busy host advisory locks, rechecks effective status before updating, and writes a booking event; the existing trigger queues request-closed notification once. It does not call Stripe or release a possibly paid hold.
 - The authenticated email worker invokes expiry before claiming up to five messages. An expiry error prevents claims. Disabled worker/scheduler means this sweep does not run automatically.
-- New request/slot admission and host acceptance require more than 32 minutes before experience start, and payment policy configuration must allow at least 32 minutes. A requested booking closes no later than start minus 32 minutes. This technical margin is distinct from the existing 31-minute Checkout reservation guard and does not set the proposed 24-hour business windows.
+- New request/slot admission and host acceptance require more than 32 minutes before experience start, and payment policy configuration must allow at least 32 minutes. A requested booking closes no later than start minus 32 minutes. This technical margin is distinct from the existing 31-minute Checkout reservation guard and does not itself configure the owner-approved 24-hour business windows.

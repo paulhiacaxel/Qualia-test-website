@@ -37,7 +37,7 @@ If the owner chooses immediate transfer instead: use destination charges with `p
 
 ## Fee and incentive ledger
 
-Commercial policies remain **unset in the database**, not zero defaults. Rates and incentive terms are reopened for explicit approval in the [launch proposal](launch-decisions-proposed.md); the earlier offer is historical, not active. The applied configurable-incentive migration makes the free-booking count, calendar-month duration and cohort cap explicit policy fields; the corresponding application is deployed at `53bf519`. Saving an approved policy creates an immutable version; every checkout stores the applicable version. Existing founders retain their agreed rate if a later policy changes.
+The approved sandbox commercial policy is **saved and disabled**, not a zero-fee default; no live policy is activated. The owner approved the revised rates and incentives in [launch decisions](launch-decisions-proposed.md); the earlier offer is historical, not active. The applied configurable-incentive migration makes the free-booking count, calendar-month duration and cohort cap explicit policy fields; the corresponding application is deployed at `471dc55`. Saving an approved policy creates an immutable version; every checkout stores the applicable version. Existing founders retain their agreed rate if a later policy changes.
 
 For the proposed separate flow, calculate initial host entitlement as guest payment less approved commission/cost deductions; adjust that entitlement for refunds under the agreed fee-refund policy. The next transfer is remaining entitlement less prior transfers plus applicable reversals, bounded at zero. Use integer cents and ledger entries, not mutable counters. Do not use `application_fee_amount` or the Platform Pricing Tool. The `applicationFeeIncludes` setting is not applicable to this flow; the equivalent processing-cost policy must explicitly be `platform_absorbs` or an approved, disclosed host deduction. Taxes/tips, if added, need separate line-item ownership rules.
 
@@ -103,7 +103,7 @@ Use Stripe Radar and platform controls independently of liability: authenticated
 | `STRIPE_ENVIRONMENT`                 | `sandbox` initially; assert observed resource/event mode matches the configured environment.                                                                                                                                                                                             |
 | `STRIPE_LIVE_PAYMENTS_ENABLED`       | `false` until explicit owner approval and launch gates pass; missing value fails closed.                                                                                                                                                                                                 |
 | `NEXT_PUBLIC_SITE_URL`               | Trusted deployment origin for server-generated return/refresh/success/cancel URLs.                                                                                                                                                                                                       |
-| `CRON_SECRET`                        | Authenticates `GET /api/jobs/email` only; no schedule is enabled. Financial reconciliation and release are operator-initiated, not scheduled workers.                                                                                                                                    |
+| `CRON_SECRET`                        | Authenticates `GET /api/jobs/email` only; five-minute Cron is deployed, with authenticated execution verified against an empty queue. Financial reconciliation and release are operator-initiated, not scheduled workers.                                                                |
 
 Existing server-side Supabase service-role access supports the financial ledger and workers; no direct client writes to financial tables. Store Stripe secrets as sensitive Vercel environment variables scoped by environment. Keep fee basis points and host contract versions in a validated, versioned server-side commercial-policy record, not public environment variables. Pin API version in code. Do not set `automatic_tax` until the owner confirms the applicable tax setup/active registrations. [13]
 
@@ -114,7 +114,7 @@ Meaningful sandbox gates: failed payment and 3DS; delayed-method success/failure
 ## Owner decisions before charging
 
 1. Hold host funds until completion or transfer immediately; completion authority, release delay and booking horizon.
-2. Approve the reopened rates, incentive and referral limits in the [launch proposal](launch-decisions-proposed.md); distinguish actual host processing deductions from Qualia’s Connect overhead.
+2. Record the owner-approved rates, incentive and referral limits in [launch decisions](launch-decisions-proposed.md); distinguish actual host processing deductions from Qualia’s Connect overhead.
 3. Incentive start/time-zone/cutoff/refund rules, payment deadline and cancellation/no-show/refund policy.
 4. Confirm Qualia's customer-facing payment/support responsibility and acceptance of the proposed negative-balance responsibility.
 5. Complete the full sandbox payment/refund/release rehearsal using the configured key and destinations after approving test fixtures and explicit sandbox policies; separately approve live enablement later.

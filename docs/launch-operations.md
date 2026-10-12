@@ -22,7 +22,7 @@ These are documented business models, not evidence that a particular incentive p
 
 Honor the requested **no commission percentage on the public homepage**. “Free to list” can describe the listing fee. Before a host accepts terms or publishes, show their actual commission, processing-fee allocation, payout timing and founding offer in plain language; show guests their complete total before payment.
 
-Track each host’s frozen founding terms: eligible paid bookings remaining, calendar-month end date and ongoing rate. Commercial terms have been reopened; the [proposed launch decisions](launch-decisions-proposed.md) replace the earlier offer for review, not activation. Rates, free-booking count, month duration, cohort cap, refund restoration and referral limits must be explicitly approved and versioned. Foregone commission is `eligible booking value × otherwise-applicable rate`; it is not cash spending. Actual processor deductions do not cover Qualia’s separate Connect overhead.
+Track each host’s frozen founding terms: eligible paid bookings remaining, calendar-month end date and ongoing rate. The owner approved the [revised launch decisions](launch-decisions-proposed.md), including rates, free-booking count, duration, cohort cap, refund restoration and referral limits. Save them as a versioned policy through the authorized configuration flow; approval alone is not activation. Foregone commission is `eligible booking value × otherwise-applicable rate`; it is not cash spending. Actual processor deductions do not cover Qualia’s separate Connect overhead.
 
 ## Insurance and waivers: questions to resolve before taking bookings
 
@@ -50,4 +50,4 @@ Start with approved activities and venues whose insurance and operating requirem
 
 Store accepted terms/waiver version, signer, booking and timestamp with restricted access. Define what triggers a new acceptance, document-expiry suspension or incident escalation. Public copy should describe the review accurately and make no blanket “fully insured” or safety guarantee.
 
-**Owner approvals needed:** the reopened [commercial proposal](launch-decisions-proposed.md), including rates and incentive rules; adults-only versus minors; initial activity scope; legal/broker spending allocation; and approved host terms/waiver process. All are unresolved decisions, not changes already made to Qualia.
+**Owner approvals needed:** adults-only versus minors; initial activity scope; legal/broker spending allocation; and approved host terms/waiver process. All are unresolved decisions, not changes already made to Qualia.
