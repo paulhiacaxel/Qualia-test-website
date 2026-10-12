@@ -4,7 +4,7 @@ import Link from "next/link";
 export function AdminNav({
   active,
 }: {
-  active: "reviews" | "settings" | "support" | "commercial" | "payments";
+  active: "reviews" | "settings" | "support" | "commercial" | "payments" | "email";
 }) {
   return (
     <nav className="dashboard-nav" aria-label="Administration">
@@ -22,6 +22,9 @@ export function AdminNav({
       </Link>
       <Link href="/admin/payments" aria-current={active === "payments" ? "page" : undefined}>
         Payments
+      </Link>
+      <Link href="/admin/email" aria-current={active === "email" ? "page" : undefined}>
+        Email test
       </Link>
     </nav>
   );
