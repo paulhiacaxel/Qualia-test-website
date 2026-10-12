@@ -9,16 +9,22 @@ import { RequiredMark } from "@/components/host/required-field";
 import { deleteListing, submitListing } from "@/app/host/actions";
 import { canEditListing, getHostProfile, getListingDetails } from "@/lib/host/data";
 import { createClient } from "@/lib/supabase/server";
+import { HostSafetyForm } from "@/components/participation/host-safety-form";
+import { getListingSafetySubmission } from "@/lib/participation/data";
+import { safetySubmissionComplete } from "@/lib/participation/validation";
+import { requireAdultAccount } from "@/lib/auth/session";
 
 export const metadata = { title: "Your experience" };
 
 export default async function EditListingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [{ listing, location, photos, availability }, profile] = await Promise.all([
+  const [{ listing, location, photos, availability }, profile, safety] = await Promise.all([
     getListingDetails(id),
     getHostProfile(),
+    getListingSafetySubmission(id),
   ]);
   const editable = canEditListing(listing);
+  if (editable) await requireAdultAccount("/host/dashboard");
   const supabase = await createClient();
   const feedbackResult = await supabase.rpc("get_listing_review_feedback", { p_listing_id: id });
   if (feedbackResult.error) throw new Error("Your review feedback could not be loaded.");
@@ -60,6 +66,12 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
       ),
       href: "#availability",
       help: `Add a future window that fits a full ${listing.duration_minutes}-minute session.`,
+    },
+    {
+      label: "Participation and safety details",
+      complete: safetySubmissionComplete(safety),
+      href: "#participation-safety",
+      help: "Save the proposed age range, participation rules and private evidence for review.",
     },
   ];
   const complete = checklist.every((item) => item.complete);
@@ -124,6 +136,15 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
               canAdd={listing.status !== "paused"}
               durationMinutes={listing.duration_minutes}
             />
+          </section>
+          <section id="participation-safety" className="panel">
+            <h2>05 / Participation and safety</h2>
+            <p>
+              Tell us who this experience is suitable for and how you run it safely. Qualia reviews
+              the actual activity, proposed ages, supervision and supporting evidence before it can
+              be published. Saving this section does not approve your proposal.
+            </p>
+            <HostSafetyForm listingId={id} submission={safety} disabled={!editable} />
           </section>
         </div>
         <aside className="panel host-sidebar">

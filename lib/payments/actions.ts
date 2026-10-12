@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { requireHost, requireUser } from "@/lib/auth/session";
+import { requireAdultHost, requireHost, requireUser } from "@/lib/auth/session";
 import { idSchema } from "@/lib/host/validation";
 import { bookingCheckout, hostDashboard, hostOnboarding, syncRecipient } from "./service";
 import { paymentConfig } from "./config";
@@ -65,7 +65,7 @@ export async function startHostOnboarding(
   _previous: PaymentActionState,
   _form: FormData,
 ): Promise<PaymentActionState> {
-  const { user, profile } = await requireHost();
+  const { user, profile } = await requireAdultHost();
   const access = await getHostPaymentAccess(user.id);
   if (!access?.canOnboard)
     return {

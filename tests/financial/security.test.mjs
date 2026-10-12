@@ -4,7 +4,12 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { after, before, test } from "node:test";
-import { createTestDatabase, asRole } from "../database/helpers.mjs";
+import {
+  createTestDatabase,
+  asRole,
+  attestFixtureAdult,
+  approveFixtureSafety,
+} from "../database/helpers.mjs";
 
 let db;
 let admin;
@@ -51,6 +56,7 @@ async function makeUser({ host = false } = {}) {
     "insert into auth.users(id,raw_user_meta_data,email_confirmed_at) values ($1,$2,now())",
     [id, { full_name: "Synthetic person" }],
   );
+  await attestFixtureAdult(db, id);
   if (host) {
     await member(id, async () => {
       await rpc("enable_host_mode");
@@ -69,10 +75,11 @@ async function enrollFounder(host, startedAt, policyId) {
 async function publishListing(host) {
   const listing = randomUUID();
   await db.query(
-    `insert into public.listings(id,host_id,title,description,category,price_cents,duration_minutes,city,neighborhood,status,safety_status,consultation_status,published_at)
-    values($1,$2,'Synthetic founding listing','Synthetic approved listing.','art',10000,60,'Miami','Wynwood','published','approved','waived',now())`,
+    `insert into public.listings(id,host_id,title,description,category,price_cents,duration_minutes,city,neighborhood)
+    values($1,$2,'Synthetic founding listing','Synthetic approved listing.','art',10000,60,'Miami','Wynwood')`,
     [listing, host],
   );
+  await approveFixtureSafety(db, { listingId: listing, hostId: host, adminId: admin });
   return listing;
 }
 async function hostFixture({ founder = false, startedAt } = {}) {
@@ -87,20 +94,30 @@ async function hostFixture({ founder = false, startedAt } = {}) {
   }
   return { host, accountId };
 }
-async function acceptedBooking(host, { amount = 10000, guestId = guest } = {}) {
+async function acceptedBooking(host, { amount = 10000, guestId = guest, startsAt } = {}) {
   const listing = randomUUID();
   const id = randomUUID();
-  const start = new Date(Date.now() + (++serial + 5) * 86400000);
+  const start = startsAt ? new Date(startsAt) : new Date(Date.now() + (++serial + 5) * 86400000);
   const end = new Date(start.getTime() + 3600000);
   await db.query(
-    `insert into public.listings(id,host_id,title,description,category,price_cents,duration_minutes,city,neighborhood,
-    status,safety_status,consultation_status,published_at) values ($1,$2,'Synthetic experience','A test-only listing.','art',$3,60,'Miami','Wynwood','published','approved','waived',now())`,
+    `insert into public.listings(id,host_id,title,description,category,price_cents,duration_minutes,city,neighborhood)
+    values ($1,$2,'Synthetic experience','A test-only listing.','art',$3,60,'Miami','Wynwood')`,
     [listing, host, amount],
   );
+  await approveFixtureSafety(db, { listingId: listing, hostId: host, adminId: admin });
+  // Seed an already accepted booking and its explicit adult participation evidence
+  // atomically. Money tests still exercise checkout, reconciliation and refunds.
   await db.query(
-    `insert into public.bookings(id,listing_id,host_id,guest_id,starts_at,ends_at,status,amount_cents,currency,
+    `with accepted as (
+    insert into public.bookings(id,listing_id,host_id,guest_id,starts_at,ends_at,status,amount_cents,currency,
     request_expires_at,payment_deadline_at,listing_title_snapshot,policy_request_expiry_minutes,policy_payment_deadline_minutes)
-    values ($1,$2,$3,$4,$5,$6,'awaiting_payment',$7,'usd',now()+interval '2 hours',now()+interval '2 hours','Synthetic experience',120,120)`,
+    values ($1,$2,$3,$4,$5,$6,'awaiting_payment',$7,'usd',now()+interval '2 hours',now()+interval '2 hours','Synthetic experience',120,120)
+    returning id,listing_id)
+    insert into private.booking_participation(booking_id,kind,age_at_experience,rules_snapshot,
+    adult_booker_confirmed,rules_accepted,guardian_authority_confirmed,guardian_presence_accepted,account_attestation_version,accepted_at)
+    select accepted.id,'self',30,l.participation_rules,true,true,false,false,'adult_account_v1',
+    least(now(),$5::timestamptz-interval '1 day')
+    from accepted join public.listings l on l.id=accepted.listing_id`,
     [id, listing, host, guestId, start, end, amount],
   );
   return id;
@@ -160,6 +177,46 @@ async function paidBooking(host, options) {
   const booking = await acceptedBooking(host, options);
   const attempt = await attach(await reserve(booking));
   await apply(attempt);
+  return { booking, attempt };
+}
+
+/**
+ * Settlement tests need an experience that already ended. Seed explicit synthetic
+ * payment history at its original date instead of moving an acknowledged booking.
+ * Checkout and canonical confirmation remain covered by paidBooking tests above.
+ */
+async function historicalAttempt(booking, state = "paid") {
+  const attemptId = randomUUID();
+  const session = token("cs_test");
+  const paymentIntent = token("pi");
+  const charge = token("ch");
+  await db.query(
+    `insert into private.payment_attempts(id,booking_id,environment,guest_id,host_id,account_id,
+    amount_cents,currency,commission_bps,commission_cents,policy_id,state,terms_accepted_at,expires_at,
+    session_id,payment_intent_id,charge_id,processor_fee_cents,received_amount_cents,received_currency,paid_at,created_at)
+    select $1,b.id,'sandbox',b.guest_id,b.host_id,a.account_id,b.amount_cents,b.currency,
+    p.standard_fee_bps,floor(b.amount_cents::numeric*p.standard_fee_bps/10000)::integer,p.id,$3,
+    b.starts_at-interval '1 day',b.starts_at,$4,$5,case when $3='paid' then $6 end,
+    case when $3='paid' then 320 end,case when $3='paid' then b.amount_cents end,
+    case when $3='paid' then b.currency end,case when $3='paid' then b.starts_at-interval '1 hour' end,
+    b.starts_at-interval '1 day'
+    from public.bookings b join private.stripe_accounts a on a.host_id=b.host_id and a.environment='sandbox'
+    join private.commercial_settings s on s.environment='sandbox'
+    join private.commercial_policies p on p.id=s.policy_id where b.id=$2`,
+    [attemptId, booking, state, session, paymentIntent, charge],
+  );
+  const attempt = (
+    await db.query("select private.financial_attempt_json($1) as value", [attemptId])
+  ).rows[0].value;
+  assert.ok(attempt, "Historical settlement fixture must have a captured account and policy");
+  return { ...attempt, session, paymentIntent, charge };
+}
+async function historicalPaidBooking(host) {
+  const booking = await acceptedBooking(host, {
+    startsAt: new Date(Date.now() - 2 * 3600000),
+  });
+  const attempt = await historicalAttempt(booking);
+  await db.query("update public.bookings set status='confirmed' where id=$1", [booking]);
   return { booking, attempt };
 }
 
@@ -296,11 +353,11 @@ test("wrong totals or a late paid slot conflict quarantine money instead of conf
   const lateBooking = await acceptedBooking(host.host);
   const late = await attach(await reserve(lateBooking));
   await db.query("update public.bookings set status='expired' where id=$1", [lateBooking]);
-  const other = await acceptedBooking(host.host, { guestId: stranger });
-  await db.query(
-    "update public.bookings b set starts_at=x.starts_at,ends_at=x.ends_at,status='confirmed' from public.bookings x where b.id=$1 and x.id=$2",
-    [other, lateBooking],
-  );
+  const lateStart = (
+    await db.query("select starts_at from public.bookings where id=$1", [lateBooking])
+  ).rows[0].starts_at;
+  const other = await acceptedBooking(host.host, { guestId: stranger, startsAt: lateStart });
+  await db.query("update public.bookings set status='confirmed' where id=$1", [other]);
   await apply(late);
   assert.equal(
     (await db.query("select state from private.payment_attempts where id=$1", [late.attempt_id]))
@@ -433,12 +490,9 @@ test("refunds preserve paid history, host recovery is separate, and a full refun
 
 test("completed host transfer and later refund/reversal are separate durable operations with bounded amounts", async () => {
   const host = await hostFixture();
-  const { booking, attempt } = await paidBooking(host.host);
-  await server(() => rejected(() => rpc("pay_complete_booking", [admin, booking])));
-  await db.query(
-    "update public.bookings set starts_at=now()-interval '2 hours',ends_at=now()-interval '1 hour' where id=$1",
-    [booking],
-  );
+  const future = await paidBooking(host.host);
+  await server(() => rejected(() => rpc("pay_complete_booking", [admin, future.booking])));
+  const { booking, attempt } = await historicalPaidBooking(host.host);
   await server(() => rpc("pay_complete_booking", [admin, booking]));
   const transferId = randomUUID();
   const transfer = await server(() => value("pay_prepare_release", [admin, booking, transferId]));
@@ -510,16 +564,12 @@ test("completed host transfer and later refund/reversal are separate durable ope
 });
 
 async function completePaid(booking) {
-  await db.query(
-    "update public.bookings set starts_at=now()-interval '2 hours',ends_at=now()-interval '1 hour' where id=$1",
-    [booking],
-  );
   await server(() => rpc("pay_complete_booking", [admin, booking]));
 }
 
 test("a failed transfer cannot retry an obsolete amount after a partial refund", async () => {
   const host = await hostFixture();
-  const { booking, attempt } = await paidBooking(host.host);
+  const { booking, attempt } = await historicalPaidBooking(host.host);
   await completePaid(booking);
   const oldId = randomUUID();
   await server(() => rpc("pay_prepare_release", [admin, booking, oldId]));
@@ -547,11 +597,8 @@ test("a failed transfer cannot retry an obsolete amount after a partial refund",
 
 test("refund selects the exact duplicate charge and does not reduce the valid host entitlement", async () => {
   const host = await hostFixture();
-  const booking = await acceptedBooking(host.host);
-  const first = await attach(await reserve(booking));
-  await apply(first, { state: "failed" });
-  const second = await attach(await reserve(booking));
-  await apply(second);
+  const { booking, attempt: second } = await historicalPaidBooking(host.host);
+  const first = await historicalAttempt(booking, "failed");
   await apply(first); // A late older charge is quarantined, not allowed to replace payment.
   const refundId = randomUUID();
   const refund = await server(() =>
@@ -583,7 +630,7 @@ test("refund selects the exact duplicate charge and does not reduce the valid ho
 
 test("early refund and transfer webhooks attach to one durable operation and reject mismatched evidence", async () => {
   const host = await hostFixture();
-  const { booking, attempt } = await paidBooking(host.host);
+  const { booking, attempt } = await historicalPaidBooking(host.host);
   await completePaid(booking);
   const transferId = randomUUID();
   const transfer = await server(() => value("pay_prepare_release", [admin, booking, transferId]));
@@ -660,7 +707,7 @@ test("early refund and transfer webhooks attach to one durable operation and rej
 
 test("an out-of-app transfer freezes release without erasing the verified paid history", async () => {
   const host = await hostFixture();
-  const { booking, attempt } = await paidBooking(host.host);
+  const { booking, attempt } = await historicalPaidBooking(host.host);
   await completePaid(booking);
   await server(() =>
     rpc("pay_sync_transfer", [
@@ -686,7 +733,7 @@ test("an out-of-app transfer freezes release without erasing the verified paid h
 test("nonfounder referral refunds use the captured policy, not the presence of founder enrollment", async () => {
   await enablePolicy({ restore_refunded_credit: true });
   const referred = await hostFixture();
-  const qualifying = await paidBooking(referred.host);
+  const qualifying = await historicalPaidBooking(referred.host);
   await completePaid(qualifying.booking);
   const referrer = await hostFixture();
   await member(admin, () => rpc("admin_grant_referral", [referrer.host, referred.host, "sandbox"]));

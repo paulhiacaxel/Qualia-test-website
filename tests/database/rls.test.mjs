@@ -6,7 +6,13 @@
  */
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
-import { createTestDatabase, asRole as runAsRole } from "./helpers.mjs";
+import {
+  createTestDatabase,
+  asRole as runAsRole,
+  attestFixtureAdult,
+  approveFixtureSafety,
+  fixtureSafetySubmission,
+} from "./helpers.mjs";
 
 const ids = {
   alice: "10000000-0000-0000-0000-000000000001",
@@ -39,11 +45,14 @@ before(async () => {
       ],
     );
   }
+  for (const key of ["alice", "bob", "guest", "stranger", "admin"])
+    await attestFixtureAdult(db, ids[key]);
   await db.query(
     `insert into private.admin_memberships(user_id, reason) values ($1, 'Test operator grant')`,
     [ids.admin],
   );
   for (const user of ["alice", "bob"]) {
+    await asRole("authenticated", ids[user], () => db.query("select public.enable_host_mode()"));
     await db.query(
       `insert into public.host_profiles(user_id, display_name, city) values ($1, $2, 'Miami')`,
       [ids[user], user],
@@ -59,14 +68,7 @@ before(async () => {
       id, host_id, title, category, price_cents, duration_minutes, city,
       status, safety_status, consultation_status, published_at
     ) values ($1, $2, 'Private lesson', 'cooking', 15000, 90, 'Miami', $3, $4, $5, $6)`,
-      [
-        id,
-        hostId,
-        isPublished ? "published" : "draft",
-        isPublished ? "approved" : "pending",
-        isPublished ? "waived" : "not_requested",
-        isPublished ? "2026-10-11T12:00:00Z" : null,
-      ],
+      [id, hostId, "draft", "pending", "not_requested", null],
     );
     await db.query(
       `insert into private.listing_locations(listing_id, address_line1, postal_code) values ($1, 'PRIVATE TEST ADDRESS', '33101')`,
@@ -81,6 +83,7 @@ before(async () => {
       values ($1, $2, '2026-11-01T15:00:00Z', '2026-11-01T18:00:00Z')`,
       [id, hostId],
     );
+    if (isPublished) await approveFixtureSafety(db, { listingId: id, hostId, adminId: ids.admin });
   }
   for (const [listing, host, guest] of [
     [ids.aliceLive, ids.alice, ids.guest],
@@ -287,14 +290,14 @@ test("even booking participants and admins cannot directly retrieve private loca
   }
 });
 
-test("database publication constraint requires safety approval and consultation decision", async () => {
+test("database publication requires reviewed activity, safety approval and consultation decision", async () => {
   await assert.rejects(
     () =>
       db.query(
         "update public.listings set status = 'published', published_at = now() where id = $1",
         [ids.draft],
       ),
-    (error) => error.code === "23514",
+    (error) => error.code === "55000",
   );
   await assert.rejects(
     () =>
@@ -302,8 +305,15 @@ test("database publication constraint requires safety approval and consultation 
         "update public.listings set status = 'published', safety_status = 'approved', published_at = now() where id = $1",
         [ids.draft],
       ),
-    (error) => error.code === "23514",
+    (error) => error.code === "55000",
   );
+  // The original publication CHECK still guards an already-reviewed listing.
+  for (const invalid of ["safety_status='pending'", "consultation_status='not_requested'"]) {
+    await assert.rejects(
+      () => db.query(`update public.listings set ${invalid} where id=$1`, [ids.published]),
+      (error) => error.code === "23514",
+    );
+  }
 });
 
 test("booking foundation rejects mismatched listing host and self-booking", async () => {
@@ -354,6 +364,7 @@ test("host onboarding RPCs and private Storage enforce ownership and review boun
 
   for (const id of [host, attacker]) {
     await db.query("insert into auth.users(id, email_confirmed_at) values ($1, now())", [id]);
+    await attestFixtureAdult(db, id);
     await asRole("authenticated", id, () => rpc("enable_host_mode"));
   }
 
@@ -526,6 +537,7 @@ test("host onboarding RPCs and private Storage enforce ownership and review boun
           "Miami",
           "https://example.test/portfolio",
         ]);
+        await rpc("save_listing_safety_submission", [listing, null, fixtureSafetySubmission()]);
         await rpc("submit_listing_for_review", [listing]);
         const { rows } = await db.query(
           "select status, safety_status, consultation_status, published_at from public.listings where id = $1",

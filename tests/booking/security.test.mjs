@@ -4,7 +4,13 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { after, before, test } from "node:test";
-import { createTestDatabase, asRole } from "../database/helpers.mjs";
+import {
+  createTestDatabase,
+  asRole,
+  attestFixtureAdult,
+  approveFixtureSafety,
+  adultParticipant,
+} from "../database/helpers.mjs";
 
 let db;
 const user = Object.fromEntries(
@@ -33,6 +39,8 @@ before(async () => {
     "insert into private.admin_memberships(user_id, reason) values ($1, 'Test-only operator grant')",
     [user.admin],
   );
+  for (const who of ["host", "host2", "guest", "guest2", "stranger", "admin"])
+    await attestFixtureAdult(db, user[who]);
   for (const who of ["host", "host2"]) {
     await as(who, async () => {
       await rpc("enable_host_mode");
@@ -50,8 +58,8 @@ async function listingFixture({ host = user.host, day, status = "published", dur
   const path = `${host}/${id}/${randomUUID()}.webp`;
   await db.query(
     `insert into public.listings(id,host_id,title,description,category,price_cents,duration_minutes,city,neighborhood,
-    status,safety_status,consultation_status,published_at) values ($1,$2,'A private lesson','Learn with a Miami host.','cooking',15000,$3,'Miami','Wynwood',$4,'approved','waived',now())`,
-    [id, host, duration, status],
+    status,safety_status,consultation_status,published_at) values ($1,$2,'A private lesson','Learn with a Miami host.','cooking',15000,$3,'Miami','Wynwood','draft','pending','not_requested',null)`,
+    [id, host, duration],
   );
   await db.query(
     "insert into private.listing_locations(listing_id,address_line1,postal_code,meeting_instructions) values ($1,'ORIGINAL PRIVATE ADDRESS','33127','Original meeting directions.')",
@@ -69,10 +77,19 @@ async function listingFixture({ host = user.host, day, status = "published", dur
     "insert into public.availability_windows(id,listing_id,host_id,starts_at,ends_at) values ($1,$2,$3,$4,$5)",
     [windowId, id, host, `${date}T10:00:00Z`, `${date}T14:00:00Z`],
   );
+  if (status === "published")
+    await approveFixtureSafety(db, { listingId: id, hostId: host, adminId: user.admin });
   return { id, host, date, path, windowId, start: `${date}T10:00:00Z` };
 }
 const request = (listing, who = "guest", start = listing.start) =>
-  as(who, () => value("request_booking", [listing.id, start, "Looking forward to learning."]));
+  as(who, () =>
+    value("request_booking", [
+      listing.id,
+      start,
+      "Looking forward to learning.",
+      adultParticipant(),
+    ]),
+  );
 
 test("booking remains closed without an owner-approved policy, and only verified admins can enable it", async () => {
   const listing = await listingFixture();
@@ -162,10 +179,13 @@ test("calendar times exclude host-wide requests across listings while preserving
 test("request captures server-side price, content, address and policy deadlines; clients cannot forge ownership or confirmation", async () => {
   const listing = await listingFixture();
   await as("unverified", () =>
-    denied(() => rpc("request_booking", [listing.id, listing.start, "Hello"])),
+    denied(() => rpc("request_booking", [listing.id, listing.start, "Hello", adultParticipant()])),
   );
   await as("host", () =>
-    rejected(() => rpc("request_booking", [listing.id, listing.start, "Self booking"]), "22023"),
+    rejected(
+      () => rpc("request_booking", [listing.id, listing.start, "Self booking", adultParticipant()]),
+      "22023",
+    ),
   );
   const id = await request(listing);
   await db.query(

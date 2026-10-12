@@ -4,10 +4,12 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { requireHost, requireUser } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
+import { requireAdultAccount } from "@/lib/participation/data";
 import { idSchema } from "@/lib/host/validation";
 import {
   bookingMessageSchema,
   bookingRequestSchema,
+  bookingRequestInput,
   bookingResponseSchema,
 } from "@/lib/booking/validation";
 import type { BookingActionState } from "@/lib/booking/types";
@@ -23,9 +25,10 @@ export async function requestBooking(
   _previous: BookingActionState,
   formData: FormData,
 ): Promise<BookingActionState> {
-  const parsed = bookingRequestSchema.safeParse(Object.fromEntries(formData));
+  const parsed = bookingRequestSchema.safeParse(bookingRequestInput(formData));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   await requireUser(`/experiences/${parsed.data.listingId}`);
+  await requireAdultAccount(`/experiences/${parsed.data.listingId}`);
   if (formData.get("requestConfirmed") !== "on")
     return { error: "Confirm that you understand this is a booking request." };
   let bookingId: string;
@@ -35,8 +38,23 @@ export async function requestBooking(
       p_listing_id: parsed.data.listingId,
       p_starts_at: parsed.data.startsAt,
       p_guest_message: parsed.data.guestMessage,
+      p_participant: parsed.data.participant,
     });
     if (error) {
+      if (error.code === "40001")
+        return {
+          error:
+            "The participation rules changed. Refresh the experience, read the current rules, and request again.",
+        };
+      if (error.code === "22023")
+        return {
+          error:
+            "Check the participant's age at the experience and the required guardian confirmations.",
+        };
+      if (error.code === "42501")
+        return {
+          error: "Confirm your adult account eligibility before requesting this experience.",
+        };
       if (error.code === "QL001")
         return {
           error:
@@ -50,7 +68,7 @@ export async function requestBooking(
       if (error.code === "55000")
         return {
           error:
-            "Booking requests are not open for this experience right now. Please try again later.",
+            "This experience is not available for requests under its current participation rules. Refresh the page or choose another date.",
         };
       return {
         error:
@@ -74,6 +92,8 @@ export async function respondToBooking(
   await requireHost();
   const parsed = bookingResponseSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "Choose a valid booking request and response." };
+  if (parsed.data.decision === "accept")
+    await requireAdultAccount(`/bookings/${parsed.data.bookingId}`);
   try {
     const supabase = await createClient();
     const { error } = await supabase.rpc("respond_booking", {

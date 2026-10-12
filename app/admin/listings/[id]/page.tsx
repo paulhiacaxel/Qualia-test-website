@@ -7,12 +7,18 @@ import { ReviewForm } from "@/components/admin/review-form";
 import { getListingReview } from "@/lib/admin/data";
 import { formatMiamiDate } from "@/lib/admin/validation";
 import styles from "@/components/admin/admin.module.css";
+import { AdminSafetyForm } from "@/components/participation/admin-safety-form";
+import { getListingSafetySubmission } from "@/lib/participation/data";
+import { safetySubmissionComplete } from "@/lib/participation/validation";
 
 export const metadata = { title: "Review experience" };
 export default async function ListingReviewPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   if (!z.uuid().safeParse(id).success) notFound();
-  const detail = await getListingReview(id);
+  const [detail, safety] = await Promise.all([
+    getListingReview(id),
+    getListingSafetySubmission(id),
+  ]);
   if (!detail) notFound();
   const { listing, host, location, photos, availability, review, history } = detail;
   const portfolio = host.portfolio_url?.startsWith("https://") ? host.portfolio_url : null;
@@ -124,13 +130,23 @@ export default async function ListingReviewPage({ params }: { params: Promise<{ 
               <p className="form-error">No availability has been added.</p>
             ) : null}
           </section>
+          <section className="panel" id="participation-review">
+            <h2>Participation and supporting evidence</h2>
+            <AdminSafetyForm
+              listingId={id}
+              submission={safety}
+              complete={safetySubmissionComplete(safety)}
+            />
+          </section>
         </div>
         <aside className={styles.stack}>
           <section className="panel">
             <h2>Review decision</h2>
             <p className={styles.callout}>
-              Before launch, Qualia’s owner must define the category review criteria and required
-              documentation. Recording these checks does not substitute for those decisions.
+              Review and approve the exact participation and evidence version in the separate panel
+              first. The ordinary safety checklist does not automatically approve ages, guardian
+              arrangements, licenses or insurance. All required evidence must support this activity
+              before publication.
             </p>
             {review?.consultation_scheduled_at ? (
               <p className={styles.callout}>

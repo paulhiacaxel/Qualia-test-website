@@ -1,0 +1,16 @@
+.auth-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--inksoft);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.auth-checkbox input {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  accent-color: var(--moss);
+}

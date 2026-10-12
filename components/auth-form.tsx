@@ -13,6 +13,7 @@ import {
   confirmEmail,
 } from "@/app/auth/actions";
 import type { AuthState } from "@/lib/auth/types";
+import "./auth-checkbox.css";
 
 type Mode = "login" | "signup" | "reset" | "resend" | "password" | "host" | "confirm";
 const actions = {
@@ -196,6 +197,19 @@ export function AuthForm({
               You can host and book with the same account. Every listing will need review before it
               appears on Qualia.
             </p>
+          ) : null}
+          {mode === "signup" ? (
+            <div>
+              <label className="auth-checkbox">
+                <input type="checkbox" name="adultConfirmed" required />I am 18 or older and am
+                creating my own account.
+              </label>
+              <p className="field-hint">
+                Accounts belong to adults. A parent or legal guardian may request an eligible
+                experience for a minor. After verifying your email, you will confirm your account
+                eligibility while signed in.
+              </p>
+            </div>
           ) : null}
           {mode === "confirm" ? (
             <p className="muted">Continue to securely finish verifying your email link.</p>

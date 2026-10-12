@@ -79,13 +79,13 @@ Use separate browser profiles for the generated guest and host. The host is also
 
    This checks the exact fixture ownership, test session, canonical amount/currency/processor fee, processed payment event and absence of failed event processing. A missing processor fee requires normal canonical reconciliation and a repeat check, not an invented amount.
 
-4. Before release, confirm `/admin/payments` blocks completion/release while the experience is in the future. Advance **only this paid local fixture's service dates**:
+4. Before release, confirm `/admin/payments` blocks completion/release while the experience is in the future. **Current bookings capture age-on-date and participation rules, so their service dates cannot be fast-forwarded.** Complete these rehearsals at the original scheduled time, then wait for their captured payout delay. The command below remains available only for legacy paid fixtures created without participation snapshots:
 
    ```sh
    node scripts/rehearsal.mjs advance BOOKING_UUID
    ```
 
-   The command requires the matching local marker, host/guest/listing, confirmed booking and paid sandbox attempt. It locks the host schedule, preserves duration and records the original dates, placing the fixture before existing bookings/blocks and beyond its **captured** delay. It leaves financial state, payment deadlines, provider timestamps and the 48-hour policy untouched. It refuses a second advancement. It is not a production maintenance command or a simulation of Stripe settlement time.
+   The command requires the matching local marker, host/guest/listing, confirmed booking and paid sandbox attempt, and rejects a captured participation snapshot before changing anything. For a legacy fixture it locks the host schedule, preserves duration and records the original dates, placing the fixture before existing bookings/blocks and beyond its **captured** delay. It leaves financial state, payment deadlines, provider timestamps and the 48-hour policy untouched and refuses a second advancement. Do not remove snapshots or disable database guards to use it. The October 12 provider release/refund evidence predates participant snapshots and remains financial-flow evidence; it does not establish a new guardian-aware end-to-end release rehearsal.
 
 5. Host/operator: use the normal `/admin/payments` actions to mark the simulated experience complete and release earnings. Refresh/reconcile normally if provider status is pending. Run:
 
@@ -113,6 +113,6 @@ node --test tests/rehearsal/*.test.mjs
 node --check scripts/rehearsal.mjs
 ```
 
-The tests execute the exact seed/time-advance SQL against all migrations, exercise request/accept and full refund state transitions, check single-use scoped advancement and release math, and reject unsafe endpoints/keys/environment inheritance. They use synthetic provider facts only inside the offline tests. Docker, Supabase Auth/PostgREST, actual Stripe delivery and the operator's browser remain explicit runtime prerequisites.
+The tests execute the exact seed SQL against all migrations, exercise current request/accept/payment commands and immutable participant dates, and separately check legacy single-use advancement, release math and full refunds. They also reject unsafe endpoints/keys/environment inheritance. They use synthetic provider facts only inside the offline tests. Docker, Supabase Auth/PostgREST, actual Stripe delivery and the operator's browser remain explicit runtime prerequisites.
 
 References checked October 12, 2026: [Supabase local CLI](https://supabase.com/docs/guides/local-development/cli/getting-started), [API keys](https://supabase.com/docs/guides/getting-started/api-keys), [Stripe local listener](https://docs.stripe.com/cli/listen), [Checkout fulfillment](https://docs.stripe.com/checkout/fulfillment), [Connect onboarding](https://docs.stripe.com/connect/marketplace/tasks/onboard).

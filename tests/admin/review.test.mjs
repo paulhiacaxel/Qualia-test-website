@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { after, before, test } from "node:test";
-import { createTestDatabase, asRole } from "../database/helpers.mjs";
+import {
+  createTestDatabase,
+  asRole,
+  attestFixtureAdult,
+  fixtureSafetySubmission,
+} from "../database/helpers.mjs";
 import { miamiDateTime, reviewSchema } from "../../lib/admin/validation.ts";
 
 let db;
@@ -29,6 +34,7 @@ before(async () => {
       ],
     );
   }
+  for (const name of ["host", "other", "guest", "admin"]) await attestFixtureAdult(db, ids[name]);
   for (const name of ["admin", "unverified", "anonymous"]) {
     await db.query(
       "insert into private.admin_memberships(user_id, reason) values ($1, 'Test operator')",
@@ -48,7 +54,7 @@ before(async () => {
 after(async () => db?.close());
 
 async function listing({ submit = true, host = "host" } = {}) {
-  return as(host, async () => {
+  const item = await as(host, async () => {
     const { rows } = await db.query(
       "select public.create_listing('Personal lesson', 'Learn a specific skill one-on-one.', 'art', 15000, 90, 'Miami', 'Little Havana') as id",
     );
@@ -70,9 +76,24 @@ async function listing({ submit = true, host = "host" } = {}) {
       "select public.add_availability_window($1, now() + interval '10 days', now() + interval '10 days 3 hours')",
       [id],
     );
+    await db.query("select public.save_listing_safety_submission($1, null, $2)", [
+      id,
+      fixtureSafetySubmission(),
+    ]);
     if (submit) await db.query("select public.submit_listing_for_review($1)", [id]);
     return { id, photo };
   });
+  if (submit) {
+    // Activity evidence review is an explicit fixture prerequisite; the original
+    // safety/consultation/publication workflow remains the behavior under test.
+    await as("admin", () =>
+      db.query(
+        "select public.admin_review_listing_safety($1,1,'approved','Synthetic reviewed activity notes','2100-01-01T00:00:00Z',false)",
+        [item.id],
+      ),
+    );
+  }
+  return item;
 }
 async function state(id) {
   const { rows } = await db.query(

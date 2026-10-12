@@ -5,7 +5,7 @@ import sharp from "sharp";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { requireHost, requireUser } from "@/lib/auth/session";
+import { requireAdultHost, requireUser } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { canEditListing, getOwnedListing } from "@/lib/host/data";
 import {
@@ -63,7 +63,7 @@ export async function saveHostProfile(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const parsed = hostProfileSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   const { displayName, bio, city, portfolioUrl } = parsed.data;
@@ -104,7 +104,7 @@ export async function createListing(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const parsed = listingSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   let id: string;
@@ -128,7 +128,7 @@ export async function saveListing(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const id = listingId(formData);
   const parsed = listingSchema.safeParse(Object.fromEntries(formData));
   if (!id.success) return { error: "This experience could not be found." };
@@ -155,7 +155,7 @@ export async function saveLocation(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const id = listingId(formData);
   const parsed = locationSchema.safeParse(Object.fromEntries(formData));
   if (!id.success) return { error: "This experience could not be found." };
@@ -182,7 +182,7 @@ export async function uploadPhoto(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  const { user } = await requireHost();
+  const { user } = await requireAdultHost();
   const id = listingId(formData);
   if (!id.success) return { error: "This experience could not be found." };
   const listing = await getOwnedListing(id.data);
@@ -265,7 +265,7 @@ export async function removePhoto(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const id = listingId(formData);
   const photoId = idSchema.safeParse(formData.get("photoId"));
   if (!id.success || !photoId.success) return { error: "This photo could not be found." };
@@ -304,7 +304,7 @@ export async function addAvailability(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const id = listingId(formData);
   if (!id.success) return { error: "This experience could not be found." };
   const listing = await getOwnedListing(id.data);
@@ -341,7 +341,7 @@ export async function removeAvailability(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const id = listingId(formData);
   const windowId = idSchema.safeParse(formData.get("windowId"));
   if (!id.success || !windowId.success) return { error: "This availability could not be found." };
@@ -373,7 +373,7 @@ export async function submitListing(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const id = listingId(formData);
   if (!id.success) return { error: "This experience could not be found." };
   if (formData.get("reviewConfirmed") !== "on")
@@ -384,7 +384,7 @@ export async function submitListing(
     if (error)
       return {
         error:
-          "We could not submit this listing. Complete your host bio, description, neighborhood, meeting address, photos, and future availability, then try again.",
+          "We could not submit this listing. Complete your host bio, description, neighborhood, meeting address, photos, future availability, and participation and safety details, then try again.",
       };
   } catch {
     return connectionError;
@@ -397,7 +397,7 @@ export async function deleteListing(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  const { user } = await requireHost();
+  const { user } = await requireAdultHost();
   const id = listingId(formData);
   if (!id.success) return { error: "This experience could not be found." };
   if (formData.get("deleteConfirmed") !== "on")

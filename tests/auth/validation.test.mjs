@@ -1,6 +1,12 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { safeNext, signupSchema, passwordSchema, loginSchema } from "../../lib/auth/validation.ts";
+import {
+  safeNext,
+  eligibilityPath,
+  signupSchema,
+  passwordSchema,
+  loginSchema,
+} from "../../lib/auth/validation.ts";
 import { getSupabaseConfig, getSiteUrl, authIsConfigured } from "../../lib/supabase/config.ts";
 
 test("post-auth navigation rejects external origins and encoded redirect tricks", () => {
@@ -39,11 +45,37 @@ test("signup cannot request an administrator role and requires a strong password
     password: "a-long-passphrase",
     fullName: "Miami Host",
     role: "host",
+    adultConfirmed: "on",
   };
   assert.equal(signupSchema.parse(valid).email, "host@example.com");
   assert.equal(signupSchema.safeParse({ ...valid, role: "admin" }).success, false);
   assert.equal(signupSchema.safeParse({ ...valid, password: "short" }).success, false);
   assert.equal(signupSchema.safeParse({ ...valid, fullName: " " }).success, false);
+  for (const adultConfirmed of [undefined, null, "", "off", false, true]) {
+    assert.equal(signupSchema.safeParse({ ...valid, adultConfirmed }).success, false);
+  }
+});
+
+test("adult eligibility preserves only known destinations and cannot nest or escape redirects", () => {
+  const experience = "/experiences/aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa";
+  const destination = eligibilityPath(experience);
+  assert.equal(safeNext(destination), destination);
+  assert.equal(eligibilityPath(destination), destination);
+  assert.equal(safeNext("/account/eligibility"), "/account/eligibility");
+  for (const next of [
+    "https://evil.example",
+    "//evil.example",
+    "/account/dashboard?next=https://evil.example",
+    "/account/eligibility",
+    destination,
+    "%2f%2fevil.example",
+  ])
+    assert.equal(
+      safeNext(`/account/eligibility?next=${encodeURIComponent(next)}`),
+      "/account/dashboard",
+    );
+  assert.equal(safeNext("/account/eligibility?next=%ZZ"), "/account/dashboard");
+  assert.equal(safeNext("/account/eligibility?next=%2Fhost%2Fstart&extra=1"), "/account/dashboard");
 });
 
 test("password changes require matching values; login accepts existing passwords", () => {

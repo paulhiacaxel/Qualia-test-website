@@ -4,11 +4,17 @@ import { effectiveStatus, bookingStatusLabel } from "@/lib/booking/validation";
 import { formatMoney, formatMiamiDate } from "@/lib/host/validation";
 import { BookingActions } from "@/components/booking/booking-actions";
 import { MessageThread } from "@/components/booking/message-thread";
+import { getBookingParticipation } from "@/lib/participation/data";
+import { ParticipationRulesSummary } from "@/components/booking/participation-rules";
 
 export const metadata = { title: "Your booking" };
 
 export default async function BookingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const [details, participation] = await Promise.all([
+    getBookingDetails(id),
+    getBookingParticipation(id),
+  ]);
   const {
     booking,
     listing,
@@ -17,7 +23,7 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
     meeting_location: location,
     messages,
     userId,
-  } = await getBookingDetails(id);
+  } = details;
   const isHost = booking.host_id === userId;
   const status = effectiveStatus(booking);
   return (
@@ -75,6 +81,72 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
                 <p>{booking.guest_message}</p>
               </div>
             ) : null}
+          </section>
+          <section className="panel">
+            <h2>Participant and activity requirements</h2>
+            {participation ? (
+              <div className="form-stack">
+                <dl className="booking-details">
+                  <div>
+                    <dt>Participant</dt>
+                    <dd>
+                      {participation.kind === "minor"
+                        ? "Minor, booked by a parent or legal guardian"
+                        : "Adult account holder"}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Age at the experience</dt>
+                    <dd>{participation.age_at_experience}</dd>
+                  </div>
+                  {participation.kind === "minor" ? (
+                    <>
+                      <div>
+                        <dt>Guardian authority</dt>
+                        <dd>
+                          {participation.guardian_authority_confirmed
+                            ? "Confirmed by the booking adult"
+                            : "Not recorded"}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Guardian presence</dt>
+                        <dd>
+                          {participation.rules_snapshot.guardian_presence === "required"
+                            ? "Required throughout the experience"
+                            : "Not required; follow the approved supervision plan"}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Supervision acknowledgment</dt>
+                        <dd>
+                          {participation.guardian_presence_accepted ? "Recorded" : "Not recorded"}
+                        </dd>
+                      </div>
+                    </>
+                  ) : null}
+                  <div>
+                    <dt>Requirements acknowledged</dt>
+                    <dd>
+                      <time dateTime={participation.accepted_at}>
+                        {formatMiamiDate(participation.accepted_at)}
+                      </time>{" "}
+                      · revision {participation.rules_snapshot.revision}
+                    </dd>
+                  </div>
+                </dl>
+                <p className="muted">
+                  These are the activity requirements recorded when the request was made. The
+                  acknowledgment is not a liability waiver.
+                </p>
+                <ParticipationRulesSummary rules={participation.rules_snapshot} />
+              </div>
+            ) : (
+              <p className="notice">
+                This earlier booking has no recorded participation confirmation. Contact Qualia to
+                review the participant and activity requirements before the experience.
+              </p>
+            )}
           </section>
           <BookingActions booking={booking} isHost={isHost} />
           <section className="panel">

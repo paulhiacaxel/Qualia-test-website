@@ -4,6 +4,7 @@ import { Temporal } from "@js-temporal/polyfill";
 import {
   bookingMessageSchema,
   bookingRequestSchema,
+  bookingRequestInput,
   bookingResponseSchema,
   bookingStatusLabel,
   calendarDay,
@@ -14,6 +15,15 @@ import {
 
 const now = Temporal.Instant.from("2026-10-11T20:00:00Z");
 const id = "f067be74-4ee2-4689-b5c6-80aa032a54c9";
+const adultParticipant = {
+  kind: "self",
+  age_at_experience: 30,
+  adult_booker_confirmed: true,
+  rules_accepted: true,
+  guardian_authority_confirmed: false,
+  guardian_presence_accepted: false,
+  rules_revision: 2,
+};
 
 test("month navigation remains in Miami time and rejects invalid or out-of-range months", () => {
   const month = calendarMonth("2026-11", now);
@@ -70,7 +80,12 @@ test("expired request/payment holds stop being actionable at their exact deadlin
 });
 
 test("booking actions require UUIDs, unambiguous timestamps, bounded text, and valid host decisions", () => {
-  const request = { listingId: id, startsAt: "2026-11-01T16:00:00Z", guestMessage: "  Hello!  " };
+  const request = {
+    listingId: id,
+    startsAt: "2026-11-01T16:00:00Z",
+    guestMessage: "  Hello!  ",
+    participant: adultParticipant,
+  };
   assert.equal(bookingRequestSchema.parse(request).guestMessage, "Hello!");
   assert.equal(
     bookingRequestSchema.safeParse({ ...request, listingId: "another-person" }).success,
@@ -95,6 +110,106 @@ test("booking actions require UUIDs, unambiguous timestamps, bounded text, and v
   );
   assert.equal(
     bookingResponseSchema.safeParse({ bookingId: id, decision: "confirm_paid" }).success,
+    false,
+  );
+});
+
+function requestForm(overrides = {}) {
+  const form = new FormData();
+  for (const [key, value] of Object.entries({
+    listingId: id,
+    startsAt: "2026-11-01T16:00:00Z",
+    guestMessage: "A first lesson",
+    participantKind: "self",
+    participantAge: "30",
+    adultBookerConfirmed: "on",
+    participationRulesAccepted: "on",
+    rulesRevision: "2",
+    ...overrides,
+  }))
+    if (value !== undefined) form.set(key, value);
+  return form;
+}
+
+test("booking form cannot turn a missing age or rule revision into an accepted number", () => {
+  assert.equal(bookingRequestSchema.safeParse(bookingRequestInput(requestForm())).success, true);
+  for (const key of ["participantAge", "rulesRevision"]) {
+    for (const value of [undefined, "", " ", "-1", "12.5", "1e1", "Infinity", "false"]) {
+      const parsed = bookingRequestSchema.safeParse(
+        bookingRequestInput(requestForm({ [key]: value })),
+      );
+      assert.equal(parsed.success, false, `${key}=${String(value)}`);
+    }
+  }
+  assert.equal(
+    bookingRequestSchema.safeParse(bookingRequestInput(requestForm({ rulesRevision: "0" })))
+      .success,
+    false,
+  );
+  assert.equal(
+    bookingRequestSchema.safeParse(bookingRequestInput(requestForm({ participantAge: "121" })))
+      .success,
+    false,
+  );
+});
+
+test("adult and minor bookings require the right explicit confirmations without child identity fields", () => {
+  for (const key of ["adultBookerConfirmed", "participationRulesAccepted"]) {
+    for (const value of [undefined, "", "true", "off"]) {
+      assert.equal(
+        bookingRequestSchema.safeParse(bookingRequestInput(requestForm({ [key]: value }))).success,
+        false,
+      );
+    }
+  }
+  const minor = {
+    participantKind: "minor",
+    participantAge: "12",
+    guardianAuthorityConfirmed: "on",
+    guardianPresenceAccepted: "on",
+  };
+  assert.equal(
+    bookingRequestSchema.safeParse(bookingRequestInput(requestForm(minor))).success,
+    true,
+  );
+  for (const change of [
+    { guardianAuthorityConfirmed: undefined },
+    { guardianPresenceAccepted: undefined },
+    { participantAge: "18" },
+  ])
+    assert.equal(
+      bookingRequestSchema.safeParse(bookingRequestInput(requestForm({ ...minor, ...change })))
+        .success,
+      false,
+    );
+  assert.equal(
+    bookingRequestSchema.safeParse(bookingRequestInput(requestForm({ participantAge: "17" })))
+      .success,
+    false,
+  );
+  const input = bookingRequestInput(
+    requestForm({
+      ...minor,
+      childName: "Do not store",
+      dateOfBirth: "2014-01-01",
+      medicalInfo: "Do not store",
+    }),
+  );
+  assert.deepEqual(Object.keys(input.participant).sort(), Object.keys(adultParticipant).sort());
+  assert.equal("childName" in input, false);
+  assert.equal(
+    bookingRequestSchema.safeParse({
+      ...input,
+      participant: { ...input.participant, childName: "Do not store" },
+    }).success,
+    false,
+  );
+  assert.equal(
+    bookingRequestSchema.safeParse({
+      listingId: id,
+      startsAt: "2026-11-01T16:00:00Z",
+      guestMessage: "old client",
+    }).success,
     false,
   );
 });

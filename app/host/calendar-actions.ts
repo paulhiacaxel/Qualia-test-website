@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireHost } from "@/lib/auth/session";
+import { requireAdultHost } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { getOwnedListing } from "@/lib/host/data";
 import { idSchema, validateAvailability } from "@/lib/host/validation";
@@ -53,7 +53,7 @@ export async function addCalendarBlock(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const label = labelSchema.safeParse(formData.get("label") ?? "");
   if (!label.success) return { error: label.error.issues[0].message };
   let range: ReturnType<typeof validateCalendarBlock>;
@@ -87,7 +87,7 @@ export async function removeCalendarBlock(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const id = idSchema.safeParse(formData.get("blockId"));
   if (!id.success) return { error: "This block could not be found." };
   try {
@@ -107,7 +107,7 @@ export async function importCalendarFile(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const label = labelSchema
     .min(1, "Name this calendar so you can find it later.")
     .safeParse(formData.get("calendarLabel"));
@@ -154,7 +154,7 @@ export async function removeCalendarImport(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const id = idSchema.safeParse(formData.get("importId"));
   if (!id.success) return { error: "This calendar import could not be found." };
   try {
@@ -175,7 +175,7 @@ export async function addWeeklyAvailability(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const id = idSchema.safeParse(formData.get("listingId"));
   if (!id.success) return { error: "This experience could not be found." };
   const listing = await getOwnedListing(id.data);
@@ -214,7 +214,7 @@ export async function editAvailability(
   _state: HostActionState,
   formData: FormData,
 ): Promise<HostActionState> {
-  await requireHost();
+  await requireAdultHost();
   const id = idSchema.safeParse(formData.get("listingId"));
   const windowId = idSchema.safeParse(formData.get("windowId"));
   if (!id.success || !windowId.success) return { error: "This availability could not be found." };

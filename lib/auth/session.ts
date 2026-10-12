@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getSupabaseConfig } from "@/lib/supabase/config";
 import { safeNext } from "./validation";
+import type { AccountEligibility } from "@/lib/participation/types";
 
 export const getCurrentUser = cache(async () => {
   if (!getSupabaseConfig()) return null;
@@ -23,6 +24,26 @@ export async function requireUser(next = "/account/dashboard") {
   const user = await getCurrentUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(safeNext(next))}`);
   if (!user.email_confirmed_at) redirect("/verify-email");
+  return user;
+}
+
+export const getAccountEligibility = cache(async (): Promise<AccountEligibility | null> => {
+  const user = await getCurrentUser();
+  if (!user) return null;
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_account_eligibility");
+  if (error || !data)
+    throw new Error("Your account eligibility could not be checked. Please try again.");
+  return data as AccountEligibility;
+});
+
+/** Gate new participation without blocking existing receipts, refunds or recovery. */
+export async function requireAdultAccount(next = "/account/dashboard") {
+  const user = await requireUser(next);
+  const eligibility = await getAccountEligibility();
+  if (!eligibility?.eligible) {
+    redirect(`/account/eligibility?next=${encodeURIComponent(safeNext(next))}`);
+  }
   return user;
 }
 
@@ -51,6 +72,12 @@ export async function requireHost() {
   const profile = await getProfile();
   if (!profile?.is_host) redirect("/host/start");
   return { user, profile };
+}
+
+/** New host work requires eligibility; existing records and declines remain accessible. */
+export async function requireAdultHost() {
+  await requireAdultAccount("/host/dashboard");
+  return requireHost();
 }
 
 export async function requireAdmin() {

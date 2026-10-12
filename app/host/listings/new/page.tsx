@@ -2,10 +2,12 @@ import { redirect } from "next/navigation";
 import { HostNav } from "@/components/host/host-nav";
 import { ListingForm } from "@/components/host/listing-form";
 import { getHostProfile } from "@/lib/host/data";
+import { requireAdultAccount } from "@/lib/auth/session";
 
 export const metadata = { title: "Create an experience" };
 
 export default async function NewListingPage() {
+  await requireAdultAccount("/host/listings/new");
   const profile = await getHostProfile();
   if (!profile) redirect("/host/profile");
   return (
@@ -16,8 +18,8 @@ export default async function NewListingPage() {
           <h1>Start with the idea.</h1>
           <p>
             Start with the required details below and save your private draft. Next, add your
-            meeting details, photos, and availability. You can come back to finish before submitting
-            for review.
+            meeting details, photos, availability, and participation and safety requirements. You
+            can come back to finish before submitting for review.
           </p>
         </div>
       </div>

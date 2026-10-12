@@ -1,18 +1,30 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { after, before, beforeEach, test } from "node:test";
-import { createTestDatabase, asRole } from "../database/helpers.mjs";
+import {
+  createTestDatabase,
+  asRole,
+  attestFixtureAdult,
+  approveFixtureSafety,
+} from "../database/helpers.mjs";
 let db;
 const host = randomUUID(),
   guest = randomUUID(),
+  admin = randomUUID(),
   listing = randomUUID(),
   policy = randomUUID();
 before(async () => {
   db = await createTestDatabase();
-  await db.query("insert into auth.users(id,email_confirmed_at) values ($1,now()),($2,now())", [
-    host,
-    guest,
-  ]);
+  await db.query(
+    "insert into auth.users(id,email_confirmed_at) values ($1,now()),($2,now()),($3,now())",
+    [host, guest, admin],
+  );
+  for (const person of [host, guest, admin]) await attestFixtureAdult(db, person);
+  await asRole(db, "authenticated", host, () => db.query("select public.enable_host_mode()"));
+  await db.query(
+    "insert into private.admin_memberships(user_id,reason) values ($1,'Synthetic email test operator')",
+    [admin],
+  );
   await db.query(
     "insert into public.host_profiles(user_id,display_name,city) values ($1,'Host','Miami')",
     [host],
@@ -21,6 +33,7 @@ before(async () => {
     "insert into public.listings(id,host_id,title,category,price_cents,duration_minutes,city) values ($1,$2,'Private <lesson>','art',10000,60,'Miami')",
     [listing, host],
   );
+  await approveFixtureSafety(db, { listingId: listing, hostId: host, adminId: admin });
   await db.query(
     `insert into private.commercial_policies(id,environment,standard_fee_bps,founder_fee_bps,processing_allocation,payout_delay_hours,restore_refunded_credit,referral_free_bookings,referral_credit_cap,terms_version,cancellation_terms,approved_by)
     values($1,'sandbox',1500,1000,'platform_absorbs',24,false,1,10,'test','Test cancellation terms only',$2)`,
@@ -31,9 +44,17 @@ after(async () => db.close());
 beforeEach(async () => db.exec("delete from private.email_outbox"));
 async function booking(hours = 48) {
   const id = randomUUID();
+  // Keep booking and explicit participation evidence in the same transaction,
+  // including when the caller is testing transaction rollback.
   await db.query(
-    `insert into public.bookings(id,listing_id,host_id,guest_id,starts_at,ends_at,amount_cents,listing_title_snapshot,request_expires_at)
-    values ($1,$2,$3,$4,now()+$5*interval '1 hour',now()+($5+1)*interval '1 hour',10000,'Private lesson',now()+interval '12 hours')`,
+    `with requested as (
+    insert into public.bookings(id,listing_id,host_id,guest_id,starts_at,ends_at,amount_cents,listing_title_snapshot,request_expires_at)
+    values ($1,$2,$3,$4,now()+$5*interval '1 hour',now()+($5+1)*interval '1 hour',10000,'Private lesson',now()+interval '12 hours')
+    returning id,listing_id)
+    insert into private.booking_participation(booking_id,kind,age_at_experience,rules_snapshot,
+    adult_booker_confirmed,rules_accepted,guardian_authority_confirmed,guardian_presence_accepted,account_attestation_version)
+    select requested.id,'self',30,l.participation_rules,true,true,false,false,'adult_account_v1'
+    from requested join public.listings l on l.id=requested.listing_id`,
     [id, listing, host, guest, hours],
   );
   return id;
@@ -207,15 +228,17 @@ test("ambiguous attempts stop before provider idempotency expires", async () => 
 });
 
 test("cancelled bookings never pass reminder preflight and both participants receive cancellation", async () => {
-  const id = await booking(48);
+  // Seed a start inside the reminder window; captured participation dates stay fixed.
+  const id = await booking(23);
   await markPaid(id);
-  // Time travel only the test fixture. Reminder slot remains the booking's start.
+  // Represent reminders queued when this synthetic booking was confirmed earlier.
+  // The separate confirmation test covers automatic reminder creation itself.
   await db.query(
-    "update public.bookings set starts_at=now()+interval '23 hours',ends_at=now()+interval '24 hours' where id=$1",
-    [id],
-  );
-  await db.query(
-    "update private.email_outbox set available_at=now(),scheduled_starts_at=(select starts_at from public.bookings where id=$1) where booking_id=$1 and kind='reminder_24h'",
+    `insert into private.email_outbox(booking_id,recipient_id,kind,event_key,scheduled_starts_at,available_at,created_at)
+    select b.id,recipient,'reminder_24h',extract(epoch from b.starts_at)::text,b.starts_at,
+      b.starts_at-interval '24 hours',now()-interval '2 hours'
+    from public.bookings b cross join lateral unnest(array[b.guest_id,b.host_id]) as recipient
+    where b.id=$1`,
     [id],
   );
   const claimed = await claim();

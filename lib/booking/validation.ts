@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { Temporal } from "@js-temporal/polyfill";
 import type { Booking, BookingStatus } from "./types";
+import { participantSchema } from "../participation/validation.ts";
 
 const MIAMI_TIME_ZONE = "America/New_York";
 
@@ -8,7 +9,28 @@ export const bookingRequestSchema = z.object({
   listingId: z.uuid("Choose an experience."),
   startsAt: z.iso.datetime({ offset: true, message: "Choose an available time." }),
   guestMessage: z.string().trim().max(3000),
+  participant: participantSchema,
 });
+
+/** Read only the participation fields we collect; no child identity or health data. */
+export function bookingRequestInput(formData: FormData) {
+  const integer = (value: FormDataEntryValue | null) =>
+    typeof value === "string" && /^\d+$/.test(value) ? Number(value) : Number.NaN;
+  return {
+    listingId: formData.get("listingId"),
+    startsAt: formData.get("startsAt"),
+    guestMessage: formData.get("guestMessage") ?? "",
+    participant: {
+      kind: formData.get("participantKind"),
+      age_at_experience: integer(formData.get("participantAge")),
+      adult_booker_confirmed: formData.get("adultBookerConfirmed") === "on",
+      rules_accepted: formData.get("participationRulesAccepted") === "on",
+      guardian_authority_confirmed: formData.get("guardianAuthorityConfirmed") === "on",
+      guardian_presence_accepted: formData.get("guardianPresenceAccepted") === "on",
+      rules_revision: integer(formData.get("rulesRevision")),
+    },
+  };
+}
 
 export const bookingMessageSchema = z.object({
   bookingId: z.uuid(),

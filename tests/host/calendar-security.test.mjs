@@ -4,7 +4,13 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { before, after, beforeEach, afterEach, test } from "node:test";
-import { asRole, createTestDatabase } from "../database/helpers.mjs";
+import {
+  asRole,
+  createTestDatabase,
+  attestFixtureAdult,
+  approveFixtureSafety,
+  adultParticipant,
+} from "../database/helpers.mjs";
 
 let db;
 const host = randomUUID(),
@@ -22,6 +28,7 @@ before(async () => {
       id,
       id === unverified ? null : new Date(),
     ]);
+  for (const id of [host, host2, guest, admin]) await attestFixtureAdult(db, id);
   await db.query("update public.profiles set is_host=true where id=any($1)", [
     [host, host2, unverified],
   ]);
@@ -65,7 +72,7 @@ async function fixture(owner) {
   const id = randomUUID();
   await db.query(
     `insert into public.listings(id,host_id,title,category,price_cents,duration_minutes,city,status,safety_status,consultation_status,published_at)
-    values($1,$2,'Synthetic calendar lesson','art',10000,60,'Miami','published','approved','waived',now())`,
+    values($1,$2,'Synthetic calendar lesson','art',10000,60,'Miami','draft','pending','not_requested',null)`,
     [id, owner],
   );
   await db.query(
@@ -76,11 +83,13 @@ async function fixture(owner) {
     "insert into public.availability_windows(listing_id,host_id,starts_at,ends_at) values($1,$2,$3,$4)",
     [id, owner, start, "2099-06-01T18:00:00Z"],
   );
+  await approveFixtureSafety(db, { listingId: id, hostId: owner, adminId: admin });
   return id;
 }
 const block = (from = start, until = end) =>
   rpc(host, "add_host_calendar_block", [from, until, "External appointment"]);
-const request = (id = listing, at = start) => rpc(guest, "request_booking", [id, at, ""]);
+const request = (id = listing, at = start) =>
+  rpc(guest, "request_booking", [id, at, "", adultParticipant()]);
 const slots = (id = listing) =>
   db.query("select * from public.list_booking_slots($1,$2,$3)", [
     id,

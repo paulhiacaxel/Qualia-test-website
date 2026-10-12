@@ -63,3 +63,76 @@ export async function asRole(db, role, userId, operation) {
     await db.query("select set_config('request.jwt.claim.sub', '', false)");
   }
 }
+
+/** Explicit synthetic adult evidence; callers deliberately omit negative-test identities. */
+export async function attestFixtureAdult(db, userId) {
+  await asRole(db, "authenticated", userId, () =>
+    db.query("select public.attest_adult_account(true, 'adult_account_v1')"),
+  );
+}
+
+/** Every legacy fixture describes its synthetic activity instead of bypassing review. */
+export function fixtureSafetySubmission(overrides = {}) {
+  return {
+    min_age: 18,
+    max_age: 120,
+    guardian_presence: "not_required",
+    participation_rules: "Synthetic adult lesson: follow the host's instructions throughout.",
+    hazards: "Synthetic fixture: reviewed ordinary studio and equipment hazards.",
+    equipment: "Synthetic fixture: host provides inspected equipment and protective supplies.",
+    prerequisites: "Synthetic fixture: no prior experience is required.",
+    supervision_plan: "Synthetic fixture: host supervises the single participant throughout.",
+    credentials_evidence: "Synthetic fixture evidence: instructor's relevant training reviewed.",
+    insurance_evidence: "Synthetic fixture evidence: suitable activity coverage reviewed.",
+    venue_evidence: "Synthetic fixture evidence: private teaching venue reviewed.",
+    emergency_plan:
+      "Synthetic fixture: stop the activity and contact emergency services if needed.",
+    evidence_expires_on: null,
+    ...overrides,
+  };
+}
+
+export function adultParticipant(rulesRevision = 1) {
+  return {
+    kind: "self",
+    age_at_experience: 30,
+    adult_booker_confirmed: true,
+    rules_accepted: true,
+    guardian_authority_confirmed: false,
+    guardian_presence_accepted: false,
+    rules_revision: rulesRevision,
+  };
+}
+
+/**
+ * Opt-in setup for tests whose subject is booking/finance, not listing publication.
+ * Evidence and review use real commands. Only pre-existing synthetic catalog state
+ * is assembled directly, as in the surrounding fixtures; production code is untouched.
+ */
+export async function approveFixtureSafety(
+  db,
+  { listingId, hostId, adminId, targetStatus = "published" },
+) {
+  const submitted = await asRole(db, "authenticated", hostId, () =>
+    db.query("select public.save_listing_safety_submission($1, null, $2) as revision", [
+      listingId,
+      fixtureSafetySubmission(),
+    ]),
+  );
+  const revision = submitted.rows[0].revision;
+  await db.query(
+    "update public.listings set status='submitted', safety_status='pending', consultation_status='not_requested', published_at=null where id=$1",
+    [listingId],
+  );
+  await asRole(db, "authenticated", adminId, () =>
+    db.query(
+      "select public.admin_review_listing_safety($1,$2,'approved','Synthetic reviewed activity notes','2100-01-01T00:00:00Z',false)",
+      [listingId, revision],
+    ),
+  );
+  await db.query(
+    "update public.listings set status=$2::public.listing_status, safety_status='approved', consultation_status='waived', published_at=case when $2='published' then now() else null end where id=$1",
+    [listingId, targetStatus],
+  );
+  return revision;
+}

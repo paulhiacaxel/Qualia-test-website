@@ -2,7 +2,7 @@ import Link from "next/link";
 import { HostNav } from "@/components/host/host-nav";
 import { ProfileForm } from "@/components/host/profile-form";
 import { getHostListings, getHostProfile } from "@/lib/host/data";
-import { requireHost } from "@/lib/auth/session";
+import { requireHost, requireAdultAccount } from "@/lib/auth/session";
 
 export const metadata = { title: "Your host profile" };
 
@@ -10,6 +10,7 @@ export default async function HostProfilePage() {
   const { profile: account } = await requireHost();
   const [profile, listings] = await Promise.all([getHostProfile(), getHostListings()]);
   const locked = listings.some((listing) => !["draft", "rejected"].includes(listing.status));
+  if (!locked) await requireAdultAccount("/host/profile");
   return (
     <main id="main-content" className="container dashboard">
       <div className="host-page-heading">

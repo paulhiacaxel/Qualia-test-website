@@ -4,6 +4,8 @@ import { SlotCalendar } from "@/components/booking/slot-calendar";
 import { getPublicExperience, getSlots } from "@/lib/booking/data";
 import { getCurrentUser } from "@/lib/auth/session";
 import { firstValue } from "@/lib/auth/validation";
+import { getAccountEligibility, getListingParticipationRules } from "@/lib/participation/data";
+import { ParticipationRulesSummary } from "@/components/booking/participation-rules";
 
 export const metadata = { title: "A Qualia experience" };
 
@@ -16,9 +18,11 @@ export default async function ExperiencePage({
 }) {
   const [{ id }, query] = await Promise.all([params, searchParams]);
   const { listing, host, photos } = await getPublicExperience(id);
-  const [availability, user] = await Promise.all([
+  const [availability, user, eligibility, participationRules] = await Promise.all([
     getSlots(id, firstValue(query.month), firstValue(query.date)),
     getCurrentUser(),
+    getAccountEligibility(),
+    getListingParticipationRules(id),
   ]);
   return (
     <main id="main-content" className="container experience-page">
@@ -35,7 +39,7 @@ export default async function ExperiencePage({
             With {host.display_name}
           </Link>
           <span>{listing.duration_minutes} minutes</span>
-          <span>One guest</span>
+          <span>One participant</span>
           <span>{listing.neighborhood}</span>
         </div>
       </header>
@@ -83,6 +87,17 @@ export default async function ExperiencePage({
             </p>
           </section>
           <section>
+            <h2>Who can join</h2>
+            {participationRules ? (
+              <ParticipationRulesSummary rules={participationRules} />
+            ) : (
+              <p className="muted">
+                Participation requirements are being reviewed. Booking requests are unavailable
+                until that review is complete.
+              </p>
+            )}
+          </section>
+          <section>
             <h2>Make it personal.</h2>
             <p>
               Tell your host what you&apos;re curious about when you request a time. You can keep
@@ -96,12 +111,14 @@ export default async function ExperiencePage({
         </div>
         <aside id="booking" className="panel experience-booking">
           <SlotCalendar
-            key={`${availability.calendar.value}-${availability.calendar.selectedDate}`}
+            key={`${availability.calendar.value}-${availability.calendar.selectedDate}-${participationRules?.revision ?? "pending"}`}
             listingId={id}
             {...availability}
             signedIn={Boolean(user)}
             isOwner={user?.id === listing.host_id}
             priceCents={listing.price_cents}
+            adultEligible={eligibility?.eligible === true}
+            participationRules={participationRules}
           />
         </aside>
       </div>

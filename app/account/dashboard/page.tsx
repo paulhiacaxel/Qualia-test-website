@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { DashboardShell } from "@/components/dashboard-shell";
-import { requireUser, getProfile } from "@/lib/auth/session";
+import { requireUser, getProfile, getAccountEligibility } from "@/lib/auth/session";
 import { getMyBookings } from "@/lib/booking/data";
 import { BookingList } from "@/components/booking/booking-list";
 import { effectiveStatus } from "@/lib/booking/validation";
@@ -9,7 +9,11 @@ import "@/components/booking/booking.css";
 export const metadata = { title: "Your account" };
 export default async function AccountPage() {
   const user = await requireUser();
-  const [profile, bookings] = await Promise.all([getProfile(), getMyBookings("guest")]);
+  const [profile, bookings, eligibility] = await Promise.all([
+    getProfile(),
+    getMyBookings("guest"),
+    getAccountEligibility(),
+  ]);
   const activeBookings = bookings
     .filter(
       (booking) =>
@@ -22,6 +26,18 @@ export default async function AccountPage() {
       title={profile?.full_name ? `Welcome, ${profile.full_name}.` : "Welcome to Qualia."}
       eyebrow="Your account"
     >
+      {!eligibility?.eligible ? (
+        <section className="panel" style={{ marginBottom: 24 }}>
+          <h2>Confirm your account eligibility</h2>
+          <p>
+            Qualia accounts are for adults 18 and older. A parent or legal guardian can book an
+            approved experience for an eligible minor.
+          </p>
+          <Link className="btn btn-primary" href="/account/eligibility">
+            Confirm before booking or hosting
+          </Link>
+        </section>
+      ) : null}
       <div className="dashboard-grid">
         <section className="panel">
           <h2>Your details</h2>

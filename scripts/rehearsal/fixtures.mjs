@@ -33,7 +33,7 @@ function identity(state) {
 export function seedSql(state, recipient) {
   const s = identity(state);
   return `do $rehearsal$
-declare operation jsonb; p uuid;
+declare operation jsonb; p uuid; safety_revision integer;
 begin
   if exists(select 1 from public.listings) or exists(select 1 from public.bookings)
     or exists(select 1 from private.commercial_policies) or exists(select 1 from private.stripe_accounts)
@@ -51,18 +51,41 @@ begin
   revoke all on all tables in schema qualia_rehearsal from public,anon,authenticated,service_role;
   insert into qualia_rehearsal.fixture values(${s.run},${q(MARKER)},${s.host},${s.guest},${s.listing},now());
   insert into private.admin_memberships(user_id,reason) values(${s.host},'Isolated local acceptance fixture only');
+  -- These two synthetic people explicitly attest only inside this isolated fixture.
+  perform set_config('request.jwt.claim.sub',${s.guest},true);
+  perform public.attest_adult_account(true,'adult_account_v1');
   perform set_config('request.jwt.claim.sub',${s.host},true);
+  perform public.attest_adult_account(true,'adult_account_v1');
   perform public.enable_host_mode();
   perform public.save_host_profile('Local rehearsal host','Synthetic private acceptance fixture.','Miami',null);
   insert into public.listings(id,host_id,title,description,category,price_cents,duration_minutes,city,neighborhood,
     status,safety_status,consultation_status,published_at)
     values(${s.listing},${s.host},'LOCAL TEST ONLY — private art session','Synthetic local fixture; never publish on bookqualia.com.',
-      'art',10000,60,'Miami','Wynwood','published','approved','waived',now());
+      'art',10000,60,'Miami','Wynwood','draft','pending','not_requested',null);
   insert into private.listing_locations(listing_id,address_line1,postal_code)
     values(${s.listing},'Local fixture — no real meeting address','33127');
   insert into public.availability_windows(listing_id,host_id,starts_at,ends_at)
     select ${s.listing},${s.host},date_trunc('hour',now())+n*interval '1 day',date_trunc('hour',now())+n*interval '1 day'+interval '4 hours'
       from generate_series(4,7) n;
+  -- Use the same evidence and review commands as the host/admin UI. No global
+  -- rehearsal exception or fabricated acceptance exists in the production schema.
+  safety_revision := public.save_listing_safety_submission(${s.listing},null,
+    jsonb_build_object('min_age',18,'max_age',120,'guardian_presence','not_required',
+      'participation_rules','Synthetic local art session: follow host instructions.',
+      'hazards','Synthetic local fixture: ordinary studio hazards reviewed.',
+      'equipment','Synthetic local fixture: inspected art supplies provided.',
+      'prerequisites','Synthetic local fixture: no previous experience required.',
+      'supervision_plan','Synthetic local fixture: continuous individual supervision.',
+      'credentials_evidence','Synthetic local fixture: relevant teaching evidence reviewed.',
+      'insurance_evidence','Synthetic local fixture: activity coverage reviewed.',
+      'venue_evidence','Synthetic local fixture: studio suitability reviewed.',
+      'emergency_plan','Synthetic local fixture: stop activity and contact emergency services.',
+      'evidence_expires_on',null));
+  update public.listings set status='submitted' where id=${s.listing};
+  perform public.admin_review_listing_safety(${s.listing},safety_revision,'approved',
+    'Synthetic local acceptance review only','2100-01-01T00:00:00Z',false);
+  update public.listings set status='published',safety_status='approved',
+    consultation_status='waived',published_at=now() where id=${s.listing};
   perform public.admin_set_booking_policy(1440,1440,true);
   p := public.admin_set_commercial_policy(${q(JSON.stringify(policy))}::jsonb);
   operation := public.pay_prepare_account(${s.host},'sandbox');
@@ -77,7 +100,7 @@ export function markerSql(state) {
   return `select count(*)::int as matches from qualia_rehearsal.fixture
     where marker=${q(MARKER)} and run_id=${s.run} and host_id=${s.host} and guest_id=${s.guest} and listing_id=${s.listing}`;
 }
-/** Only shift a paid fixture's service date. Financial state, policy and provider timestamps remain untouched. */
+/** Legacy fixtures only: an acknowledged participant's service date is immutable. */
 export function advanceSql(state, bookingId) {
   const s = identity(state),
     booking = q(uuid(bookingId));
@@ -96,6 +119,9 @@ begin
       and a.quarantine_reason is null and a.session_id like 'cs_test_%' and a.charge_id is not null;
   if not found or exists(select 1 from private.payment_attempts where booking_id=b.id and environment<>'sandbox') then
     raise exception 'A verified sandbox payment is required.'; end if;
+  if exists(select 1 from private.booking_participation where booking_id=b.id) then
+    raise exception 'Captured participant dates cannot be fast-forwarded. Complete this rehearsal at its original scheduled time and captured payout delay.';
+  end if;
   insert into qualia_rehearsal.time_advances(booking_id,original_starts_at,original_ends_at) values(b.id,b.starts_at,b.ends_at);
   -- One host lock covers both the old and proposed ranges. Place later rehearsals
   -- before earlier advanced fixtures/blocks instead of creating an overlap.

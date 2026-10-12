@@ -2,14 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { getHostProfile, getListingDetails } from "@/lib/host/data";
 import { formatMoney, formatMiamiDate } from "@/lib/host/validation";
+import { getListingSafetySubmission } from "@/lib/participation/data";
 
 export const metadata = { title: "Private experience preview" };
 
 export default async function PreviewListingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [{ listing, photos, availability }, host] = await Promise.all([
+  const [{ listing, photos, availability }, host, safety] = await Promise.all([
     getListingDetails(id),
     getHostProfile(),
+    getListingSafetySubmission(id),
   ]);
   const futureWindows = availability.filter((window) => Date.parse(window.starts_at) > Date.now());
   return (
@@ -87,6 +89,45 @@ export default async function PreviewListingPage({ params }: { params: Promise<{
             <p className="muted">
               Exact meeting details are kept private and shared with confirmed guests.
             </p>
+          </section>
+          <section className="preview-host">
+            <h2>Proposed participation details</h2>
+            <p className="field-hint">
+              This private preview shows the guest-facing information you have proposed. Qualia must
+              approve the current version before publication. Private review evidence is not part of
+              the public listing.
+            </p>
+            {safety ? (
+              <>
+                <p>
+                  Participant ages: {safety.min_age ?? "to be added"}–
+                  {safety.max_age ?? "to be added"}.
+                </p>
+                <p>
+                  Guardian presence for minors:{" "}
+                  {safety.guardian_presence === "required"
+                    ? "required"
+                    : safety.guardian_presence === "not_required"
+                      ? "not proposed; any minor participation without a guardian requires separate approval"
+                      : "to be added"}
+                  .
+                </p>
+                {[
+                  ["Who can take part", safety.participation_rules],
+                  ["Risks to understand", safety.hazards],
+                  ["Equipment and what to bring", safety.equipment],
+                  ["Experience and other requirements", safety.prerequisites],
+                  ["Supervision and guardian arrangements", safety.supervision_plan],
+                ].map(([label, value]) => (
+                  <div key={label}>
+                    <h3>{label}</h3>
+                    <p className="preview-prose">{value || "To be added before review."}</p>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <p>Add participation and safety details in section 05 of your editor.</p>
+            )}
           </section>
         </div>
         <aside className="panel">

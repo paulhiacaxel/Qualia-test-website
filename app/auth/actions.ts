@@ -6,8 +6,10 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { authIsConfigured, getSiteUrl, getSupabaseConfig } from "@/lib/supabase/config";
 import { requireUser } from "@/lib/auth/session";
+import { requireAdultAccount } from "@/lib/participation/data";
 import {
   emailSchema,
+  eligibilityPath,
   loginSchema,
   passwordSchema,
   safeNext,
@@ -42,9 +44,11 @@ export async function signUp(_previous: AuthState, formData: FormData): Promise<
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   const { email, password, fullName, role } = parsed.data;
   const defaultNext = role === "host" ? "/host/start" : "/account/dashboard";
-  const next = formData.get("returnTo")
+  const destination = formData.get("returnTo")
     ? safeNext(formData.get("returnTo"), defaultNext)
     : defaultNext;
+  // The signup checkbox is an entry requirement, not an authenticated attestation.
+  const next = eligibilityPath(destination);
   let hasSession = false;
   try {
     const supabase = await createClient();
@@ -166,6 +170,7 @@ export async function signOut(): Promise<void> {
 
 export async function enableHost(_previous: AuthState, _formData: FormData): Promise<AuthState> {
   await requireUser("/host/start");
+  await requireAdultAccount("/host/start");
   try {
     const supabase = await createClient();
     // This only enables a workspace. It never approves a listing or grants admin.
@@ -197,6 +202,8 @@ export async function confirmEmail(_previous: AuthState, formData: FormData): Pr
   }
   revalidatePath("/", "layout");
   redirect(
-    parsed.data.type === "recovery" ? "/account/update-password" : safeNext(formData.get("next")),
+    parsed.data.type === "recovery"
+      ? "/account/update-password"
+      : eligibilityPath(formData.get("next")),
   );
 }

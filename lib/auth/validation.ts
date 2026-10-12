@@ -24,6 +24,7 @@ export const signupSchema = z.object({
     .min(2, "Enter your full name.")
     .max(100, "Use 100 characters or fewer."),
   role: z.enum(["guest", "host"]),
+  adultConfirmed: z.literal("on", { error: "You must be 18 or older to create a Qualia account." }),
 });
 export const emailSchema = z.object({ email });
 export const passwordSchema = z
@@ -39,8 +40,20 @@ export const passwordSchema = z
 /** Restrict post-auth navigation to known app destinations, never supplied origins. */
 export function safeNext(value: unknown, fallback = "/account/dashboard"): string {
   if (typeof value !== "string" || value.length > 200) return fallback;
+  // Eligibility can retain a known destination, but never another nested redirect.
+  if (value.startsWith("/account/eligibility?next=")) {
+    try {
+      const destination = decodeURIComponent(value.slice("/account/eligibility?next=".length));
+      if (destination.startsWith("/account/eligibility")) return fallback;
+      const next = safeNext(destination, "");
+      return next ? `/account/eligibility?next=${encodeURIComponent(next)}` : fallback;
+    } catch {
+      return fallback;
+    }
+  }
   const destinations = new Set([
     "/account/dashboard",
+    "/account/eligibility",
     "/host/start",
     "/host/dashboard",
     "/admin",
@@ -56,6 +69,13 @@ export function safeNext(value: unknown, fallback = "/account/dashboard"): strin
   const detail = value.match(/^\/(?:experiences|bookings)\/([^/]+)$/);
   if (detail && z.uuid().safeParse(detail[1]).success) return value;
   return destinations.has(value) ? value : fallback;
+}
+
+export function eligibilityPath(value: unknown): string {
+  const next = safeNext(value);
+  return next.startsWith("/account/eligibility")
+    ? next
+    : `/account/eligibility?next=${encodeURIComponent(next)}`;
 }
 
 export function firstValue(value: string | string[] | undefined): string | undefined {

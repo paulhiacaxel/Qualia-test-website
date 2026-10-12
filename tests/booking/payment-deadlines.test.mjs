@@ -1,7 +1,13 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { after, afterEach, before, beforeEach, test } from "node:test";
-import { asRole, createTestDatabase } from "../database/helpers.mjs";
+import {
+  asRole,
+  createTestDatabase,
+  attestFixtureAdult,
+  approveFixtureSafety,
+  adultParticipant,
+} from "../database/helpers.mjs";
 import { checkoutTermsSchema } from "../../lib/payments/contracts.ts";
 import { checkoutWindow } from "../../lib/booking/payment-window.ts";
 
@@ -13,6 +19,7 @@ before(async () => {
   db = await createTestDatabase();
   for (const id of [host, guest, admin])
     await db.query("insert into auth.users(id,email_confirmed_at) values ($1,now())", [id]);
+  for (const id of [host, guest, admin]) await attestFixtureAdult(db, id);
   await db.query("update public.profiles set is_host=true where id=$1", [host]);
   await db.query(
     "insert into public.host_profiles(user_id,display_name,city) values ($1,'Host','Miami')",
@@ -53,7 +60,7 @@ async function fixture(seconds = 7200) {
   ).rows[0].at.toISOString();
   await db.query(
     `insert into public.listings(id,host_id,title,category,price_cents,duration_minutes,city,status,safety_status,consultation_status,published_at)
-    values($1,$2,'Private lesson','art',10000,1,'Miami','published','approved','waived',now())`,
+    values($1,$2,'Private lesson','art',10000,1,'Miami','draft','pending','not_requested',null)`,
     [id, host],
   );
   await db.query(
@@ -64,9 +71,11 @@ async function fixture(seconds = 7200) {
     "insert into public.availability_windows(listing_id,host_id,starts_at,ends_at) values($1,$2,$3,$3::timestamptz+interval '3 minutes')",
     [id, host, start],
   );
+  await approveFixtureSafety(db, { listingId: id, hostId: host, adminId: admin });
   return { id, start };
 }
-const request = (item) => rpc(guest, "request_booking", [item.id, item.start, ""]);
+const request = (item) =>
+  rpc(guest, "request_booking", [item.id, item.start, "", adultParticipant()]);
 const row = async (id) =>
   (await db.query("select * from public.bookings where id=$1", [id])).rows[0];
 
@@ -112,11 +121,23 @@ test("near-start slots and forged requests are rejected on the same 32-minute bo
 });
 
 test("an aging historical request cannot be accepted near the start, but can be declined", async () => {
-  const item = await fixture();
-  const id = await request(item);
+  const item = await fixture(31 * 60);
+  const id = randomUUID();
+  // An earlier request can age into the cutoff. Capture its original dates and
+  // acknowledgments together; never move an already acknowledged booking.
   await db.query(
-    "update public.bookings set starts_at=now()+interval '31 minutes',ends_at=now()+interval '32 minutes',request_expires_at=now()+interval '30 minutes' where id=$1",
-    [id],
+    `with historical as (
+      insert into public.bookings(id,listing_id,host_id,guest_id,starts_at,ends_at,status,
+        amount_cents,request_expires_at,policy_request_expiry_minutes,policy_payment_deadline_minutes,created_at)
+      values($1,$2,$3,$4,$5,$5::timestamptz+interval '1 minute','requested',10000,
+        now()+interval '30 minutes',1440,1440,now()-interval '1 day')
+      returning id,listing_id)
+    insert into private.booking_participation(booking_id,kind,age_at_experience,rules_snapshot,
+      adult_booker_confirmed,rules_accepted,guardian_authority_confirmed,guardian_presence_accepted,
+      account_attestation_version,accepted_at)
+    select h.id,'self',30,l.participation_rules,true,true,false,false,'adult_account_v1',now()-interval '1 day'
+      from historical h join public.listings l on l.id=h.listing_id`,
+    [id, item.id, host, guest, item.start],
   );
   const before = await row(id);
   await assert.rejects(
