@@ -6,15 +6,15 @@ Implementation: stripe-node 23.0.0, API `2026-09-30.endive`, Accounts v2 Express
 
 The sandbox is `acct_1SKPOxDIzwThjgQA`, with `livemode=false` and **Connect Marketplace enabled**. After renewed browser approval, the earlier SMS attempt was found to have succeeded despite the authentication tool's failure report. All configuration below was performed in the sandbox.
 
-Dedicated restricted key **Qualia sandbox app** (`mk_1UPkb4DIzwThjgQARHnBkBjC`) is stored as Sensitive Production `STRIPE_RESTRICTED_KEY`. READY deployment `dpl_9yJzNLFZVPaL1ggki4o9Q3xBF2LC` loads it and the three active signing secrets at reviewed commit `407a220d66a2d24abe3af4c9bc6f4d76c80fbb23`. Secret values remain outside the repository; temporary transfer files were deleted.
+Dedicated restricted key **Qualia sandbox app** (`mk_1UPkb4DIzwThjgQARHnBkBjC`) is stored as Sensitive Production `STRIPE_RESTRICTED_KEY`. READY deployment `dpl_CpYSiTm2z7Mk9fHph35d3m3UZ5t9` loads it and the three active signing secrets at reviewed commit `53bf519bd80936ba55cb07ea092d13f24ee2f331`. Secret values remain outside the repository; temporary transfer files were deleted.
 
-| Destination | ID | Verified state |
-| --- | --- | --- |
-| Platform snapshots | `we_1UPjZeDIzwThjgQAclqYI3H5` | Existing platform destination; `STRIPE_WEBHOOK_SECRET_PLATFORM` loaded |
-| Corrected Connect payout snapshots | `we_1UPkTKDIzwThjgQAIQtjmXFc` | Enabled, `@accounts` / snapshot; corrected `STRIPE_WEBHOOK_SECRET_CONNECT` loaded |
-| Accounts v2 thin events | `ed_test_61VZ7YBgatG2p8hK916TTnMJSmSQozILacixY42JEPZY` | Existing Your account / thin destination; `STRIPE_WEBHOOK_SECRET_ACCOUNTS_V2` loaded |
-| Incorrect original payout destination | `we_1UPjaKDIzwThjgQAinUcI1AR` | Disabled, `@self` / snapshot |
-| Incorrect duplicate payout destination | `we_1UPjeCDIzwThjgQAzDVeQRVx` | Disabled, `@self` / snapshot |
+| Destination                            | ID                                                     | Verified state                                                                       |
+| -------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| Platform snapshots                     | `we_1UPjZeDIzwThjgQAclqYI3H5`                          | Existing platform destination; `STRIPE_WEBHOOK_SECRET_PLATFORM` loaded               |
+| Corrected Connect payout snapshots     | `we_1UPkTKDIzwThjgQAIQtjmXFc`                          | Enabled, `@accounts` / snapshot; corrected `STRIPE_WEBHOOK_SECRET_CONNECT` loaded    |
+| Accounts v2 thin events                | `ed_test_61VZ7YBgatG2p8hK916TTnMJSmSQozILacixY42JEPZY` | Existing Your account / thin destination; `STRIPE_WEBHOOK_SECRET_ACCOUNTS_V2` loaded |
+| Incorrect original payout destination  | `we_1UPjaKDIzwThjgQAinUcI1AR`                          | Disabled, `@self` / snapshot                                                         |
+| Incorrect duplicate payout destination | `we_1UPjeCDIzwThjgQAzDVeQRVx`                          | Disabled, `@self` / snapshot                                                         |
 
 Dashboard inspection confirmed both earlier payout destinations had **Your account** scope. The supported update APIs cannot change this source: [V2 event-destination update](https://docs.stripe.com/api/v2/core/event_destinations/update) states event scopes are configured at creation, and [V1 webhook update](https://docs.stripe.com/api/webhook_endpoints/update) has no `connect` parameter. After enabling sandbox Connect, the replacement was created with **Connected accounts / Snapshot**, API version `2026-09-30.endive`, the six payout events below and the existing Connect URL. Both incorrect destinations were then reversibly disabled. V1 and V2 API read-back confirmed the replacement remains enabled and its source is `@accounts`.
 
@@ -28,21 +28,21 @@ Use the owner checklist in [owner-setup.md](owner-setup.md). The production orig
 2. The existing sandbox's Connect Marketplace setup is complete. For another sandbox, complete Connect setup if Stripe requests it. The integration is a marketplace: Qualia collects the guest payment, hosts use an Express dashboard, Qualia manages pricing and negative balance liability, and separate charges/transfers support release after completion. The owner supplies business facts and accepts any required agreements; do not invent or pre-accept these.
 3. The existing sandbox key is **Qualia sandbox app**. Do not create a duplicate. Its persisted Dashboard grants are recorded below. For another environment, start with no permissions and grant only the resources required. Write includes Read. The connected-account column appeared after Connect Marketplace was enabled in this sandbox.
 
-| Dashboard resource | Platform permission | Connected-account permission |
-| --- | --- | --- |
-| Balance | Read | None |
-| Charges and Refunds (grouped) | Write | None |
-| Payment Disputes | Read | None |
-| Payment Intents | Read | None |
-| Checkout Sessions | Write | None |
-| Accounts (V1) | Write | None |
-| Account Links | Write | None |
-| Login Links | Write | None |
-| Transfers | Write | None |
-| Accounts v2 | Read | Mirrored by Stripe; disabled control |
-| Recipient Configuration | Write | Mirrored by Stripe; disabled control |
-| Payouts | None | Read |
-| Other resources, including Customer/Merchant Configuration | None | None |
+| Dashboard resource                                         | Platform permission | Connected-account permission         |
+| ---------------------------------------------------------- | ------------------- | ------------------------------------ |
+| Balance                                                    | Read                | None                                 |
+| Charges and Refunds (grouped)                              | Write               | None                                 |
+| Payment Disputes                                           | Read                | None                                 |
+| Payment Intents                                            | Read                | None                                 |
+| Checkout Sessions                                          | Write               | None                                 |
+| Accounts (V1)                                              | Write               | None                                 |
+| Account Links                                              | Write               | None                                 |
+| Login Links                                                | Write               | None                                 |
+| Transfers                                                  | Write               | None                                 |
+| Accounts v2                                                | Read                | Mirrored by Stripe; disabled control |
+| Recipient Configuration                                    | Write               | Mirrored by Stripe; disabled control |
+| Payouts                                                    | None                | Read                                 |
+| Other resources, including Customer/Merchant Configuration | None                | None                                 |
 
 The V2 connected-account cells are gray and automatically mirror the selected platform grants; they cannot be controlled independently in this UI. Charges and Refunds is a grouped Write grant because refunds are created; the code only reads Charges. Accounts (V1) Write remains in the verified saved configuration; its necessity for Express login links has not been conclusively isolated. Do not describe untested grants as fully proven.
 The current code does not retrieve Events through the API and does not need an Events permission. A publishable Stripe key is not needed for the hosted Checkout redirect. Verify the restricted key against actual sandbox requests and use Workbench permission errors to identify a missing resource grant; do not replace it with unrestricted access.
@@ -60,7 +60,7 @@ The current code does not retrieve Events through the API and does not need an E
 
 Do not use a real live account as a sandbox. This repository does not provision an account or accept platform/host legal agreements. Owners complete Stripe's platform business verification and Connect setup themselves. Host onboarding collects identity and business information in Stripe's hosted forms, without inferring an entity type or accepting terms for them.
 
-The owner must explicitly save and enable a **sandbox** commercial policy at `/admin/commercial`: standard commission, founding lifetime commission, processing-cost allocation, release delay, cancellation wording/version, refund credit restoration, and referral grant/cap. The owner approved **17.5% standard commission** and delegated a founding rate choice; **10% lifetime founding commission** is selected after the first ten commission-free bookings or six months, whichever comes first. Record those approved values in the chosen environment. Processing-cost allocation, release delay, cancellation/refund terms and referral grant/cap still require explicit choices. No policy is enabled by this guide. Founder enrollment records an agreed start and reserves up to ten free bookings until six calendar months later. Existing quotes keep their policy, and guests accept the displayed cancellation terms before Checkout opens. Complete owner-approved Terms and Privacy pages remain a launch prerequisite.
+The owner must explicitly approve, save and enable a **sandbox** commercial policy at `/admin/commercial`: rates, founding free-booking count/calendar-month duration/cohort cap, processing allocation, release delay, cancellation wording/version, refund restoration and referral grant/cap. See the reopened [launch proposal](launch-decisions-proposed.md); the historical offer is not an active policy. The configurable-incentive migration is applied to hosted Supabase; the corresponding application is deployed at `53bf519`. Enrollment requires a verified host with a published listing and consent to the displayed policy version; it freezes the agreed start, count, window, rate and restoration rule. Existing quotes keep their policy, and guests accept displayed cancellation terms before Checkout. No policy is enabled by this guide. Complete owner-approved Terms, Privacy and host agreements remain launch prerequisites.
 
 ## Webhook destinations
 
@@ -99,7 +99,7 @@ A successful operation is never inferred from a timeout. Keep the same durable o
 
 Local tests exercise real SDK serialization with a fake HTTP transport, signature rejection, canonical payment normalization, expiry holds, and durable unknown-result recovery. Database tests exercise permissions, commercial gates, credit reservations and financial state changes. These do not establish that a deployed Stripe integration works.
 
-Run an actual sandbox host→guest→owner round trip: host verification and capability refresh; host accepts request; guest reviews terms and pays; webhook confirms the booking once; owner marks completion and releases; host sees transfer and bank payout state. Also test a retryable card failure, asynchronous pending/failure, expired session with a processing intent, duplicate/out-of-order delivery, two simultaneous tenth-credit reservations, a late payment, partial/full refunds before and after transfer, failed recovery, restricted host account, lost API responses and webhook-before-ledger-record delivery. Verify email confirmation only follows authoritative paid state. Keep live payments disabled until these pass and owner commercial/legal configuration is approved.
+Run an actual sandbox host→guest→owner round trip: host verification and capability refresh; host accepts request; guest reviews terms and pays; webhook confirms the booking once; owner marks completion and releases; host sees transfer and bank payout state. Also test a retryable card failure, asynchronous pending/failure, expired session with a processing intent, duplicate/out-of-order delivery, two simultaneous reservations for the final configured free credit, a late payment, partial/full refunds before and after transfer, failed recovery, restricted host account, lost API responses and webhook-before-ledger-record delivery. Verify email confirmation only follows authoritative paid state. Keep live payments disabled until these pass and owner commercial/legal configuration is approved.
 
 Primary references: [Accounts v2](https://docs.stripe.com/connect/accounts-v2), [separate charges and transfers](https://docs.stripe.com/connect/separate-charges-and-transfers), [Checkout fulfillment](https://docs.stripe.com/checkout/fulfillment), [webhooks](https://docs.stripe.com/webhooks), [idempotent requests](https://docs.stripe.com/api/idempotent_requests).
 

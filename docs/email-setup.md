@@ -30,7 +30,7 @@ Follow [owner-setup.md](owner-setup.md) for the combined checklist. Domain regis
 5. Site URL, the three exact redirect entries, confirmation-required signup and the signup/recovery TokenHash templates are saved as shown in [owner-setup.md](owner-setup.md). Password minimum 12 is verified persisted; anonymous signup is disabled. Test signup and recovery using owner-approved recipient addresses, including a second browser/device, before inviting hosts.
 6. The booking-worker environment values below are loaded by the current Production redeploy. Approve a supported scheduler/cadence and check an approved booking-message delivery before enabling the worker. A sender being verified is not proof that a message reached an inbox.
 
-Recruitment messages still require lead/message approval before sending. Send them from the monitored Qualia mailbox; the transactional worker does not send outreach or handle its replies.
+Recruitment messages remain **HOLD** pending approved terms, lead/message and first-batch approval, a valid postal address, verified Qualia mailbox connection and provider-policy review. Only personal Gmail is currently connected for sending. Resend prohibits cold outreach; Google policies do not establish a low-volume personalized exception. See [outreach gates](launch-decisions-proposed.md#outreach-and-activation-gates). This worker never sends recruitment messages or handles replies.
 
 ## Configuration required before enabling
 
@@ -46,13 +46,13 @@ Set these server environment variables in the chosen environment:
 
 Never prefix the secret variables with `NEXT_PUBLIC_`. Keep the enable switch off in copied preview environments. Use a separate sandbox project and provider testing setup for integration verification. Real recipient tests require explicit approval of addresses and content; none were performed by this implementation.
 
-Authenticate worker requests with `Authorization: Bearer <CRON_SECRET>` to `GET /api/jobs/email`. The endpoint claims at most five jobs per invocation. It returns aggregate counts only and does not expose messages or addresses. Missing credentials or a disabled switch produce HTTP 503 without claiming jobs. Invalid authentication returns HTTP 401.
+Authenticate worker requests with `Authorization: Bearer <CRON_SECRET>` to `GET /api/jobs/email`. In the deployed implementation, it first runs `expire_due_bookings(p_limit: 100)` and then claims at most five jobs per invocation. It returns aggregate counts only and does not expose messages or addresses. Missing credentials or a disabled switch produce HTTP 503 without claiming jobs. Invalid authentication returns HTTP 401.
 
 No `vercel.json` cron entry is included. Confirm the hosting plan's supported schedule and execution limits before choosing a scheduler. A frequent schedule is needed for timely booking notifications and to drain bursts; a daily schedule is insufficient. The route declares a 60-second maximum and provider requests time out after eight seconds. Confirm actual hosting limits before enabling. Monitor backlog and adjust capacity before accepting meaningful booking traffic.
 
 ## Recommended production scheduler
 
-Use native Vercel Cron every five minutes **after confirming Pro and passing approved booking-delivery tests**. Qualia's current plan is unverified; no job has been created. [Pro starts at $20/month](https://vercel.com/docs/plans/pro-plan), with function usage applying; [Cron has no separate fee](https://vercel.com/docs/cron-jobs/usage-and-pricing). Hobby's daily-only schedule is insufficient.
+Use native Vercel Cron every five minutes **after the owner approves Pro and booking-delivery tests pass**. The Dashboard confirms Qualia is on Hobby. The reviewed upgrade is $20 immediately and $20/month baseline plus taxes/metered usage; no purchase or job has been created. [Pro pricing](https://vercel.com/docs/plans/pro-plan) and function usage apply; [Cron has no separate fee](https://vercel.com/docs/cron-jobs/usage-and-pricing). Hobby's daily-only schedule is insufficient.
 
 When ready, merge this entry into the existing `vercel.json` and deploy; do not replace unrelated configuration:
 
@@ -65,6 +65,8 @@ When ready, merge this entry into the existing `vercel.json` and deploy; do not 
 Supabase Cron with pg_net/Vault is **not a ready alternative**: [pg_net stores decrypted bearer tokens in queued headers readable by database login roles](https://supabase.com/docs/guides/troubleshooting/database-roles-can-read-request-headers-queued-by-pg_net-ad6357). Vault encryption alone does not address this exposure; review authentication and monitoring before using it.
 
 ## Queue and retry semantics
+
+**Database applied and application deployed:** migration `20261012161739_booking_expiry_sweep.sql` adds a service-role-only expiry sweep before outbox claims. Each enabled, authenticated run checks up to 100 elapsed unpaid deadlines, skips financial holds and busy host locks, and persists qualifying expirations with booking events; the existing trigger enqueues closure messages. The response includes `expired`. Expiry failure prevents email claims. It does not contact Stripe or release in-flight payment holds; financial reconciliation stays operator/event driven. With the worker disabled or no scheduler, there is no background sweep. The database change is applied and its worker caller is deployed at `53bf519`; the worker remains disabled and unscheduled.
 
 The private, RLS-enabled table has no guest/host/admin client grants. Only the trusted server role can call claim, context, prepare and finish RPCs. The trigger runs inside the booking transaction; rollback also rolls back its email. A unique booking/event/recipient key prevents duplicate logical events. Reminder keys include the start instant.
 
