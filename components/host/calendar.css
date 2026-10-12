@@ -1,0 +1,514 @@
+.calendar-time-zone {
+  display: inline-block;
+  padding: 7px 11px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  color: var(--mossdeep);
+  background: var(--paper);
+  font:
+    10px/1.5 "IBM Plex Mono",
+    monospace;
+}
+.availability-workspace {
+  display: grid;
+  gap: 28px;
+}
+.availability-workspace h3,
+.host-calendar-blocks h3 {
+  margin: 0 0 14px;
+  font-size: 23px;
+}
+.availability-workspace p {
+  font-size: 13px;
+}
+.availability-intro p {
+  margin: 12px 0 0;
+}
+.availability-intro .field-hint {
+  margin-top: 6px;
+}
+.availability-add,
+.availability-block-help {
+  padding: 22px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  border-radius: 14px;
+}
+.availability-mode,
+.availability-weekdays {
+  border: 0;
+  padding: 0;
+  margin: 0 0 22px;
+  min-width: 0;
+}
+.availability-mode legend,
+.availability-weekdays legend {
+  padding: 0;
+  margin-bottom: 10px;
+}
+.availability-mode > label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 20px 6px 0;
+  cursor: pointer;
+  font-size: 13px;
+}
+.availability-mode input,
+.availability-weekdays input {
+  accent-color: var(--moss);
+  width: 17px;
+  height: 17px;
+}
+.availability-weekdays > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.availability-weekdays label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.availability-weekdays label:has(input:checked) {
+  background: var(--paperalt);
+  border-color: var(--moss);
+}
+.availability-editor .field-input {
+  min-width: 0;
+  max-width: 100%;
+}
+.availability-saved-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.availability-saved-heading h3 {
+  margin: 0;
+}
+.availability-saved-heading > span {
+  font-size: 12px;
+  color: var(--inksoft);
+}
+.availability-window-list {
+  display: grid;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+}
+.availability-window-list > li {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+}
+.availability-window-summary {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 18px;
+}
+.availability-window-summary > div {
+  font-size: 13px;
+  line-height: 1.7;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.availability-window-end {
+  display: block;
+  color: var(--inksoft);
+  font-size: 12px;
+  margin-top: 4px;
+}
+.availability-window-summary .btn {
+  font-size: 11px;
+  padding: 9px 12px;
+}
+.availability-window-summary .host-form {
+  flex-shrink: 0;
+  max-width: 200px;
+}
+.availability-edit {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  margin-top: 15px;
+}
+.availability-edit summary,
+.availability-past summary,
+.calendar-import summary {
+  cursor: pointer;
+  color: var(--mossdeep);
+  font-size: 13px;
+}
+.availability-edit summary:focus-visible,
+.availability-past summary:focus-visible,
+.calendar-import summary:focus-visible {
+  outline: 2px solid var(--moss);
+  outline-offset: 4px;
+}
+.availability-edit[open] summary {
+  margin-bottom: 20px;
+}
+.availability-past li {
+  font-size: 12px;
+  margin: 12px 0;
+  color: var(--inksoft);
+}
+.availability-block-help .text-link {
+  font-size: 13px;
+}
+.host-calendar-overview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 22px 32px;
+  margin: 0 0 24px;
+}
+.host-calendar-overview > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.host-calendar-overview strong {
+  font-family: "Fraunces Variable", serif;
+  font-size: 29px;
+  font-weight: 500;
+}
+.host-calendar-overview > div > span {
+  max-width: 140px;
+  font-size: 12px;
+  color: var(--inksoft);
+}
+.host-calendar-overview > .calendar-time-zone {
+  margin-left: auto;
+}
+.calendar-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 22px;
+}
+.calendar-section-heading h2 {
+  font-size: 30px;
+  margin: 7px 0 0;
+}
+.host-month-navigation {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.host-month-navigation .text-link {
+  font-size: 12px;
+  margin-right: 10px;
+}
+.calendar-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+.calendar-arrow:hover {
+  background: var(--paperalt);
+}
+.calendar-arrow.disabled {
+  opacity: 0.3;
+}
+.host-schedule-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
+  margin-bottom: 22px;
+  font-size: 11px;
+  color: var(--inksoft);
+}
+.host-schedule-legend > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.host-schedule-legend > span::before,
+.host-month-dot {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border: 1px solid var(--moss);
+  background: var(--paperalt);
+  border-radius: 50%;
+  flex: 0 0 7px;
+}
+.host-schedule-legend > [data-kind="confirmed"]::before,
+[data-kind="confirmed"] > .host-month-dot {
+  background: var(--moss);
+  border-color: var(--moss);
+}
+.host-schedule-legend > [data-kind="held"]::before,
+[data-kind="held"] > .host-month-dot {
+  background: var(--gold);
+  border-color: var(--gold);
+}
+.host-schedule-legend > [data-kind="blocked"]::before,
+[data-kind="blocked"] > .host-month-dot {
+  background: var(--rose);
+  border-color: var(--rose);
+  border-radius: 1px;
+}
+.host-month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px;
+}
+.host-month-weekday {
+  text-align: center;
+  padding: 5px 0 8px;
+  font:
+    10px "IBM Plex Mono",
+    monospace;
+  color: var(--inksoft);
+}
+.host-month-day {
+  min-height: 106px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px;
+  background: var(--card);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--ink);
+}
+.host-month-day:hover {
+  background: var(--paper);
+  border-color: var(--moss);
+}
+.host-month-day.selected {
+  border-color: var(--moss);
+  box-shadow: inset 0 0 0 1px var(--moss);
+  background: var(--paper);
+}
+.host-month-day.past {
+  background: var(--paperalt);
+}
+.host-month-day-number {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  font:
+    12px "IBM Plex Mono",
+    monospace;
+}
+.host-month-today {
+  font-size: 8px;
+  color: var(--moss);
+}
+.host-month-markers {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.host-month-markers > span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  color: var(--inksoft);
+}
+.host-day-agenda {
+  scroll-margin-top: 100px;
+  border-top: 1px solid var(--line);
+  padding-top: 28px;
+  margin-top: 26px;
+}
+.host-day-agenda h3 {
+  font-size: 26px;
+  margin: 7px 0 0;
+}
+.host-day-agenda .btn {
+  font-size: 12px;
+}
+.host-day-agenda > ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 10px;
+}
+.host-day-agenda li {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 16px;
+  padding: 15px 18px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line);
+  border-radius: 8px;
+}
+.host-day-agenda li[data-kind="confirmed"] {
+  border-left-color: var(--moss);
+}
+.host-day-agenda li[data-kind="held"] {
+  border-left-color: var(--gold);
+}
+.host-day-agenda li[data-kind="blocked"] {
+  border-left-color: var(--rose);
+}
+.host-agenda-time {
+  font-size: 12px;
+  line-height: 1.7;
+}
+.host-agenda-time > span {
+  display: block;
+  font-size: 11px;
+  color: var(--inksoft);
+}
+.host-agenda-status {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 11px;
+  color: var(--inksoft);
+}
+.host-day-agenda li a {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--mossdeep);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+.host-calendar-blocks {
+  margin-top: 44px;
+  scroll-margin-top: 100px;
+}
+.calendar-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+}
+.calendar-tools-grid p {
+  font-size: 13px;
+}
+.calendar-tools-grid .notice {
+  margin-bottom: 24px;
+}
+.calendar-block-form {
+  margin-top: 22px;
+}
+.calendar-saved-blocks,
+.calendar-saved-imports {
+  margin-top: 30px;
+}
+.calendar-import {
+  margin-top: 14px;
+}
+.calendar-import > summary {
+  font-family: "Fraunces Variable", serif;
+  font-size: 23px;
+}
+.calendar-import > div {
+  margin-top: 20px;
+}
+.calendar-import h4 {
+  font-size: 19px;
+  margin: 24px 0 18px;
+}
+.calendar-import-remove {
+  border-top: 1px solid var(--line);
+  margin-top: 26px;
+  padding-top: 20px;
+}
+.calendar-import-remove summary {
+  color: var(--rose);
+}
+.calendar-import-remove > p {
+  font-size: 13px;
+}
+@media (max-width: 900px) {
+  .calendar-tools-grid {
+    grid-template-columns: 1fr;
+  }
+  .host-calendar-overview > .calendar-time-zone {
+    margin-left: 0;
+  }
+  .host-month-day {
+    padding: 8px;
+  }
+}
+@media (max-width: 560px) {
+  .availability-add,
+  .availability-block-help {
+    padding: 17px;
+  }
+  .availability-window-summary {
+    flex-direction: column;
+  }
+  .availability-window-summary .host-form {
+    max-width: none;
+  }
+  .availability-editor .field-row,
+  .calendar-block-form .field-row {
+    grid-template-columns: 1fr;
+  }
+  .calendar-section-heading {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .host-schedule.panel {
+    padding: 18px 12px;
+  }
+  .host-month-grid {
+    gap: 4px;
+  }
+  .host-month-day {
+    min-height: 68px;
+    padding: 7px 5px;
+    gap: 7px;
+  }
+  .host-month-day-number {
+    font-size: 11px;
+  }
+  .host-month-today {
+    display: none;
+  }
+  .host-month-markers {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .host-month-marker-label {
+    display: none;
+  }
+  .host-schedule-legend {
+    gap: 10px 14px;
+  }
+  .host-day-agenda li {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 14px;
+  }
+  .host-agenda-time {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .host-day-agenda h3 {
+    font-size: 23px;
+  }
+  .host-calendar-overview {
+    gap: 15px;
+  }
+}

@@ -15,8 +15,9 @@ export default async function NewListingPage() {
           <span className="eyebrow">Your next experience</span>
           <h1>Start with the idea.</h1>
           <p>
-            This creates a private draft. Next, you&apos;ll add your meeting details, photos, and
-            availability.
+            Start with the required details below and save your private draft. Next, add your
+            meeting details, photos, and availability. You can come back to finish before submitting
+            for review.
           </p>
         </div>
       </div>

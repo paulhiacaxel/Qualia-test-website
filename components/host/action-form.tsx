@@ -4,13 +4,21 @@ import { useActionState, useId, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 import type { HostActionState } from "@/lib/host/types";
 
-function SubmitButton({ label, danger }: { label: string; danger?: boolean }) {
+function SubmitButton({
+  label,
+  danger,
+  disabled = false,
+}: {
+  label: string;
+  danger?: boolean;
+  disabled?: boolean;
+}) {
   const { pending } = useFormStatus();
   return (
     <button
       className={`btn ${danger ? "btn-danger" : "btn-primary"}`}
       type="submit"
-      disabled={pending}
+      disabled={pending || disabled}
     >
       {pending ? "Saving…" : label}
     </button>
@@ -22,6 +30,7 @@ export function ActionForm({
   children,
   label,
   disabled = false,
+  submitDisabled = false,
   danger = false,
   className = "",
 }: {
@@ -29,6 +38,7 @@ export function ActionForm({
   children: ReactNode;
   label: string;
   disabled?: boolean;
+  submitDisabled?: boolean;
   danger?: boolean;
   className?: string;
 }) {
@@ -54,7 +64,7 @@ export function ActionForm({
         ) : null}
         {!disabled ? (
           <div>
-            <SubmitButton label={label} danger={danger} />
+            <SubmitButton label={label} danger={danger} disabled={submitDisabled} />
           </div>
         ) : null}
       </fieldset>

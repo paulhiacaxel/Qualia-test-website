@@ -1,20 +1,19 @@
 import Link from "next/link";
 import { HostNav } from "@/components/host/host-nav";
 import { AvailabilityManager } from "@/components/host/availability-manager";
+import { HostMonthCalendar } from "@/components/host/host-month-calendar";
+import { CalendarBlockManager } from "@/components/host/calendar-block-manager";
 import { BookingList } from "@/components/booking/booking-list";
 import { getMyBookings } from "@/lib/booking/data";
 import { getHostListings } from "@/lib/host/data";
+import { getHostCalendarBlocks } from "@/lib/host/calendar-data";
 import { requireHost } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
-import {
-  calendarMonth,
-  effectiveStatus,
-  formatSlotTime,
-  miamiDateKey,
-} from "@/lib/booking/validation";
+import { calendarMonth, effectiveStatus, miamiDateKey } from "@/lib/booking/validation";
 import { firstValue } from "@/lib/auth/validation";
 import type { AvailabilityWindow } from "@/lib/host/types";
 import "@/components/booking/booking.css";
+import "@/components/host/calendar.css";
 
 export const metadata = { title: "Host calendar" };
 
@@ -26,8 +25,21 @@ export default async function HostCalendarPage({
   const { user } = await requireHost();
   const params = await searchParams;
   const calendar = calendarMonth(firstValue(params.month));
+  const today = miamiDateKey(new Date().toISOString());
+  const requestedDate = firstValue(params.date);
+  const selectedDay = Number(requestedDate?.slice(8));
+  const selectedDate =
+    requestedDate &&
+    /^\d{4}-\d{2}-\d{2}$/.test(requestedDate) &&
+    requestedDate.startsWith(`${calendar.value}-`) &&
+    selectedDay >= 1 &&
+    selectedDay <= calendar.days
+      ? requestedDate
+      : today.startsWith(calendar.value)
+        ? today
+        : `${calendar.value}-01`;
   const supabase = await createClient();
-  const [bookings, listings, windowsResult] = await Promise.all([
+  const [bookings, listings, windowsResult, { blocks, imports }] = await Promise.all([
     getMyBookings("host"),
     getHostListings(),
     supabase
@@ -36,6 +48,7 @@ export default async function HostCalendarPage({
       .eq("host_id", user.id)
       .gt("ends_at", new Date().toISOString())
       .order("starts_at"),
+    getHostCalendarBlocks(),
   ]);
   if (windowsResult.error) throw new Error("Your calendar could not be loaded.");
   const windows = (windowsResult.data ?? []) as AvailabilityWindow[];
@@ -60,59 +73,42 @@ export default async function HostCalendarPage({
         </div>
       </div>
       <HostNav current="calendar" />
-      <section aria-label="Your host calendar">
-        <div className="calendar-heading">
-          <h2>{calendar.label}</h2>
-          <div className="calendar-controls">
-            {calendar.previous ? (
-              <Link href={`/host/calendar?month=${calendar.previous}`} aria-label="Previous month">
-                ←
-              </Link>
-            ) : null}
-            {calendar.next ? (
-              <Link href={`/host/calendar?month=${calendar.next}`} aria-label="Next month">
-                →
-              </Link>
-            ) : null}
-          </div>
+      <div className="host-calendar-overview" aria-label="Calendar overview">
+        <div>
+          <strong>{requests.length}</strong>
+          <span>awaiting your response</span>
         </div>
-        <div className="host-calendar-grid">
-          {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((weekday) => (
-            <span className="calendar-weekday" key={weekday}>
-              {weekday}
-            </span>
-          ))}
-          {Array.from({ length: calendar.firstWeekday }, (_, index) => (
-            <div key={`blank-${index}`} className="host-calendar-cell empty" />
-          ))}
-          {Array.from({ length: calendar.days }, (_, index) => {
-            const date = `${calendar.value}-${String(index + 1).padStart(2, "0")}`;
-            const dayBookings = active.filter(
-              (booking) => miamiDateKey(booking.starts_at) === date,
-            );
-            return (
-              <div className="host-calendar-cell" key={date}>
-                <span>{index + 1}</span>
-                {dayBookings.map((booking) => (
-                  <Link
-                    key={booking.id}
-                    href={`/bookings/${booking.id}`}
-                    data-pending={effectiveStatus(booking) !== "confirmed"}
-                  >
-                    {formatSlotTime(booking.starts_at)}
-                    <br />
-                    {booking.guest_name}
-                  </Link>
-                ))}
-              </div>
-            );
-          })}
+        <div>
+          <strong>
+            {otherActive.filter((booking) => effectiveStatus(booking) === "confirmed").length}
+          </strong>
+          <span>upcoming confirmed experiences</span>
         </div>
-        <p className="booking-helper">
-          Pending requests hold time temporarily. Acceptance still requires the guest to pay before
-          a booking is confirmed.
-        </p>
-      </section>
+        <div>
+          <strong>
+            {
+              otherActive.filter((booking) => effectiveStatus(booking) === "awaiting_payment")
+                .length
+            }
+          </strong>
+          <span>awaiting guest payment</span>
+        </div>
+        <span className="calendar-time-zone">Miami · America/New_York</span>
+      </div>
+      <HostMonthCalendar
+        calendar={calendar}
+        selectedDate={selectedDate}
+        today={today}
+        bookings={active}
+        windows={windows}
+        blocks={blocks}
+        listings={listings}
+      />
+      <p className="booking-helper">
+        Pending requests hold time temporarily across your Qualia experiences. A booking is
+        confirmed after payment. Open a booking to respond, message your guest or review
+        cancellation options.
+      </p>
       {requests.length ? (
         <section className="booking-history">
           <h2>Waiting for your response ({requests.length})</h2>
@@ -123,6 +119,7 @@ export default async function HostCalendarPage({
         <h2>Upcoming experiences &amp; payments</h2>
         <BookingList bookings={otherActive} role="host" />
       </section>
+      <CalendarBlockManager blocks={blocks} imports={imports} selectedDate={selectedDate} />
       <section className="host-calendar-availability">
         <h2>When you can host</h2>
         <p className="muted">

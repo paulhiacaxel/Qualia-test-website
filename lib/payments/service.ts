@@ -5,6 +5,7 @@ import { paymentCommand } from "./store";
 import { accountReservationSchema, checkoutReservationSchema } from "./contracts";
 import { assertCreationRetryWindow, assertMode, stripeRedirectUrl } from "./config";
 import { accountReadiness, objectId } from "./canonical";
+import { getHostPaymentAccess } from "./host-access";
 import {
   createCheckoutSession,
   createOnboardingLink,
@@ -33,7 +34,9 @@ export async function syncRecipient(accountId: string) {
 }
 
 export async function hostOnboarding(input: { id: string; email: string; name: string }) {
-  const { stripe, config } = paymentRuntime();
+  const access = await getHostPaymentAccess(input.id);
+  if (!access?.canOnboard) throw new Error("Host payout onboarding is not open.");
+  const { stripe, config } = paymentRuntime(true);
   const origin = siteOrigin();
   const reservation = accountReservationSchema.parse(
     await paymentCommand("pay_prepare_account", {
@@ -62,6 +65,7 @@ export async function hostOnboarding(input: { id: string; email: string; name: s
 }
 
 export async function hostDashboard(hostId: string) {
+  if (!(await getHostPaymentAccess(hostId))) throw new Error("Host payout access is unavailable.");
   const { stripe, config } = paymentRuntime(true);
   const reservation = accountReservationSchema.parse(
     await paymentCommand("pay_prepare_account", {

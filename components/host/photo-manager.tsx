@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { ActionForm } from "./action-form";
+import { RequiredFieldLegend, RequiredMark } from "./required-field";
 import { uploadPhoto, removePhoto } from "@/app/host/actions";
 import type { ListingPhoto } from "@/lib/host/types";
 
@@ -56,9 +57,10 @@ export function PhotoManager({
       {editable && photos.length < 8 ? (
         <ActionForm action={uploadPhoto} label="Upload photo">
           <input type="hidden" name="listingId" value={listingId} />
+          <RequiredFieldLegend />
           <div>
             <label htmlFor="photo" className="field-label">
-              Add a photo
+              Add a photo <RequiredMark />
             </label>
             <input
               id="photo"
@@ -76,7 +78,7 @@ export function PhotoManager({
           </div>
           <div>
             <label htmlFor="photo-description" className="field-label">
-              Describe the photo
+              Describe the photo <RequiredMark />
             </label>
             <input
               id="photo-description"

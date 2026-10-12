@@ -17,6 +17,27 @@ export function paymentConfig(
   return { environment, key, live: environment === "live" };
 }
 
+export type HostPaymentAccess = { config: PaymentConfig; canOnboard: boolean };
+
+/** Payout onboarding is independent of guest checkout. The sandbox authorizer
+ * must read the current server-side admin role, never form data or user metadata. */
+export async function hostPaymentAccess(
+  env: NodeJS.ProcessEnv = process.env,
+  verifySandboxAdmin?: () => Promise<boolean>,
+): Promise<HostPaymentAccess | null> {
+  const config = paymentConfig(env, true);
+  if (!config) return null;
+  if (config.environment === "sandbox") {
+    try {
+      if ((await verifySandboxAdmin?.()) !== true) return null;
+    } catch {
+      return null;
+    }
+    return { config, canOnboard: true };
+  }
+  return { config, canOnboard: env.STRIPE_LIVE_ONBOARDING_ENABLED === "true" };
+}
+
 export function assertMode(livemode: boolean, expected: PaymentEnvironment) {
   if (livemode !== (expected === "live")) throw new Error("Stripe environment mismatch.");
 }

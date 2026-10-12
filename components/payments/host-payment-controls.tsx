@@ -28,12 +28,24 @@ function Control({
     </form>
   );
 }
-export function HostPaymentControls() {
+export function HostPaymentControls({
+  canOnboard,
+  hasAccount,
+}: {
+  canOnboard: boolean;
+  hasAccount: boolean;
+}) {
   return (
     <div className="button-row">
-      <Control handler={startHostOnboarding}>Set up or update payments</Control>
-      <Control handler={refreshHostPaymentStatus}>Refresh status</Control>
-      <Control handler={openHostPaymentDashboard}>Open Stripe dashboard</Control>
+      {canOnboard ? (
+        <Control handler={startHostOnboarding}>Set up or update payouts</Control>
+      ) : null}
+      {hasAccount ? (
+        <>
+          <Control handler={refreshHostPaymentStatus}>Refresh status</Control>
+          <Control handler={openHostPaymentDashboard}>Open Stripe dashboard</Control>
+        </>
+      ) : null}
     </div>
   );
 }

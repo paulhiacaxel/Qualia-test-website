@@ -1,4 +1,5 @@
 import { ActionForm } from "./action-form";
+import { RequiredFieldLegend, RequiredMark } from "./required-field";
 import { saveLocation } from "@/app/host/actions";
 import type { ListingLocation } from "@/lib/host/types";
 
@@ -14,9 +15,10 @@ export function LocationForm({
   return (
     <ActionForm action={saveLocation} label="Save private meeting details" disabled={disabled}>
       <input type="hidden" name="listingId" value={listingId} />
+      <RequiredFieldLegend />
       <div>
         <label htmlFor="address-line-1" className="field-label">
-          Meeting address
+          Meeting address <RequiredMark />
         </label>
         <input
           id="address-line-1"
@@ -45,7 +47,7 @@ export function LocationForm({
         </div>
         <div>
           <label htmlFor="postal-code" className="field-label">
-            ZIP code
+            ZIP code <RequiredMark />
           </label>
           <input
             id="postal-code"

@@ -1,4 +1,5 @@
 import { ActionForm } from "./action-form";
+import { RequiredFieldLegend, RequiredMark } from "./required-field";
 import { saveHostProfile } from "@/app/host/actions";
 import { cities } from "@/lib/host/validation";
 import type { HostProfile } from "@/lib/host/types";
@@ -14,9 +15,10 @@ export function ProfileForm({
 }) {
   return (
     <ActionForm action={saveHostProfile} label="Save host profile" disabled={disabled}>
+      <RequiredFieldLegend allowDraft />
       <div>
         <label className="field-label" htmlFor="display-name">
-          Name guests will see
+          Name guests will see <RequiredMark />
         </label>
         <input
           id="display-name"
@@ -31,7 +33,7 @@ export function ProfileForm({
       </div>
       <div>
         <label className="field-label" htmlFor="bio">
-          About you
+          About you (before review)
         </label>
         <textarea
           id="bio"
@@ -51,7 +53,7 @@ export function ProfileForm({
       <div className="field-row">
         <div>
           <label className="field-label" htmlFor="host-city">
-            Your city
+            Your city <RequiredMark />
           </label>
           <select
             id="host-city"
@@ -67,7 +69,7 @@ export function ProfileForm({
         </div>
         <div>
           <label className="field-label" htmlFor="portfolio">
-            Your work or portfolio
+            Your work or portfolio (optional)
           </label>
           <input
             id="portfolio"

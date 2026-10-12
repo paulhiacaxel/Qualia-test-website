@@ -54,6 +54,7 @@ The current code does not retrieve Events through the API and does not need an E
 - `STRIPE_WEBHOOK_SECRET_PLATFORM=whsec_...`
 - `STRIPE_WEBHOOK_SECRET_CONNECT=whsec_...`
 - `STRIPE_WEBHOOK_SECRET_ACCOUNTS_V2=whsec_...`
+- `STRIPE_LIVE_ONBOARDING_ENABLED=false`
 - `STRIPE_LIVE_PAYMENTS_ENABLED=false`
 - `SUPABASE_SECRET_KEY` and the existing public Supabase URL/publishable key
 - `NEXT_PUBLIC_SITE_URL=https://bookqualia.com` for Production; use a separately configured exact staging origin for Preview
@@ -61,6 +62,14 @@ The current code does not retrieve Events through the API and does not need an E
 Do not use a real live account as a sandbox. This repository does not provision an account or accept platform/host legal agreements. Owners complete Stripe's platform business verification and Connect setup themselves. Host onboarding collects identity and business information in Stripe's hosted forms, without inferring an entity type or accepting terms for them.
 
 The owner approved and saved a **sandbox** commercial policy at `/admin/commercial`, verified disabled as `09c510e0-1c08-40c7-a33a-0c5981138271` (`sandbox-2026-10-12-v1`). It records: rates, founding free-booking count/calendar-month duration/cohort cap, processing allocation, release delay, cancellation wording/version, refund restoration and referral grant/cap. See the approved [launch decisions](launch-decisions-proposed.md); the historical offer is not an active policy. The configurable-incentive migration is applied to hosted Supabase; the corresponding application is deployed at `471dc55`. Enrollment requires a verified host with a published listing and consent to the displayed policy version; it freezes the agreed start, count, window, rate and restoration rule. Existing quotes keep their policy, and guests accept displayed cancellation terms before Checkout. The saved policy remains disabled; enable only for the authorized sandbox rehearsal. Complete owner-approved Terms, Privacy and host agreements remain launch prerequisites.
+
+## Preparing real host onboarding
+
+The prepared source change separates `STRIPE_LIVE_ONBOARDING_ENABLED` from `STRIPE_LIVE_PAYMENTS_ENABLED`; no live provider settings or flags were changed by its implementation. The onboarding flag defaults to **false** and must be explicitly set to `true` only after the intended Qualia live account, restricted key and live webhook destinations are configured. With that flag enabled, verified hosts can create or resume live Connect onboarding while guest checkout and new transfers remain paused. Existing live payout status and dashboard access remain available during either pause. Completing Stripe setup neither publishes a listing nor enables guest payments.
+
+Sandbox payout pages and actions are restricted to verified administrators using the current server-side `is_admin` check. Public hosts can still sign up, complete their profiles and submit listings; they are not directed into sandbox payout setup. Do not grant an administrative role merely to let a prospective host test payments.
+
+**Live-account identity needs resolution:** the October 12 read-only audit found only live account `acct_1SKPOXDqyZniopvO` (Axel Paulhiac), configured with `https://chronosluxe.base44.app`, product description **Watch Rental**, and statement descriptor **CHRONOSLUXE**. Its two existing webhook destinations also belong to ChronosLuxe. Charges and payouts were enabled, but `individual.verification.proof_of_liveness` appeared in both currently-due and past-due requirements. Confirm the intended Qualia live account and complete the owner's outstanding verification before onboarding real hosts; preserve the other business's settings and destinations. No Qualia live destinations were present at that audit. Sandbox credentials and connected accounts cannot be reused as live resources.
 
 ## Webhook destinations
 
@@ -91,7 +100,7 @@ Hosts see their commission policy, founding credit usage, per-booking fee and tr
 
 ## Pause and recovery
 
-Pausing commercial settings prevents new checkout quotes; already-created attempts still need reconciliation. Disabling `STRIPE_LIVE_PAYMENTS_ENABLED` blocks new live checkout/account creation and new transfers. Signed webhooks, canonical recovery and refunds on existing payments remain available with the correctly scoped runtime key. A pause does not cancel outstanding sessions, so close and reconcile those explicitly when necessary.
+Pausing commercial settings prevents new checkout quotes; already-created attempts still need reconciliation. Disabling `STRIPE_LIVE_PAYMENTS_ENABLED` blocks new live checkout and new transfers. The separate `STRIPE_LIVE_ONBOARDING_ENABLED` flag controls creating or resuming live host onboarding. Signed webhooks, canonical recovery, refunds on existing payments and existing live host status/dashboard access remain available with the correctly scoped runtime key. A pause does not cancel outstanding sessions, so close and reconcile those explicitly when necessary.
 
 A successful operation is never inferred from a timeout. Keep the same durable operation ID for retries and verify the provider result. A terminal failed transfer needs a newly reviewed release, not a generic retry of its old amount. Refund operations are scoped to the exact charge attempt, including duplicate/quarantined payment recovery.
 

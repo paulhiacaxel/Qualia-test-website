@@ -4,14 +4,15 @@ import { requireHost } from "@/lib/auth/session";
 import { DashboardShell } from "@/components/dashboard-shell";
 import { HostNav } from "@/components/host/host-nav";
 import { HostPaymentControls } from "@/components/payments/host-payment-controls";
-import { paymentConfig } from "@/lib/payments/config";
+import { getHostPaymentAccess } from "@/lib/payments/host-access";
 import { paymentCommand } from "@/lib/payments/store";
 import { hostPaymentsSchema } from "@/lib/payments/read-models";
 import { formatMoney } from "@/lib/host/validation";
 export const metadata = { title: "Host payments" };
 export default async function HostPaymentsPage() {
   const { user } = await requireHost();
-  const config = paymentConfig(process.env, true);
+  const access = await getHostPaymentAccess(user.id);
+  const config = access?.config;
   const data = config
     ? hostPaymentsSchema.parse(
         await paymentCommand("pay_read_host", {
@@ -24,17 +25,30 @@ export default async function HostPaymentsPage() {
     <DashboardShell title="Your earnings, clearly." eyebrow="Host payments">
       <HostNav current="payments" />
       <section className="panel">
-        <h2>Payment setup</h2>
+        <h2>Payout setup</h2>
+        {config?.environment === "sandbox" ? (
+          <p className="notice">
+            Sandbox testing · administrators only. These accounts cannot receive real guest
+            payments.
+          </p>
+        ) : null}
         <p>
           {!config
-            ? "Payment setup is not open yet. Qualia will let you know when it is ready."
-            : `Environment: ${config.environment}. ${data?.account?.transfers_active && data.account.payouts_active ? "Your Stripe account is ready to receive transfers and bank payouts." : "Finish Stripe's setup and refresh your status before guests can pay."}`}
+            ? "Payout setup is not open yet. You can complete your profile and submit your listing for review. Qualia will let you know when secure payout setup is ready."
+            : data?.account?.transfers_active && data.account.payouts_active
+              ? "Your Stripe account is ready to receive transfers and bank payouts."
+              : access?.canOnboard
+                ? "Complete Stripe's setup and refresh your status to prepare for receiving earnings."
+                : "New payout setup is temporarily paused. You can still view any existing payout account and its status."}
         </p>
         <p>
           Stripe collects payment and identity details securely. Returning from setup does not mean
           verification is complete.
         </p>
-        {config ? <HostPaymentControls /> : null}
+        {access ? (
+          <HostPaymentControls canOnboard={access.canOnboard} hasAccount={Boolean(data?.account)} />
+        ) : null}
+        <p>Completing payout setup does not enable guest payments or publish your listing.</p>
       </section>
       <section className="panel" style={{ marginTop: 24 }}>
         <h2>Your commission terms</h2>

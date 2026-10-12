@@ -5,6 +5,7 @@ import { PhotoManager } from "@/components/host/photo-manager";
 import { AvailabilityManager } from "@/components/host/availability-manager";
 import { HostNav } from "@/components/host/host-nav";
 import { ActionForm } from "@/components/host/action-form";
+import { RequiredMark } from "@/components/host/required-field";
 import { deleteListing, submitListing } from "@/app/host/actions";
 import { canEditListing, getHostProfile, getListingDetails } from "@/lib/host/data";
 import { createClient } from "@/lib/supabase/server";
@@ -27,6 +28,7 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
       label: "Host profile",
       complete: Boolean(profile?.bio.trim() && profile.display_name.trim()),
       href: "/host/profile",
+      help: "Add your display name and a short bio.",
     },
     {
       label: "Experience details",
@@ -34,16 +36,19 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
         listing.title.trim() && listing.description.trim() && listing.neighborhood.trim(),
       ),
       href: "#details",
+      help: "Save a description and the broad meeting area.",
     },
     {
       label: "Private meeting details",
       complete: Boolean(location?.address_line1 && location.postal_code),
       href: "#meeting",
+      help: "Save your meeting address and ZIP code.",
     },
     {
-      label: "At least one photo",
-      complete: photos.some((photo) => photo.signedUrl),
+      label: "Experience photos",
+      complete: photos.length > 0 && photos.every((photo) => photo.signedUrl),
       href: "#photos",
+      help: "Add at least one photo; replace or remove any unavailable files.",
     },
     {
       label: "Future availability",
@@ -54,9 +59,11 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
             listing.duration_minutes * 60_000,
       ),
       href: "#availability",
+      help: `Add a future window that fits a full ${listing.duration_minutes}-minute session.`,
     },
   ];
   const complete = checklist.every((item) => item.complete);
+  const completedCount = checklist.filter((item) => item.complete).length;
   return (
     <main id="main-content" className="container dashboard">
       <div className="host-page-heading">
@@ -106,6 +113,10 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
           </section>
           <section id="availability" className="panel">
             <h2>04 / Your availability</h2>
+            <p>
+              Choose the times guests may request for this experience. If you change the duration in
+              section 01, save those details before adding times here.
+            </p>
             <AvailabilityManager
               listingId={id}
               windows={availability}
@@ -116,8 +127,16 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
           </section>
         </div>
         <aside className="panel host-sidebar">
-          <span className="eyebrow">Before you submit</span>
-          <h2 style={{ marginTop: 12 }}>A little care goes a long way.</h2>
+          <span className="eyebrow">{editable ? "Before you submit" : "Saved experience"}</span>
+          <h2 style={{ marginTop: 12 }}>
+            {editable && complete
+              ? "Ready for review."
+              : `${completedCount} of ${checklist.length} complete.`}
+          </h2>
+          <p>
+            Your saved details determine this checklist.
+            {editable ? " Save each section as you go." : null}
+          </p>
           <ul className="host-checklist">
             {checklist.map((item) => (
               <li key={item.label}>
@@ -127,9 +146,12 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
                 >
                   {item.complete ? "✓" : ""}
                 </span>
-                <Link className="text-link" href={item.href}>
-                  {item.label}
-                </Link>
+                <div>
+                  <Link className="text-link" href={item.href}>
+                    {item.label}
+                  </Link>
+                  {!item.complete ? <p className="field-hint">{item.help}</p> : null}
+                </div>
               </li>
             ))}
           </ul>
@@ -144,12 +166,18 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
                   Complete the items above and save each section before submitting.
                 </p>
               ) : null}
-              <ActionForm action={submitListing} label="Submit for review">
+              <ActionForm
+                action={submitListing}
+                label="Submit for review"
+                submitDisabled={!complete}
+              >
                 <input type="hidden" name="listingId" value={id} />
                 <label className="checkbox-label">
                   <input type="checkbox" name="reviewConfirmed" required />
-                  I&apos;ve reviewed my listing and confirm that it accurately describes what I
-                  offer.
+                  <span>
+                    I&apos;ve reviewed my listing and confirm that it accurately describes what I
+                    offer. <RequiredMark />
+                  </span>
                 </label>
               </ActionForm>
             </>

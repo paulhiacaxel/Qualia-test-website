@@ -1,4 +1,5 @@
 import { ActionForm } from "./action-form";
+import { RequiredFieldLegend, RequiredMark } from "./required-field";
 import { createListing, saveListing } from "@/app/host/actions";
 import { categories, cities } from "@/lib/host/validation";
 import type { Listing } from "@/lib/host/types";
@@ -19,9 +20,10 @@ export function ListingForm({
       disabled={disabled}
     >
       {listing ? <input type="hidden" name="listingId" value={listing.id} /> : null}
+      <RequiredFieldLegend allowDraft />
       <div>
         <label className="field-label" htmlFor="listing-title">
-          Experience title
+          Experience title <RequiredMark />
         </label>
         <input
           id="listing-title"
@@ -36,7 +38,7 @@ export function ListingForm({
       </div>
       <div>
         <label className="field-label" htmlFor="description">
-          What the experience is like
+          What the experience is like (before review)
         </label>
         <textarea
           id="description"
@@ -55,15 +57,18 @@ export function ListingForm({
       <div className="field-row">
         <div>
           <label className="field-label" htmlFor="category">
-            Category
+            Category <RequiredMark />
           </label>
           <select
             id="category"
             name="category"
             className="field-input"
-            defaultValue={listing?.category ?? "cooking"}
+            defaultValue={listing?.category ?? ""}
             required
           >
+            <option value="" disabled>
+              Choose a category
+            </option>
             {categories.map((category) => (
               <option key={category} value={category}>
                 {category[0].toUpperCase() + category.slice(1)}
@@ -73,7 +78,7 @@ export function ListingForm({
         </div>
         <div>
           <label className="field-label" htmlFor="duration">
-            Duration in minutes
+            Duration in minutes <RequiredMark />
           </label>
           <input
             id="duration"
@@ -85,12 +90,17 @@ export function ListingForm({
             max={1440}
             step={1}
             required
+            aria-describedby="duration-help"
           />
+          <p id="duration-help" className="field-hint">
+            The full time you&apos;ll spend with one guest, including setup and wrap-up. Your
+            availability must fit this entire session.
+          </p>
         </div>
       </div>
       <div>
         <label className="field-label" htmlFor="price">
-          Price per one-on-one session (USD)
+          Price per one-on-one session (USD) <RequiredMark />
         </label>
         <input
           id="price"
@@ -101,18 +111,19 @@ export function ListingForm({
           defaultValue={listing ? (listing.price_cents / 100).toFixed(2) : ""}
           placeholder="150.00"
           pattern="[0-9]+(\.[0-9]{1,2})?"
+          maxLength={10}
           required
           aria-describedby="price-help"
         />
         <p id="price-help" className="field-hint">
-          Set the total experience price for one guest. Pricing and host payout terms will be
-          confirmed before launch.
+          Set the total experience price for one guest, in US dollars. Enter a number such as
+          150.00, without a dollar sign.
         </p>
       </div>
       <div className="field-row">
         <div>
           <label className="field-label" htmlFor="listing-city">
-            City
+            City <RequiredMark />
           </label>
           <select
             id="listing-city"
@@ -128,7 +139,7 @@ export function ListingForm({
         </div>
         <div>
           <label className="field-label" htmlFor="neighborhood">
-            Neighborhood or broad meeting area
+            Neighborhood or broad meeting area (before review)
           </label>
           <input
             id="neighborhood"

@@ -14,6 +14,7 @@ import {
 } from "./contracts";
 import { paymentCommand } from "./store";
 import { checkoutWindow } from "@/lib/booking/payment-window";
+import { getHostPaymentAccess } from "./host-access";
 
 export async function createBookingCheckout(
   _previous: PaymentActionState,
@@ -65,8 +66,12 @@ export async function startHostOnboarding(
   _form: FormData,
 ): Promise<PaymentActionState> {
   const { user, profile } = await requireHost();
-  if (!paymentConfig())
-    return { error: "Host payment setup will open when Qualia's payment configuration is ready." };
+  const access = await getHostPaymentAccess(user.id);
+  if (!access?.canOnboard)
+    return {
+      error:
+        "Payout setup is not open yet. You can complete your profile and submit your listing for review.",
+    };
   let url: string;
   try {
     url = await hostOnboarding({ id: user.id, email: user.email!, name: profile.full_name });
@@ -84,6 +89,8 @@ export async function openHostPaymentDashboard(
   _form: FormData,
 ): Promise<PaymentActionState> {
   const { user } = await requireHost();
+  if (!(await getHostPaymentAccess(user.id)))
+    return { error: "Your Stripe payout dashboard is not available yet." };
   let url: string;
   try {
     url = await hostDashboard(user.id);
@@ -101,13 +108,13 @@ export async function refreshHostPaymentStatus(
   _form: FormData,
 ): Promise<PaymentActionState> {
   const { user } = await requireHost();
-  const config = paymentConfig();
-  if (!config) return { error: "Payment setup is not configured yet." };
+  const access = await getHostPaymentAccess(user.id);
+  if (!access) return { error: "Payout setup is not available yet." };
   try {
     const account = accountReservationSchema.parse(
       await paymentCommand("pay_prepare_account", {
         p_host_id: user.id,
-        p_environment: config.environment,
+        p_environment: access.config.environment,
       }),
     );
     if (!account.account_id) return { error: "Start payment setup first." };
