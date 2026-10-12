@@ -28,8 +28,12 @@ export async function GET(request: Request) {
       render: (context) => renderBookingEmail(context, siteUrl),
       send: (payload, key) => sendWithResend(payload, key, apiKey),
     });
+    // Aggregate counts make scheduled runs observable without logging recipients,
+    // message content, booking identifiers or provider credentials.
+    console.info("qualia_email_worker", result);
     return Response.json(result, { headers: { "Cache-Control": "no-store" } });
   } catch {
+    console.error("qualia_email_worker_unavailable");
     return Response.json({ error: "Email worker unavailable." }, { status: 503 });
   }
 }
