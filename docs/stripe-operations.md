@@ -26,6 +26,20 @@ Before cutover, the database had zero bookings, payment attempts and settlement 
 
 Full sandbox Checkout/refund/release acceptance and remaining owner legal/commercial launch decisions are still required before enabling real guest payments or new transfers. Successful onboarding is not a completed financial acceptance rehearsal.
 
+## Isolated hosted rehearsal — preparation checkpoint
+
+The owner approved using the existing organization and explicitly approved transferring the test-only Stripe/Supabase credentials and rehearsal signing secrets to the isolated Vercel project. Supabase `ibkpptqfdjtkybquxzgk` (**Qualia payment rehearsal**) is in existing organization `tmpohknifidnouqaukkq`, with all 12 application migrations applied, plus a private rehearsal-fixture schema. Vercel **qualia-payment-rehearsal**, project `prj_HmoejlICbeTjEwF60Ymky3FGGDuI`, is in existing team **Qualia / qualia4** and tracks `codex/qualia-phase-1`. Its allocated test origin is `https://project-6v35u.vercel.app`; the Vercel environment label Production belongs only to this separate test project.
+
+Two synthetic confirmed Auth users and one clearly labeled $100 art listing are seeded only in the test database, with an isolated operator role and approved-value sandbox policy. Stripe runtime-key read verified platform `acct_1SKPOxDIzwThjgQA` and recipient `acct_1UPmYYDIzwhiF46n`, `livemode=false`, transfers/payouts active. All 175 automated tests passed on Node 24.21.0. The database advisor returned only informational notices for private RLS tables intentionally accessed through authorized functions, not client policies.
+
+Test deployment/webhook wiring and the actual hosted Checkout/refund/release rehearsal are still in progress at this checkpoint. Do not claim financial acceptance from fixture creation or offline tests. Email sends and both live flags are false in this separate project. Production `bookqualia.com` remains live onboarding only. The existing loopback runner and its guards are unchanged; do not point it at this hosted database. Retained sandbox callbacks to bookqualia.com remain disabled.
+
+## Owner scope update — October 12, 2026
+
+The owner wants guest payments active after the material launch checks are complete. **Minors and higher-risk activities are included**; hosts propose age limits and safeguards, and Qualia decides the approved range during listing review. Some listings may be 18+. There is no approved blanket adults-only pilot or category exclusion. Use the existing Qualia organization for rehearsal resources. The owner requested drafts and identification of remaining approvals; final legal wording and the proposed adult-account/guardian-booker model are not yet approved.
+
+See [launch drafts and approval packet](launch-legal-drafts.html). It contains proposed guest terms, host commercial terms, cancellation policy, privacy notice, guardian-document brief and listing review fields. These are drafts, not published website terms. Previously approved numerical commercial decisions remain settled.
+
 ## Retained sandbox configuration — October 12, 2026
 
 The sandbox is `acct_1SKPOxDIzwThjgQA`, with `livemode=false` and **Connect Marketplace enabled**. After renewed browser approval, the earlier SMS attempt was found to have succeeded despite the authentication tool's failure report. The configuration below records the completed sandbox setup before the live cutover. These destinations are now retained but disabled for the production origin.

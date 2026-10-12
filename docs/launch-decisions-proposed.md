@@ -2,6 +2,12 @@
 
 **October 12, 2026 — operating terms approved.** The owner explicitly accepted these operating terms ("look good"). They supersede the earlier 10% lifetime founding rate and ten-booking/six-month offer. The approved sandbox policy was subsequently saved through the owner-authenticated admin UI and verified disabled; this documentation task performs no configuration writes. The owner subsequently approved the remaining outreach body copy and requested removal of the postal placeholder and the line beginning “If you'd prefer no more emails…”. The first 20 recipient selection and remaining body copy are approved subject to those edits; do not request their approval again. The owner approved the exact proposed footer and confirmed completed/notarized Form 1583 on October 12 at 14:07 EDT. The owner then authorized sending at 14:12:47 EDT (“ok letsdoit!”); the approved first 20 messages were sent individually. Do not re-request footer or notarization approval. This does not approve sending to the other 80 leads. Live payments, final legal documents, provider setup and spending retain their separate gates.
 
+## Owner scope update — October 12, 2026
+
+The owner wants guest payments active after the material launch checks are complete. **Minors and higher-risk activities are included**; hosts propose age limits and safeguards, and Qualia decides the approved range during listing review. Some listings may be 18+. There is no approved blanket adults-only pilot or category exclusion. Use the existing Qualia organization for rehearsal resources. The owner requested drafts and identification of remaining approvals; final legal wording and the proposed adult-account/guardian-booker model are not yet approved.
+
+See [launch drafts and approval packet](launch-legal-drafts.html). It contains proposed guest terms, host commercial terms, cancellation policy, privacy notice, guardian-document brief and listing review fields. These are drafts, not published website terms. Previously approved numerical commercial decisions remain settled.
+
 ## Approved offer and operating terms
 
 | Decision                 | Owner-approved operating decision                                                                                                                                                                                                                                                                                                                           |

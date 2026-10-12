@@ -2,6 +2,12 @@
 
 Production domain: **https://bookqualia.com**. Supabase project: **fjotwcufttuccebrbgsp**. Owner-created mailboxes: **axel@bookqualia.com**, **support@bookqualia.com**, **contact@bookqualia.com**, and **info@bookqualia.com**. Outreach uses **Axel at Qualia <axel@bookqualia.com>**; website contact and service email use **support@bookqualia.com**. The website support link is deployed and verified. Signup confirmation and an owner diagnostic through the deployed booking key are provider-delivered. The worker-enable/logging release is READY and authenticated Cron execution is verified; booking requests and payments remain disabled. This reference lists technical settings; the owner should not need to perform every step manually when the relevant connected tools expose it.
 
+## Owner scope update — October 12, 2026
+
+The owner wants guest payments active after the material launch checks are complete. **Minors and higher-risk activities are included**; hosts propose age limits and safeguards, and Qualia decides the approved range during listing review. Some listings may be 18+. There is no approved blanket adults-only pilot or category exclusion. Use the existing Qualia organization for rehearsal resources. The owner requested drafts and identification of remaining approvals; final legal wording and the proposed adult-account/guardian-booker model are not yet approved.
+
+See [launch drafts and approval packet](launch-legal-drafts.html). It contains proposed guest terms, host commercial terms, cancellation policy, privacy notice, guardian-document brief and listing review fields. These are drafts, not published website terms. Previously approved numerical commercial decisions remain settled.
+
 ## Current Stripe status — live onboarding complete
 
 The coordinated live-onboarding cutover is complete. Production **https://bookqualia.com** is READY on deployment `dpl_6xuXGHWTpbzf88UJs9MBu1Ajws9N`, using the existing `codex/qualia-phase-1` source at `cfc45b3de1e95b2c3ab752fc952522af2f4653a9`.
