@@ -4,9 +4,9 @@ This document preserves the authentication setup detail. See [launch setup](laun
 
 ## Current boundary
 
-The owner-created Qualia project now has eight reviewed migrations applied, and the deployed guest/host signup forms are enabled at https://bookqualia.com. Hosted Auth confirms email signup is enabled and email verification is required. Custom SMTP, Auth URLs, real confirmation/recovery delivery and browser end-to-end checks still need completion. No paid resources were created by the agent; the owner purchased the domain. See [deployment checkpoint](deployment-checkpoint.md).
+The owner-created Qualia project has eight reviewed migrations applied, and guest/host signup forms are enabled at https://bookqualia.com. Hosted Auth requires email confirmation and a 12-character password; anonymous signup is disabled. On October 12, owner-authorized browser checks verified exact Auth URLs, persisted custom Resend SMTP, and saved signup/recovery TokenHash templates. Real confirmation/recovery delivery and application browser end-to-end checks remain pending. The owner purchased the domain. See [deployment checkpoint](deployment-checkpoint.md).
 
-The original repository's `frontend-design` skill and Windows screenshot tooling are unavailable in this environment. The supplied brand assets and guidelines were retained. Desktop/mobile screenshot comparison remains a required review step before launch.
+The supplied brand assets and guidelines were retained. A limited desktop browser check of `/signup` confirmed guest/host options, the host-account button, brand/layout and the support footer link without submitting a form. Full desktop/mobile and keyboard review remains required before launch.
 
 ## Connect a Supabase project
 

@@ -1,12 +1,12 @@
 # Qualia — Phase 5 Stripe implementation plan
 
-Draft for owner review, researched 2026-10-11. No accounts, payments, transfers, payouts, subscriptions or webhook destinations were created. This research was subsequently used for the implementation on this branch; no external financial resources were created.
+Implementation research dated 2026-10-11. No financial resources were created during that research. The subsequent October 12 setup connected an existing sandbox and created webhook destinations; see [current Stripe operations](stripe-operations.md#current-sandbox-configuration--october-12-2026) for the unresolved Connect source/duplicate check and missing runtime key. No payments, transfers or payouts have been performed.
 
 **Recommendation:** Stripe-hosted Checkout, Accounts v2 connected accounts, and **separate charges and transfers if hosts receive funds only after the experience is completed**. Keep live charging disabled until the owner approves payout timing, fees and commercial terms. If immediate transfer at payment is acceptable, destination charges are simpler; that is a different implementation choice, not a payout-delay setting.
 
 ## Readiness and exact versions
 
-The connector exposes one named **live** account and no sandbox. Its account identifier is intentionally omitted. Account visibility does not establish Connect activation, payment readiness or application credentials. No balances, customers or transactions were inspected. The account-specific implementation planner was invoked for planning only against the visible account; guide iguide_61VYr6JxdYQZjsKKP41DqyZniopvO remains draft. No commercial terms were accepted or services provisioned.
+At the original research checkpoint only a live account was visible. An existing sandbox is now connected and verified as `livemode=false`; this does not establish Connect activation, runtime credentials or payment readiness. The original account-specific implementation planner was used only for research; guide iguide_61VYr6JxdYQZjsKKP41DqyZniopvO remains draft. Commercial agreements and launch gates remain separate from connector visibility.
 
 Use a separate Stripe sandbox for development, with separate CI isolation when available. Pin **stripe-node 23.0.0 / Stripe API 2026-09-30.endive**: the live API versioning documentation and the downloaded npm package's `apiVersion.js` agree. The installed skill's older Dahlia/22.6.0 recommendation is stale. Instantiate a server-only SDK client; pin compatible webhook snapshot versions. Recheck versions at implementation time. [1]
 
@@ -37,7 +37,7 @@ If the owner chooses immediate transfer instead: use destination charges with `p
 
 ## Fee and incentive ledger
 
-All commercial values remain **unset**, not zero defaults: standard commission, lifetime founding rate, processor-cost responsibility, referral-credit size/cap, incentive start event, cutoff semantics, refund counting and payout delay. Owner approval creates an immutable versioned policy; every checkout stores the applicable version. Existing founders retain their agreed rate if a later policy changes.
+Commercial policies remain **unset in the database**, not zero defaults. The owner has approved 17.5% standard commission and delegated the selected 10% lifetime founding rate after the initial free period. Processor-cost responsibility, referral-credit size/cap, incentive enrollment/cutoff terms, refund counting and payout delay still need agreement. Saving an approved policy creates an immutable version; every checkout stores the applicable version. Existing founders retain their agreed rate if a later policy changes.
 
 For the proposed separate flow, calculate initial host entitlement as guest payment less approved commission/cost deductions; adjust that entitlement for refunds under the agreed fee-refund policy. The next transfer is remaining entitlement less prior transfers plus applicable reversals, bounded at zero. Use integer cents and ledger entries, not mutable counters. Do not use `application_fee_amount` or the Platform Pricing Tool. The `applicationFeeIncludes` setting is not applicable to this flow; the equivalent processing-cost policy must explicitly be `platform_absorbs` or an approved, disclosed host deduction. Taxes/tips, if added, need separate line-item ownership rules.
 
@@ -95,7 +95,7 @@ Use Stripe Radar and platform controls independently of liability: authenticated
 
 | Name | Requirement |
 |---|---|
-| `STRIPE_RESTRICTED_KEY` | Server-only sandbox restricted key with necessary Checkout/payment, Connect account/onboarding, event retrieval, refund/transfer, balance-transaction and account-session permissions; verify required scopes in sandbox. Never commit or expose it. |
+| `STRIPE_RESTRICTED_KEY` | Server-only sandbox key using the exact [implemented permission matrix](stripe-operations.md#before-sandbox-use). Hosted Account Links are used; Events retrieval and account-session permissions are not required. Verify scopes with real sandbox requests. Never commit or expose it. |
 | `STRIPE_WEBHOOK_SECRET_PLATFORM` | Sandbox v1 platform signing secret. |
 | `STRIPE_WEBHOOK_SECRET_CONNECT` | Sandbox connected-account snapshot signing secret. |
 | `STRIPE_WEBHOOK_SECRET_ACCOUNTS_V2` | Sandbox thin-notification signing secret. |
@@ -103,7 +103,7 @@ Use Stripe Radar and platform controls independently of liability: authenticated
 | `STRIPE_ENVIRONMENT` | `sandbox` initially; assert observed resource/event mode matches the configured environment. |
 | `STRIPE_LIVE_PAYMENTS_ENABLED` | `false` until explicit owner approval and launch gates pass; missing value fails closed. |
 | `NEXT_PUBLIC_SITE_URL` | Trusted deployment origin for server-generated return/refresh/success/cancel URLs. |
-| `CRON_SECRET` | Authenticates existing scheduled reconciliation/release worker endpoint; no new service provisioning required by this plan. |
+| `CRON_SECRET` | Authenticates `GET /api/jobs/email` only; no schedule is enabled. Financial reconciliation and release are operator-initiated, not scheduled workers. |
 
 Existing server-side Supabase service-role access supports the financial ledger and workers; no direct client writes to financial tables. Store Stripe secrets as sensitive Vercel environment variables scoped by environment. Keep fee basis points and host contract versions in a validated, versioned server-side commercial-policy record, not public environment variables. Pin API version in code. Do not set `automatic_tax` until the owner confirms the applicable tax setup/active registrations. [13]
 
@@ -114,10 +114,10 @@ Meaningful sandbox gates: failed payment and 3DS; delayed-method success/failure
 ## Owner decisions before charging
 
 1. Hold host funds until completion or transfer immediately; completion authority, release delay and booking horizon.
-2. Standard/lifetime founding commission, who bears processing/Connect costs, referral grant and cap.
+2. Record the approved 17.5% standard and selected 10% lifetime founding rates; decide who bears processing/Connect costs, referral grant and cap.
 3. Incentive start/time-zone/cutoff/refund rules, payment deadline and cancellation/no-show/refund policy.
 4. Confirm Qualia's customer-facing payment/support responsibility and acceptance of the proposed negative-balance responsibility.
-5. Select/create the intended sandbox and securely configure keys/signing secrets; later separately approve live enablement.
+5. Finish the connected sandbox's runtime restricted key, resolve webhook source/duplicate configuration and deploy the stored secrets; later separately approve live enablement.
 
 ## Primary references checked
 

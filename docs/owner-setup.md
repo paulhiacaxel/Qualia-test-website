@@ -6,21 +6,21 @@ Open the existing Qualia project in the [Vercel Dashboard](https://vercel.com/da
 
 ## Current handoff — October 12
 
-- Resend installation is confirmed, but its account tools did not appear in the running session. Do not reinstall it. Recheck available tools on the next turn, then inspect the existing domain before creating anything.
-- Stripe currently exposes only the live account. The owner needs to select their Qualia sandbox using the connector's account-management link. Once connected, the Stripe tools can create the required webhooks; do not ask the owner to type all event names manually.
-- The Supabase tools available here do not edit hosted SMTP or email templates. Prepared values below can be entered through owner-authorized browser access; no browser access has been authorized yet.
+- Resend tools are callable. `bookqualia.com` is verified, its sending DNS checks pass, and open/click tracking are disabled. Separate domain-restricted booking and Auth keys have been created. The booking key is saved as Sensitive Production `RESEND_API_KEY`.
+- Stripe sandbox `acct_1SKPOxDIzwThjgQA` is connected with `livemode=false`. Three original webhook signing secrets are stored in Vercel Production. Two enabled Connect snapshot destinations have unresolved source read-back; see [Stripe operations](stripe-operations.md#current-sandbox-configuration--october-12-2026). The runtime restricted key is still missing; Stripe browser sign-in was declined.
+- Owner-authorized browser access is signed in to Supabase. Custom SMTP, signup/recovery templates and exact Auth URLs are saved/verified as described below. `SUPABASE_SECRET_KEY` is saved as Sensitive Production. No redeploy or real email test has followed these changes.
 - The SMTP **Password** means a domain-restricted Resend sending API key, not a Google Workspace password. Never send keys in chat. Put any runtime secret directly into the appropriate deployment setting.
-- The owner reports completing Auth URL configuration. Preserve it; verify later through an approved confirmation/recovery test.
+- Email signup and confirmation are enabled; anonymous signup is disabled. Password minimum 12 is saved and verified persisted. Keep real confirmation/recovery and browser session checks pending.
 
 ## 1. Verify the existing Qualia sender
 
-- The owner has created the four Qualia addresses above. Google MX/SPF/DKIM and Resend DNS records were observed in Vercel on October 12. Do not repurchase mailboxes or replace existing DNS records. Provider verification and actual delivery still need to be checked.
-- Add `bookqualia.com` at [Resend Domains](https://resend.com/domains). Copy its exact sending DNS records to the active DNS provider and wait for **Verified**. Preserve the mailbox provider's root MX records. Disable click tracking for authentication messages.
-- At [Resend API keys](https://resend.com/api-keys), create domain-restricted **Sending access** keys for booking email and Supabase Auth separately. The booking key goes to Vercel `RESEND_API_KEY`; the Auth key goes to Supabase SMTP, below. Provider DNS values and actual inbox delivery still need verification.
+- The owner has created the four Qualia addresses above. Google mailbox DNS was preserved. Do not repurchase mailboxes or replace existing DNS records. Actual inbox delivery and replies remain untested.
+- [Resend Domains](https://resend.com/domains) reports `bookqualia.com` **Verified**, including DKIM/SPF sending CNAME checks. Open and click tracking are disabled. Preserve these settings and the mailbox provider's root MX records.
+- Separate domain-restricted **Sending access** keys already exist for booking email and Supabase Auth. The booking key is in Vercel `RESEND_API_KEY`; the Auth key is in Supabase SMTP. Do not create duplicates or expose key values. Approved inbox delivery tests remain required.
 
 ## 2. Finish Supabase authentication
 
-Open [Authentication → URL Configuration](https://supabase.com/dashboard/project/fjotwcufttuccebrbgsp/auth/url-configuration). Set **Site URL** to `https://bookqualia.com`. Add these exact production redirect URLs; avoid a wildcard that admits arbitrary domains:
+Verified in [Authentication → URL Configuration](https://supabase.com/dashboard/project/fjotwcufttuccebrbgsp/auth/url-configuration): **Site URL** is `https://bookqualia.com`, with these exact production redirect URLs. Preserve them; avoid a wildcard that admits arbitrary domains:
 
 ```text
 https://bookqualia.com/auth/confirm
@@ -32,19 +32,19 @@ Enter the backslash before the question mark literally in the Dashboard. It esca
 
 Keep localhost and preview URLs in their own development/staging configuration. The custom templates below use the configured Site URL, so do not point a preview at production Auth and expect confirmation links to remain on the preview.
 
-Open [Authentication → Email](https://supabase.com/dashboard/project/fjotwcufttuccebrbgsp/auth/templates) → **SMTP Settings**. Enable custom SMTP with:
+Saved and persisted in [Authentication → Email](https://supabase.com/dashboard/project/fjotwcufttuccebrbgsp/auth/templates) → **SMTP Settings**:
 
 | Setting      | Value                                                                |
 | ------------ | -------------------------------------------------------------------- |
-| Sender email | `support@bookqualia.com`, only after verification                    |
+| Sender email | `support@bookqualia.com`                                             |
 | Sender name  | `Qualia`                                                             |
 | Host / port  | `smtp.resend.com` / `465`                                            |
 | Username     | `resend`                                                             |
 | Password     | Separate domain-restricted Resend Auth sending key, entered directly |
 
-Keep email signup confirmation enabled in [Auth providers](https://supabase.com/dashboard/project/fjotwcufttuccebrbgsp/auth/providers). In the email template editor, replace the confirmation link with the appropriate template below. These match `app/auth/confirm/page.tsx` and the `confirmEmail` server action in `app/auth/actions.ts`.
+Email signup confirmation is enabled in [Auth providers](https://supabase.com/dashboard/project/fjotwcufttuccebrbgsp/auth/providers). Both templates below were saved successfully with the sole action link using `TokenHash` and the matching type. They match `app/auth/confirm/page.tsx` and the `confirmEmail` server action in `app/auth/actions.ts`; actual delivery and link use remain untested.
 
-**Confirm signup** — suggested subject: `Confirm your Qualia email`
+**Confirm signup** — saved subject: `Confirm your Qualia email`
 
 ```html
 <h2>Confirm your Qualia email</h2>
@@ -54,7 +54,7 @@ Keep email signup confirmation enabled in [Auth providers](https://supabase.com/
 <p>If you did not request a Qualia account, you can ignore this email.</p>
 ```
 
-**Reset password** — suggested subject: `Reset your Qualia password`
+**Reset password** — saved subject: `Reset your Qualia password`
 
 ```html
 <h2>Reset your Qualia password</h2>
@@ -72,9 +72,9 @@ The confirmation page consumes the token only after the visitor presses its butt
 
 ## 3. Configure Stripe in a sandbox
 
-- Open [Stripe Dashboard](https://dashboard.stripe.com/) → account picker → **Switch to sandbox** → **Create sandbox** or open an existing Qualia sandbox. Check its sandbox banner. The last connected-account check exposed only a live account; sandbox access is not yet verified.
+- Open the existing connected sandbox `acct_1SKPOxDIzwThjgQA` in [Stripe Dashboard](https://dashboard.stripe.com/) and check its sandbox banner. Tool read-back confirms `livemode=false`; do not create another sandbox.
 - In that sandbox, complete Connect setup if required, then [create a restricted key](https://dashboard.stripe.com/apikeys) using the exact resource permissions in [stripe-operations.md](stripe-operations.md). Copy the `rk_test_` value directly into Vercel `STRIPE_RESTRICTED_KEY`. A browser publishable key is not required by this hosted Checkout integration.
-- In [Workbench Webhooks](https://dashboard.stripe.com/webhooks), create three destinations after the app endpoints are deployed:
+- The three original destinations and their signing secrets already exist. In [Workbench Webhooks](https://dashboard.stripe.com/webhooks), resolve the duplicate Connect destination/source discrepancy before treating this configuration as ready. The intended mapping is:
 
 | Endpoint                                                 | Source / payload              | Vercel Secret variable              |
 | -------------------------------------------------------- | ----------------------------- | ----------------------------------- |
@@ -88,17 +88,17 @@ Keep `STRIPE_ENVIRONMENT=sandbox` and `STRIPE_LIVE_PAYMENTS_ENABLED=false`. In Q
 
 ## 4. Review Vercel configuration and delivery
 
-| Variable                               | Required value / source                                                                                                                               |
-| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL`                 | `https://bookqualia.com` in Production                                                                                                                |
-| `NEXT_PUBLIC_SUPABASE_URL`             | `https://fjotwcufttuccebrbgsp.supabase.co`                                                                                                            |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | This project's publishable key; root deployment setup handles the public values                                                                       |
-| `SUPABASE_SECRET_KEY`                  | This project's server-only secret key from [API Keys](https://supabase.com/dashboard/project/fjotwcufttuccebrbgsp/settings/api-keys), saved as Secret |
-| `RESEND_API_KEY`                       | Booking email sending key, saved as Secret                                                                                                            |
-| `EMAIL_FROM`                           | `Qualia <support@bookqualia.com>` is configured; sending remains disabled until provider verification                                                 |
-| `CONTACT_EMAIL`                        | `support@bookqualia.com` is configured; the public links were checked on the live site                                                                |
-| `CRON_SECRET`                          | Already securely generated in Vercel Production; no schedule enabled. A redeploy loads it with the other remaining settings.                          |
-| `TRANSACTIONAL_EMAIL_ENABLED`          | Keep `false` until sender, approved test delivery and scheduling are verified                                                                         |
+| Variable                               | Required value / source                                                                                                       |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL`                 | `https://bookqualia.com` in Production                                                                                        |
+| `NEXT_PUBLIC_SUPABASE_URL`             | `https://fjotwcufttuccebrbgsp.supabase.co`                                                                                    |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | This project's publishable key; root deployment setup handles the public values                                               |
+| `SUPABASE_SECRET_KEY`                  | Saved as Sensitive Production; temporary transfer files deleted. Redeploy needed to load it.                                  |
+| `RESEND_API_KEY`                       | Domain-restricted booking key saved as Sensitive Production. Redeploy needed to load it.                                      |
+| `EMAIL_FROM`                           | `Qualia <support@bookqualia.com>` is configured and domain verified; sending stays disabled pending delivery/scheduler checks |
+| `CONTACT_EMAIL`                        | `support@bookqualia.com` is configured; the public links were checked on the live site                                        |
+| `CRON_SECRET`                          | Already securely generated in Vercel Production; no schedule enabled. A redeploy loads it with the other remaining settings.  |
+| `TRANSACTIONAL_EMAIL_ENABLED`          | Keep `false` until sender, approved test delivery and scheduling are verified                                                 |
 
 The booking worker needs an authenticated scheduler calling `GET /api/jobs/email`; a frequent supported schedule must be selected before enabling booking emails. No schedule has been created by this checklist. Supabase Auth emails use its SMTP settings and are separate from that worker. See [email-setup.md](email-setup.md) for retries, monitoring and scheduling limits.
 

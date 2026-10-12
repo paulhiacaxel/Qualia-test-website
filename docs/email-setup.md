@@ -1,6 +1,6 @@
 # Transactional booking email
 
-Phase 6 implements an email queue and worker. `bookqualia.com` is the selected domain; **the owner has created `support@bookqualia.com` and it is linked on the website; provider sending and actual delivery are still unverified**. Provider setup, sender verification, actual delivery and scheduling must be completed and checked before enabling the worker. Host recruitment outreach is separate and is never handled by this worker.
+Phase 6 implements an email queue and worker. **The owner-created `support@bookqualia.com` is linked on the website, and Resend has verified `bookqualia.com` for sending.** On October 12, separate domain-restricted booking/Auth keys were saved, custom Auth SMTP and templates persisted, and open/click tracking were disabled. Booking runtime secrets still need redeployment; actual delivery and scheduling remain untested. Keep the worker disabled. Host recruitment outreach is separate and is never handled by this worker.
 
 ## Events and privacy
 
@@ -24,10 +24,10 @@ Every recipient is resolved using the booking participant's user ID through `aut
 Follow [owner-setup.md](owner-setup.md) for the combined checklist. Domain registration does not create an inbox, and a verified Resend sender is not by itself a monitored mailbox.
 
 1. Use the owner-created `support@bookqualia.com` mailbox. Google MX/SPF/DKIM records already exist in Vercel; do not replace them or buy another mailbox. Confirm an external message arrives and a reply is sent from the Qualia address. Do not assume the connected personal Gmail profile already has this alias.
-2. In [Resend Domains](https://resend.com/domains), add `bookqualia.com` for sending. Add the exact verification/DKIM/SPF/return-path records displayed by Resend to the domain's DNS, then wait for **Verified**. Preserve the mailbox provider's root MX records; do not enable Resend Receiving at the root unless replacing the mailbox is intentional. Use the provider-issued DNS values, not guessed records. Set up one compatible SPF policy per hostname and a DMARC policy after checking all authorized senders.
-3. Turn off click tracking for authentication messages so confirmation links are not rewritten. In [Resend API keys](https://resend.com/api-keys), create **Sending access** keys restricted to this verified domain: one for booking email and one for Supabase Auth SMTP. Store the booking key directly in Vercel Sensitive `RESEND_API_KEY`; store the Auth key directly in Supabase's SMTP password field. Do not paste either key into chat or source files.
-4. In [Supabase Authentication → Email](https://supabase.com/dashboard/project/fjotwcufttuccebrbgsp/auth/templates), open **SMTP Settings** and enable custom SMTP. Set sender email to `support@bookqualia.com` only after mailbox/sender verification, sender name to `Qualia`, host to `smtp.resend.com`, port to `465`, username to `resend`, and password to the separate Resend Auth sending key. This configures authentication email; the booking worker separately uses Resend's HTTPS API.
-5. Set the site's auth URLs and the confirmation/recovery templates exactly as shown in [owner-setup.md](owner-setup.md). Use `https://bookqualia.com` as Site URL. Keep email confirmation enabled. Test signup and recovery using owner-approved recipient addresses, including a second browser/device, before inviting hosts.
+2. Resend already reports `bookqualia.com` **Verified**, including DKIM/SPF sending CNAME checks. Preserve the verified records and existing mailbox provider's root MX records; do not enable Resend Receiving at the root unless replacing the mailbox is intentional. Review DMARC across all authorized senders before launch.
+3. Open and click tracking are already disabled. Separate domain-restricted **Sending access** keys exist: the booking key is stored as Sensitive Production `RESEND_API_KEY`, and the Auth key is saved in Supabase SMTP. Do not create duplicates or expose either key in chat or source files.
+4. Custom SMTP is saved and persistence was checked in [Supabase Authentication → Email](https://supabase.com/dashboard/project/fjotwcufttuccebrbgsp/auth/templates): sender `support@bookqualia.com`, name `Qualia`, host `smtp.resend.com`, port `465`, username `resend`, and the separate Auth sending key. Authentication email uses these settings; the booking worker separately uses Resend's HTTPS API.
+5. Site URL, the three exact redirect entries, confirmation-required signup and the signup/recovery TokenHash templates are saved as shown in [owner-setup.md](owner-setup.md). Password minimum 12 is verified persisted; anonymous signup is disabled. Test signup and recovery using owner-approved recipient addresses, including a second browser/device, before inviting hosts.
 6. Add the booking-worker environment values below, redeploy, approve a supported scheduler/cadence, and check a real test message's delivery before enabling production. A sender being verified is not proof that a message reached an inbox.
 
 Recruitment messages still require lead/message approval before sending. Send them from the monitored Qualia mailbox; the transactional worker does not send outreach or handle its replies.
@@ -36,9 +36,9 @@ Recruitment messages still require lead/message approval before sending. Send th
 
 Set these server environment variables in the chosen environment:
 
-- `SUPABASE_SECRET_KEY`: server-only database/Auth admin credential.
-- `RESEND_API_KEY`: restricted sending API key from the chosen Resend account.
-- `EMAIL_FROM`: `Qualia <support@bookqualia.com>` is configured in Vercel; automated sending remains disabled until provider verification and an approved delivery test.
+- `SUPABASE_SECRET_KEY`: server-only database/Auth admin credential, saved as Sensitive Production; redeployment pending.
+- `RESEND_API_KEY`: domain-restricted booking sending key, saved as Sensitive Production; redeployment pending.
+- `EMAIL_FROM`: `Qualia <support@bookqualia.com>` is configured and domain verified; automated sending remains disabled pending approved delivery and scheduler checks.
 - `CRON_SECRET`: random secret of at least 32 characters.
 - `TRANSACTIONAL_EMAIL_ENABLED=true`: explicit enable switch; unset/anything else disables processing.
 - `NEXT_PUBLIC_SITE_URL`: `https://bookqualia.com` for Production; a separately configured trusted staging origin for Preview.

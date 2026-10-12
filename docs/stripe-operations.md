@@ -2,11 +2,24 @@
 
 Implementation: stripe-node 23.0.0, API `2026-09-30.endive`, Accounts v2 Express recipient accounts, hosted Checkout, separate charges and transfers. Checkout charges Qualia's platform; the database freezes commission and incentive credits. Qualia releases eligible host earnings manually after verified completion and the approved delay. A host transfer is distinct from a Stripe bank payout.
 
+## Current sandbox configuration — October 12, 2026
+
+The connected sandbox is `acct_1SKPOxDIzwThjgQA`, with `livemode=false`. The three original signing secrets below are stored as Sensitive Production variables in Vercel. This is configuration progress, not a working payment integration: `STRIPE_RESTRICTED_KEY` is still missing, no redeployment has loaded the new secrets, and no sandbox payment/webhook rehearsal has run. Stripe browser sign-in was declined.
+
+| Destination                 | Provider ID                                            | Current status                                                                                 |
+| --------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| Platform snapshots          | `we_1UPjZeDIzwThjgQAclqYI3H5`                          | Original signing secret stored as `STRIPE_WEBHOOK_SECRET_PLATFORM`                             |
+| Connect payout snapshots    | `we_1UPjaKDIzwThjgQAinUcI1AR`                          | Original signing secret stored as `STRIPE_WEBHOOK_SECRET_CONNECT`; source read-back unresolved |
+| Accounts v2 thin events     | `ed_test_61VZ7YBgatG2p8hK916TTnMJSmSQozILacixY42JEPZY` | Signing secret stored as `STRIPE_WEBHOOK_SECRET_ACCOUNTS_V2`                                   |
+| Duplicate Connect snapshots | `we_1UPjeCDIzwThjgQAzDVeQRVx`                          | Enabled; its secret has not replaced the original Connect secret                               |
+
+Both Connect destination reads report `@self`, although the first was created with `connect=true` and the duplicate with explicit `@accounts`. Do not assume either read-back proves connected-account scope. Automatic approval review rejected disabling the duplicate, so both remain enabled pending a Stripe Dashboard source check. Confirm **Connected accounts / Snapshot**, retain one matching destination/secret, and disable the duplicate before testing. The Accounts v2 thin destination should remain **Your account / Thin**. Do not create further duplicates to troubleshoot this ambiguity.
+
 ## Before sandbox use
 
 Use the owner checklist in [owner-setup.md](owner-setup.md). The production origin is `https://bookqualia.com`; configuring that origin does not enable real payments.
 
-1. In the [Stripe Dashboard](https://dashboard.stripe.com/), open the account picker → **Switch to sandbox** → **Create sandbox** (or open an existing Qualia sandbox). Name a new one **Qualia staging**, choose whether to copy the existing account's settings, and check that the sandbox banner is visible. Sandbox availability has not been verified in the connected plugin; the last read-only account check exposed only a live account.
+1. In the [Stripe Dashboard](https://dashboard.stripe.com/), select the existing sandbox identified above and check that the sandbox banner is visible. Sandbox access is verified through the connected tools; there is no need to create another one.
 2. Complete the sandbox's Connect setup if Stripe requests it. The integration is a marketplace: Qualia collects the guest payment, hosts use an Express dashboard, Qualia manages pricing and negative balance liability, and separate charges/transfers support release after completion. The owner supplies business facts and accepts any required agreements; do not invent or pre-accept these.
 3. In the sandbox's [API keys](https://dashboard.stripe.com/apikeys), choose **Create restricted key**, start from no permissions, and name it **Qualia staging app**. Grant only the resource access below. Write includes Read; Dashboard grouping may combine related resources.
 
@@ -39,7 +52,7 @@ The owner must explicitly save and enable a **sandbox** commercial policy at `/a
 
 ## Webhook destinations
 
-After the endpoints are deployed over HTTPS, open the sandbox's [Workbench Webhooks](https://dashboard.stripe.com/webhooks) → **Create an event destination**. For each row below choose the stated source and payload format, select its event types, choose **Webhook endpoint**, and enter `https://bookqualia.com` followed by the path. Use the API version above for both snapshot endpoints. For staging, use its exact deployed HTTPS origin instead.
+The current destinations already exist; reconcile their source scope and the duplicate described above before creating or replacing anything. The table below is the required mapping. For a separate staging installation, open its sandbox's [Workbench Webhooks](https://dashboard.stripe.com/webhooks) → **Create an event destination**, choose each stated source/payload and event list, and use the exact staging HTTPS origin plus the path. Use the API version above for both snapshot endpoints.
 
 **Accounts v2 thin notifications use Your account.** They describe Account objects managed by the platform. Only the payout snapshot endpoint uses Connected accounts. These are three separate destinations with three separate signing secrets; do not reuse a CLI forwarding secret for a Dashboard destination.
 
