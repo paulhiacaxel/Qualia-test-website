@@ -1,6 +1,6 @@
 # Transactional booking email
 
-Phase 6 implements an email queue and worker. **The owner-created `support@bookqualia.com` is linked on the website, and Resend has verified `bookqualia.com` for sending.** On October 12, separate domain-restricted booking/Auth keys were saved, custom Auth SMTP and templates persisted, and open/click tracking were disabled. Booking runtime secrets still need redeployment; actual delivery and scheduling remain untested. Keep the worker disabled. Host recruitment outreach is separate and is never handled by this worker.
+Phase 6 implements an email queue and worker. **The owner-created `support@bookqualia.com` is linked on the website, and Resend has verified `bookqualia.com` for sending.** On October 12, separate domain-restricted booking/Auth keys were saved, custom Auth SMTP and templates persisted, and open/click tracking were disabled. The READY production redeploy loads booking runtime secrets. Resend confirms the owner's signup confirmation was delivered, and the owner reports signup/sign-in worked. Recovery, cross-device links, booking delivery and scheduling remain untested. Keep the worker disabled. Host recruitment outreach is separate and is never handled by this worker.
 
 ## Events and privacy
 
@@ -28,7 +28,7 @@ Follow [owner-setup.md](owner-setup.md) for the combined checklist. Domain regis
 3. Open and click tracking are already disabled. Separate domain-restricted **Sending access** keys exist: the booking key is stored as Sensitive Production `RESEND_API_KEY`, and the Auth key is saved in Supabase SMTP. Do not create duplicates or expose either key in chat or source files.
 4. Custom SMTP is saved and persistence was checked in [Supabase Authentication → Email](https://supabase.com/dashboard/project/fjotwcufttuccebrbgsp/auth/templates): sender `support@bookqualia.com`, name `Qualia`, host `smtp.resend.com`, port `465`, username `resend`, and the separate Auth sending key. Authentication email uses these settings; the booking worker separately uses Resend's HTTPS API.
 5. Site URL, the three exact redirect entries, confirmation-required signup and the signup/recovery TokenHash templates are saved as shown in [owner-setup.md](owner-setup.md). Password minimum 12 is verified persisted; anonymous signup is disabled. Test signup and recovery using owner-approved recipient addresses, including a second browser/device, before inviting hosts.
-6. Add the booking-worker environment values below, redeploy, approve a supported scheduler/cadence, and check a real test message's delivery before enabling production. A sender being verified is not proof that a message reached an inbox.
+6. The booking-worker environment values below are loaded by the current Production redeploy. Approve a supported scheduler/cadence and check an approved booking-message delivery before enabling the worker. A sender being verified is not proof that a message reached an inbox.
 
 Recruitment messages still require lead/message approval before sending. Send them from the monitored Qualia mailbox; the transactional worker does not send outreach or handle its replies.
 
@@ -36,8 +36,8 @@ Recruitment messages still require lead/message approval before sending. Send th
 
 Set these server environment variables in the chosen environment:
 
-- `SUPABASE_SECRET_KEY`: server-only database/Auth admin credential, saved as Sensitive Production; redeployment pending.
-- `RESEND_API_KEY`: domain-restricted booking sending key, saved as Sensitive Production; redeployment pending.
+- `SUPABASE_SECRET_KEY`: server-only database/Auth admin credential, saved as Sensitive Production and loaded by the current redeploy.
+- `RESEND_API_KEY`: domain-restricted booking sending key, saved as Sensitive Production and loaded by the current redeploy.
 - `EMAIL_FROM`: `Qualia <support@bookqualia.com>` is configured and domain verified; automated sending remains disabled pending approved delivery and scheduler checks.
 - `CRON_SECRET`: random secret of at least 32 characters.
 - `TRANSACTIONAL_EMAIL_ENABLED=true`: explicit enable switch; unset/anything else disables processing.
@@ -52,7 +52,7 @@ No `vercel.json` cron entry is included. Confirm the hosting plan's supported sc
 
 ## Recommended production scheduler
 
-Use native Vercel Cron every five minutes **after confirming Pro, redeploying credentials, and passing approved delivery tests**. Qualia's current plan is unverified; no job has been created. [Pro starts at $20/month](https://vercel.com/docs/plans/pro-plan), with function usage applying; [Cron has no separate fee](https://vercel.com/docs/cron-jobs/usage-and-pricing). Hobby's daily-only schedule is insufficient.
+Use native Vercel Cron every five minutes **after confirming Pro and passing approved booking-delivery tests**. Qualia's current plan is unverified; no job has been created. [Pro starts at $20/month](https://vercel.com/docs/plans/pro-plan), with function usage applying; [Cron has no separate fee](https://vercel.com/docs/cron-jobs/usage-and-pricing). Hobby's daily-only schedule is insufficient.
 
 When ready, merge this entry into the existing `vercel.json` and deploy; do not replace unrelated configuration:
 

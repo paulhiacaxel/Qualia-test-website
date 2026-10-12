@@ -4,7 +4,7 @@ Implementation: stripe-node 23.0.0, API `2026-09-30.endive`, Accounts v2 Express
 
 ## Current sandbox configuration — October 12, 2026
 
-The connected sandbox is `acct_1SKPOxDIzwThjgQA`, with `livemode=false`. The three original signing secrets below are stored as Sensitive Production variables in Vercel. This is configuration progress, not a working payment integration: `STRIPE_RESTRICTED_KEY` is still missing, no redeployment has loaded the new secrets, and no sandbox payment/webhook rehearsal has run. Stripe browser sign-in was declined.
+The connected sandbox is `acct_1SKPOxDIzwThjgQA`, with `livemode=false`. The three original signing secrets below are stored as Sensitive Production variables in Vercel. This is configuration progress, not a working payment integration: `STRIPE_RESTRICTED_KEY` is still missing and no sandbox payment/webhook rehearsal has run. READY deployment `dpl_5LvYYrM2tCCLk76D546eRAFtiB41` now loads the saved original signing secrets.
 
 | Destination                 | Provider ID                                            | Current status                                                                                 |
 | --------------------------- | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
@@ -14,6 +14,8 @@ The connected sandbox is `acct_1SKPOxDIzwThjgQA`, with `livemode=false`. The thr
 | Duplicate Connect snapshots | `we_1UPjeCDIzwThjgQAzDVeQRVx`                          | Enabled; its secret has not replaced the original Connect secret                               |
 
 Both Connect destination reads report `@self`, although the first was created with `connect=true` and the duplicate with explicit `@accounts`. Do not assume either read-back proves connected-account scope. Automatic approval review rejected disabling the duplicate, so both remain enabled pending a Stripe Dashboard source check. Confirm **Connected accounts / Snapshot**, retain one matching destination/secret, and disable the duplicate before testing. The Accounts v2 thin destination should remain **Your account / Thin**. Do not create further duplicates to troubleshoot this ambiguity.
+
+A fresh browser login progressed through the existing Axel Google account to an SMS challenge, but the browser authentication tool returned `submission_failed`. Automatic approval review then rejected the required state check as post-failure authentication access without renewed approval. The login outcome is unknown; no retry/workaround was attempted. This supersedes the earlier declined-sign-in status. Obtain renewed browser approval before continuing authentication. The existing connector sandbox remains connected.
 
 ## Before sandbox use
 

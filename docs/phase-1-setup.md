@@ -4,7 +4,7 @@ This document preserves the authentication setup detail. See [launch setup](laun
 
 ## Current boundary
 
-The owner-created Qualia project has eight reviewed migrations applied, and guest/host signup forms are enabled at https://bookqualia.com. Hosted Auth requires email confirmation and a 12-character password; anonymous signup is disabled. On October 12, owner-authorized browser checks verified exact Auth URLs, persisted custom Resend SMTP, and saved signup/recovery TokenHash templates. Real confirmation/recovery delivery and application browser end-to-end checks remain pending. The owner purchased the domain. See [deployment checkpoint](deployment-checkpoint.md).
+The owner-created Qualia project has eight reviewed migrations applied, and guest/host signup forms are enabled at https://bookqualia.com. Hosted Auth requires email confirmation and a 12-character password; anonymous signup is disabled. On October 12, owner-authorized browser checks verified exact Auth URLs, persisted custom Resend SMTP, and saved signup/recovery TokenHash templates. Resend reports the owner's signup confirmation delivered; the owner reports successful signup/sign-in, and the Auth identity is confirmed. Recovery, cross-device and broader application browser checks remain pending. The owner purchased the domain. See [deployment checkpoint](deployment-checkpoint.md).
 
 The supplied brand assets and guidelines were retained. A limited desktop browser check of `/signup` confirmed guest/host options, the host-account button, brand/layout and the support footer link without submitting a form. Full desktop/mobile and keyboard review remains required before launch.
 
@@ -38,7 +38,7 @@ The app's confirmation page requires a button press before consuming the token, 
 
 ## First admin
 
-Create and confirm the owner's normal account. Copy its UUID from the trusted Supabase Auth dashboard. Admin membership belongs in the private schema and cannot be assigned from signup metadata or a public profile update. A database owner can use the SQL editor to insert that verified UUID into `private.admin_memberships` according to the migration's column names. Do not expose an admin-grant endpoint or public invitation code. Record who authorized each admin addition.
+The first owner account is confirmed and its owner-authorized private admin membership was inserted with exact email/UUID guards and verified on October 12; see the [checkpoint](deployment-checkpoint.md#october-12-owner-access-and-deployment-verification). For any future administrator, create and confirm the intended account and copy its UUID from the trusted Supabase Auth dashboard. Admin membership belongs in the private schema and cannot be assigned from signup metadata or a public profile update. A database owner can use the SQL editor to insert that verified UUID into `private.admin_memberships` according to the migration's column names. Do not expose an admin-grant endpoint or public invitation code. Record who authorized each admin addition.
 
 ## Required live acceptance checks
 

@@ -117,7 +117,7 @@ Meaningful sandbox gates: failed payment and 3DS; delayed-method success/failure
 2. Record the approved 17.5% standard and selected 10% lifetime founding rates; decide who bears processing/Connect costs, referral grant and cap.
 3. Incentive start/time-zone/cutoff/refund rules, payment deadline and cancellation/no-show/refund policy.
 4. Confirm Qualia's customer-facing payment/support responsibility and acceptance of the proposed negative-balance responsibility.
-5. Finish the connected sandbox's runtime restricted key, resolve webhook source/duplicate configuration and deploy the stored secrets; later separately approve live enablement.
+5. Finish the connected sandbox's runtime restricted key, resolve webhook source/duplicate configuration and redeploy any resulting key changes; later separately approve live enablement.
 
 ## Primary references checked
 
