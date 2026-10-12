@@ -31,3 +31,9 @@ The application is deployed and reachable. This is a pre-launch checkpoint, not 
 4. Select a supported authenticated worker schedule and delivery/error monitoring. Configure backup/recovery operations before meaningful production data accumulates.
 5. Complete commercial and legal decisions before paid bookings: rates selected are 17.5% standard and 10% founding after first ten bookings or six months; processing payer, referral rules, cancellation/refund terms, deadlines, payout delay, legal identity/documents and category safety/insurance requirements remain unresolved.
 6. Approve the outreach workbook, sender, postal address/opt-out handling and first batch before any prospect is contacted. No outreach, live charges, payouts or emails have been sent.
+
+## October 12 email update
+
+The owner created info@, axel@, support@ and contact@bookqualia.com. Production deployment `dpl_DzAvUFRXzD4eQCaiSmAiV98dEMSy` is READY at application commit `f796d598c685e0f24a13c59e38d5a40a72814ec3`. `CONTACT_EMAIL=support@bookqualia.com` and `EMAIL_FROM=Qualia <support@bookqualia.com>` are configured. The contact page and homepage return HTTP 200 and contain the support mailto link. Automated sending remains disabled. The environment update required no application-code changes.
+
+The owner reports finishing Auth redirect URLs. Google MX/SPF/DKIM plus Resend DKIM and sending CNAME records are present in Vercel; this does not by itself prove Resend verification or inbox delivery. Resend is installed but no Resend tool was callable in the running session. Stripe still exposes only the live account. No messages or test emails have been sent. Outreach drafts identify Axel at Qualia and remain held for approval.

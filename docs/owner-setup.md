@@ -1,12 +1,20 @@
 # Qualia owner setup
 
-Production domain: **https://bookqualia.com**. Supabase project: **fjotwcufttuccebrbgsp**. Proposed sender: **hello@bookqualia.com — not yet active or verified**. This checklist documents settings; it does not claim those services or deliveries are working.
+Production domain: **https://bookqualia.com**. Supabase project: **fjotwcufttuccebrbgsp**. Owner-created mailboxes: **axel@bookqualia.com**, **support@bookqualia.com**, **contact@bookqualia.com**, and **info@bookqualia.com**. Outreach uses **Axel at Qualia <axel@bookqualia.com>**; website contact and service email use **support@bookqualia.com**. The website support link is deployed and verified. Automated email delivery remains disabled. This reference lists technical settings; the owner should not need to perform every step manually when the relevant connected tools expose it.
 
 Open the existing Qualia project in the [Vercel Dashboard](https://vercel.com/dashboard). Enter secret values directly in its **Settings → Environment Variables** as **Secret** (the API calls this Sensitive), scoped to the intended environment, then redeploy. Never send keys in chat, commit them, or put them in `NEXT_PUBLIC_` variables. Use separate staging credentials and sender tests.
 
-## 1. Create the Qualia mailbox and verify sending
+## Current handoff — October 12
 
-- Recommended: one Google Workspace Business Starter mailbox on the Flexible plan ($8.40 USD/month before tax; no annual commitment, verified October 11, 2026). [Start setup with the existing domain](https://workspace.google.com/business/signup/welcome); [current official pricing](https://knowledge.workspace.google.com/admin/billing/compare-flexible-and-annual-fixed-term-payment-plans). Approve the subscription yourself and create `hello@bookqualia.com` as a monitored inbox or verified send-as alias. Apply that provider's DNS instructions and verify incoming mail and a reply from the Qualia address. Buying the domain alone does not create this mailbox.
+- Resend installation is confirmed, but its account tools did not appear in the running session. Do not reinstall it. Recheck available tools on the next turn, then inspect the existing domain before creating anything.
+- Stripe currently exposes only the live account. The owner needs to select their Qualia sandbox using the connector's account-management link. Once connected, the Stripe tools can create the required webhooks; do not ask the owner to type all event names manually.
+- The Supabase tools available here do not edit hosted SMTP or email templates. Prepared values below can be entered through owner-authorized browser access; no browser access has been authorized yet.
+- The SMTP **Password** means a domain-restricted Resend sending API key, not a Google Workspace password. Never send keys in chat. Put any runtime secret directly into the appropriate deployment setting.
+- The owner reports completing Auth URL configuration. Preserve it; verify later through an approved confirmation/recovery test.
+
+## 1. Verify the existing Qualia sender
+
+- The owner has created the four Qualia addresses above. Google MX/SPF/DKIM and Resend DNS records were observed in Vercel on October 12. Do not repurchase mailboxes or replace existing DNS records. Provider verification and actual delivery still need to be checked.
 - Add `bookqualia.com` at [Resend Domains](https://resend.com/domains). Copy its exact sending DNS records to the active DNS provider and wait for **Verified**. Preserve the mailbox provider's root MX records. Disable click tracking for authentication messages.
 - At [Resend API keys](https://resend.com/api-keys), create domain-restricted **Sending access** keys for booking email and Supabase Auth separately. The booking key goes to Vercel `RESEND_API_KEY`; the Auth key goes to Supabase SMTP, below. Provider DNS values and actual inbox delivery still need verification.
 
@@ -28,7 +36,7 @@ Open [Authentication → Email](https://supabase.com/dashboard/project/fjotwcuft
 
 | Setting      | Value                                                                |
 | ------------ | -------------------------------------------------------------------- |
-| Sender email | `hello@bookqualia.com`, only after verification                      |
+| Sender email | `support@bookqualia.com`, only after verification                    |
 | Sender name  | `Qualia`                                                             |
 | Host / port  | `smtp.resend.com` / `465`                                            |
 | Username     | `resend`                                                             |
@@ -87,8 +95,8 @@ Keep `STRIPE_ENVIRONMENT=sandbox` and `STRIPE_LIVE_PAYMENTS_ENABLED=false`. In Q
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | This project's publishable key; root deployment setup handles the public values                                                                       |
 | `SUPABASE_SECRET_KEY`                  | This project's server-only secret key from [API Keys](https://supabase.com/dashboard/project/fjotwcufttuccebrbgsp/settings/api-keys), saved as Secret |
 | `RESEND_API_KEY`                       | Booking email sending key, saved as Secret                                                                                                            |
-| `EMAIL_FROM`                           | Proposed `Qualia <hello@bookqualia.com>`, only after sender/mailbox verification                                                                      |
-| `CONTACT_EMAIL`                        | `hello@bookqualia.com` only after incoming mail and replies work; this enables the website links                                                      |
+| `EMAIL_FROM`                           | `Qualia <support@bookqualia.com>` is configured; sending remains disabled until provider verification                                                 |
+| `CONTACT_EMAIL`                        | `support@bookqualia.com` is configured; the public links were checked on the live site                                                                |
 | `CRON_SECRET`                          | Already securely generated in Vercel Production; no schedule enabled. A redeploy loads it with the other remaining settings.                          |
 | `TRANSACTIONAL_EMAIL_ENABLED`          | Keep `false` until sender, approved test delivery and scheduling are verified                                                                         |
 

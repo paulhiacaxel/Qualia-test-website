@@ -20,7 +20,7 @@ At the October 11, 2026 checkpoint, the owner-created Supabase project `Qualia` 
 | Insurance and permits                                                                    | Category-specific broker/legal review; a waiver or Stripe identity check does not establish coverage or safety   |
 | Qualia support/outreach mailbox and postal address                                       | Auth SMTP, transactional sender, outreach signature and suppression process                                      |
 
-The owner purchased `bookqualia.com` through Vercel. Use a real monitored Qualia mailbox; `hello@bookqualia.com` is proposed but has not been created or configured. Set `CONTACT_EMAIL` only after mail receipt works. Follow [owner setup](owner-setup.md) for the remaining dashboard steps; never place passwords, billing details, or API secrets in source control or chat.
+The owner purchased `bookqualia.com` through Vercel. Use a real monitored Qualia mailbox; `support@bookqualia.com` was created by the owner and is now linked on the website. Provider sending and real delivery remain unverified. `CONTACT_EMAIL` now points to this owner-provided mailbox; verify receipt and replies before inviting users. Follow [owner setup](owner-setup.md) for the remaining dashboard steps; never place passwords, billing details, or API secrets in source control or chat.
 
 ## 1. Supabase configuration and acceptance
 
