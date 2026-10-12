@@ -30,7 +30,7 @@ The application is deployed and reachable. This is a pre-launch checkpoint, not 
 3. Host profile/photo/listing → review → calendar/request → sandbox payment/refund/release and real transactional-delivery rehearsal with two approved accounts. Verify cross-account isolation through the hosted API and actual concurrent connections.
 4. Vercel visibly confirms Qualia is now on Pro. The reviewed price was $20 immediately/$20-month baseline plus taxes/metered usage. Scheduler/diagnostic release `77726e2` is READY and owner diagnostic delivery is verified. The newer worker-enable/logging release is READY and an authenticated zero-work scheduled invocation is verified. Continue monitoring; one successful run does not establish a full booking-email lifecycle. Configure backup/recovery operations before meaningful production data accumulates.
 5. Complete commercial and legal decisions before paid bookings: the owner approved revised rates and incentives in [launch decisions](launch-decisions-proposed.md). The versioned sandbox policy is saved and disabled; legal identity/documents and category safety/insurance requirements remain required.
-6. The first 20 recipient selection and remaining body copy are approved subject to the requested edits. Do not repeat that approval request. Qualia Gmail and diagnostic inbox receipt are verified. Confirm activation of the purchased Anytime address after Form 1583 completion/notarization and agree the functional opt-out/final footer and provider suitability before final-send readiness; the new footer is not approved. The other 80 leads have no sending approval and remaining qualification stays open. No prospect outreach has been sent.
+6. The first 20 recipient selection and remaining body copy are approved subject to the requested edits. Do not repeat that approval request. Qualia Gmail and diagnostic inbox receipt are verified. The owner confirmed completed/notarized Form 1583 and approved the exact proposed footer on October 12 at 14:07 EDT; no repeat approval or new activation gate is needed. Provider/contact suitability remains unresolved. The other 80 leads have no sending approval and remaining qualification stays open. No prospect outreach has been sent.
 
 ## Historical October 12 provider configuration
 
@@ -94,7 +94,7 @@ The owner approved the remaining message body copy and requested removal of the 
 
 The owner explicitly permitted opening personal Gmail solely to connect the Qualia sender. One subsequent attempt to open `https://mail.google.com` in a new tab was automatically denied as `browser_security_restricted`, with no specific reason beyond security. No mailbox opened, and no circumvention was attempted. Fresh Gmail profile read-back still returned `paulhiacaxel@gmail.com`; the Gmail plugin is installed but no reconnection tool is exposed. Permission is received; the current block is the technical browser approval rejection. No prospect emails were sent. Earlier permission-related rejection notes above are historical, not the present reason.
 
-## Current outreach sender and postal-mailbox checkpoint — October 12
+## Historical outreach sender and postal-mailbox checkpoint — October 12
 
 Gmail now exposes two accounts. An explicit Qualia account selection verified `axel@bookqualia.com`; no further connection or authentication is required. The prior browser approval blocks above are historical. The earlier personal-mailbox inspection was limited to owner-authorized Anytime purchase verification; the later owner-only round trip is recorded below.
 
@@ -107,3 +107,11 @@ The first 20 recipients and remaining body copy remain approved subject to reque
 ## Owner-only Gmail round trip — October 12
 
 A test from `axel@bookqualia.com` reached the confirmed owner inbox at **2026-10-12 17:40:02 UTC**, INBOX, SPF/DKIM passing for `bookqualia.com`; Qualia sent message `1a1313339ac5fe53`, received message `1a1313345991cc9d`. The reply reached the Qualia INBOX at **17:40:33 UTC**, message `1a13133b6788a6c2`, with SPF/DKIM passing. This verifies the owner-only outbound and reply path. Arbitrary prospect inbox placement, provider suitability and a full booking-message lifecycle remain unverified; no prospect emails were sent. Postal activation and final-footer requirements remain unchanged.
+
+## Current footer approval and pacing — October 12, 14:07 EDT
+
+The owner confirmed Form 1583 was completed/notarized and approved the exact proposed footer: the assigned business address in the workbook plus **Unsubscribe by email**, using the return-email link documented in [launch decisions](launch-decisions-proposed.md#outreach-and-activation-gates). Do not re-request notarization or footer approval. The earlier contradictory welcome message is historical; no later provider-state read was performed, and this does not introduce a manual provider-activation approval gate.
+
+First-20 recipient/body approval remains valid, and the Qualia owner-only outbound/reply path is verified. Provider/contact suitability remains the actual unresolved sending issue; other 80 leads have no sending approval and remaining qualification stays open. No prospect emails have been sent.
+
+The roughly 20/day pacing comes verbatim from the original user task, “send in batches (no more than ~20/day)”, not from Gmail limits. The owner asked where this came from without explicitly replacing the cap; preserve that instruction and the one-follow-up limit unless changed.
