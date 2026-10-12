@@ -50,6 +50,20 @@ Authenticate worker requests with `Authorization: Bearer <CRON_SECRET>` to `GET 
 
 No `vercel.json` cron entry is included. Confirm the hosting plan's supported schedule and execution limits before choosing a scheduler. A frequent schedule is needed for timely booking notifications and to drain bursts; a daily schedule is insufficient. The route declares a 60-second maximum and provider requests time out after eight seconds. Confirm actual hosting limits before enabling. Monitor backlog and adjust capacity before accepting meaningful booking traffic.
 
+## Recommended production scheduler
+
+Use native Vercel Cron every five minutes **after confirming Pro, redeploying credentials, and passing approved delivery tests**. Qualia's current plan is unverified; no job has been created. [Pro starts at $20/month](https://vercel.com/docs/plans/pro-plan), with function usage applying; [Cron has no separate fee](https://vercel.com/docs/cron-jobs/usage-and-pricing). Hobby's daily-only schedule is insufficient.
+
+When ready, merge this entry into the existing `vercel.json` and deploy; do not replace unrelated configuration:
+
+```json
+{ "crons": [{ "path": "/api/jobs/email", "schedule": "*/5 * * * *" }] }
+```
+
+[Vercel sends the configured `CRON_SECRET` as a bearer header](https://vercel.com/docs/cron-jobs/manage-cron-jobs#securing-cron-jobs). The existing route needs no application change. Five jobs per run means at most **60 attempts/hour**, including retries; this is not a delivery guarantee. Monitor eligible backlog age/count, missing runs, HTTP failures, and response `errors`, `failed`, and `retried` counts—even HTTP 200 can report failures. Check Resend for bounces and delivery separately. Remove the cron entry and redeploy to stop scheduled calls.
+
+Supabase Cron with pg_net/Vault is **not a ready alternative**: [pg_net stores decrypted bearer tokens in queued headers readable by database login roles](https://supabase.com/docs/guides/troubleshooting/database-roles-can-read-request-headers-queued-by-pg_net-ad6357). Vault encryption alone does not address this exposure; review authentication and monitoring before using it.
+
 ## Queue and retry semantics
 
 The private, RLS-enabled table has no guest/host/admin client grants. Only the trusted server role can call claim, context, prepare and finish RPCs. The trigger runs inside the booking transaction; rollback also rolls back its email. A unique booking/event/recipient key prevents duplicate logical events. Reminder keys include the start instant.
