@@ -162,9 +162,10 @@ export function ListingForm({
           more shared guests.
         </p>
         <p id="capacity-help" className="field-hint">
-          Count all guests taking part, across every booking for that session. Set a limit your
-          space, equipment and supervision can safely support. One-on-one experiences can keep a
-          limit of 1.
+          Count every guest attending or boarding, including accompanying guardians, across all
+          bookings for that session. Set a limit your space, equipment and supervision can safely
+          support. Per-guest prices also apply to accompanying guardians. A solo experience can keep
+          a limit of 1 when no additional guardian must attend.
         </p>
         {format !== "shared" ? (
           <div className="form-stack">
