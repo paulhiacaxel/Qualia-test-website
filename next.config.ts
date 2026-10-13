@@ -22,6 +22,11 @@ const nextConfig: NextConfig = {
         source: "/auth/:path*",
         headers: [{ key: "Referrer-Policy", value: "no-referrer" }],
       },
+      {
+        // Shareable proposals stay out of search when the public site is indexed.
+        source: "/previews/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" }],
+      },
     ];
   },
 };
