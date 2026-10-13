@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getSupabaseConfig } from "@/lib/supabase/config";
 import { safeNext } from "./validation";
 import type { AccountEligibility } from "@/lib/participation/types";
+import type { LegalAcceptanceStatus, LegalScope } from "@/lib/legal/types";
 
 export const getCurrentUser = cache(async () => {
   if (!getSupabaseConfig()) return null;
@@ -44,7 +45,26 @@ export async function requireAdultAccount(next = "/account/dashboard") {
   if (!eligibility?.eligible) {
     redirect(`/account/eligibility?next=${encodeURIComponent(safeNext(next))}`);
   }
+  await requireLegalAgreement(next.startsWith("/host/") ? "host" : "guest", next);
   return user;
+}
+
+export const getLegalAcceptance = cache(async (): Promise<LegalAcceptanceStatus> => {
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("get_legal_acceptance");
+  if (error || !data)
+    throw new Error("Your agreement record could not be checked. Please try again.");
+  return data as LegalAcceptanceStatus;
+});
+
+/** New activity is gated; browsing, receipts, cancellations and recovery stay available. */
+export async function requireLegalAgreement(scope: LegalScope, next = "/account/dashboard") {
+  await requireUser(next);
+  const accepted = await getLegalAcceptance();
+  if (!(scope === "host" ? accepted.host_accepted : accepted.guest_accepted)) {
+    const destination = safeNext(next);
+    redirect(`/account/agreements?scope=${scope}&next=${encodeURIComponent(destination)}`);
+  }
 }
 
 export const getProfile = cache(async () => {

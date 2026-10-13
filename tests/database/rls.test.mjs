@@ -10,6 +10,7 @@ import {
   createTestDatabase,
   asRole as runAsRole,
   attestFixtureAdult,
+  acceptFixtureLegal,
   approveFixtureSafety,
   fixtureSafetySubmission,
 } from "./helpers.mjs";
@@ -45,8 +46,10 @@ before(async () => {
       ],
     );
   }
-  for (const key of ["alice", "bob", "guest", "stranger", "admin"])
+  for (const key of ["alice", "bob", "guest", "stranger", "admin"]) {
     await attestFixtureAdult(db, ids[key]);
+    await acceptFixtureLegal(db, ids[key], { host: ["alice", "bob"].includes(key) });
+  }
   await db.query(
     `insert into private.admin_memberships(user_id, reason) values ($1, 'Test operator grant')`,
     [ids.admin],
@@ -184,6 +187,7 @@ test("account profiles are owner-only and self-service edits cannot change owner
 });
 
 test("verified members can opt into hosting idempotently without losing guest booking access", async () => {
+  await acceptFixtureLegal(db, ids.guest, { host: true });
   await asRole("authenticated", ids.guest, async () => {
     await db.query("select public.enable_host_mode()");
     await db.query("select public.enable_host_mode()");
@@ -365,6 +369,7 @@ test("host onboarding RPCs and private Storage enforce ownership and review boun
   for (const id of [host, attacker]) {
     await db.query("insert into auth.users(id, email_confirmed_at) values ($1, now())", [id]);
     await attestFixtureAdult(db, id);
+    await acceptFixtureLegal(db, id, { host: true });
     await asRole("authenticated", id, () => rpc("enable_host_mode"));
   }
 

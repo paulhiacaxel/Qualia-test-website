@@ -1,0 +1,93 @@
+.main {
+  max-width: 1000px;
+  padding-block: 64px 88px;
+}
+.heading {
+  max-width: 780px;
+}
+.heading h1 {
+  margin-block: 16px;
+  font-size: clamp(36px, 5vw, 56px);
+}
+.heading p {
+  margin-block: 8px;
+}
+.version {
+  color: var(--inksoft);
+  font:
+    11px/1.5 "IBM Plex Mono",
+    monospace;
+  overflow-wrap: anywhere;
+}
+.navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-block: 32px 40px;
+  padding-block: 18px;
+  border-block: 1px solid var(--line);
+  font-size: 14px;
+}
+.navigation a,
+.contact a {
+  color: var(--mossdeep);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.navigation a[aria-current="page"] {
+  font-weight: 700;
+}
+.content {
+  max-width: 760px;
+  line-height: 1.75;
+}
+.content section + section {
+  margin-top: 36px;
+}
+.content h2 {
+  font-size: 28px;
+  line-height: 1.25;
+  margin-bottom: 16px;
+}
+.content p,
+.content li {
+  color: var(--inksoft);
+}
+.content p {
+  margin-block: 16px;
+}
+.content li + li {
+  margin-top: 12px;
+}
+.contact {
+  margin-top: 48px;
+  padding: 24px;
+  background: var(--paperalt);
+  border-radius: 12px;
+  line-height: 1.65;
+}
+.contact h2 {
+  margin-top: 0;
+  font-size: 24px;
+}
+.contact address {
+  color: var(--inksoft);
+  font-size: 14px;
+  font-style: normal;
+}
+@media print {
+  .main {
+    max-width: none;
+    padding-block: 0;
+  }
+  .navigation {
+    display: none;
+  }
+  .content {
+    max-width: none;
+  }
+  .content section,
+  .contact {
+    break-inside: avoid;
+  }
+}

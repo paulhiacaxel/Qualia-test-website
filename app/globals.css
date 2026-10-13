@@ -22,6 +22,18 @@
   text-decoration: underline;
   text-underline-offset: 4px;
 }
+.footer-policy-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding-bottom: 24px;
+  color: var(--inksoft);
+  font-size: 12px;
+}
+.footer-policy-links a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 textarea {
   font: inherit;
   resize: vertical;

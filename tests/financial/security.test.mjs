@@ -8,6 +8,7 @@ import {
   createTestDatabase,
   asRole,
   attestFixtureAdult,
+  acceptFixtureLegal,
   approveFixtureSafety,
 } from "../database/helpers.mjs";
 
@@ -57,6 +58,7 @@ async function makeUser({ host = false } = {}) {
     [id, { full_name: "Synthetic person" }],
   );
   await attestFixtureAdult(db, id);
+  await acceptFixtureLegal(db, id, { host });
   if (host) {
     await member(id, async () => {
       await rpc("enable_host_mode");
@@ -308,6 +310,30 @@ test("verified canonical payment confirms once, duplicate delivery is idempotent
   const host = await hostFixture();
   const booking = await acceptedBooking(host.host);
   const attempt = await attach(await reserve(booking));
+  const captured = (
+    await db.query(
+      `select a.guest_legal_acceptance_id as payment_guest,a.host_legal_acceptance_id as payment_host,
+      b.guest_legal_acceptance_id as booking_guest,b.host_legal_acceptance_id as booking_host,
+      g.id as trusted_guest,h.id as trusted_host
+      from private.payment_attempts a join public.bookings b on b.id=a.booking_id
+      join private.legal_acceptances g on g.user_id=b.guest_id and g.scope='guest'
+      join private.legal_acceptances h on h.user_id=b.host_id and h.scope='host'
+      where a.id=$1`,
+      [attempt.attempt_id],
+    )
+  ).rows[0];
+  assert.ok(captured.trusted_guest);
+  assert.ok(captured.trusted_host);
+  assert.equal(captured.payment_guest, captured.trusted_guest);
+  assert.equal(captured.booking_guest, captured.trusted_guest);
+  assert.equal(captured.payment_host, captured.trusted_host);
+  assert.equal(captured.booking_host, captured.trusted_host);
+  for (const column of ["guest_legal_acceptance_id", "host_legal_acceptance_id"])
+    await denied(() =>
+      db.query(`update private.payment_attempts set ${column}=null where id=$1`, [
+        attempt.attempt_id,
+      ]),
+    );
   const eventId = token("evt");
   const inbox = await eventFor(attempt, { eventId });
   await server(() => rpc("pay_finish_event", [inbox.event_key, "Synthetic temporary failure"]));
@@ -1010,4 +1036,80 @@ test("founder enrollment rejects changed visible policy and accepts only reviewe
     lifetime_fee_bps: 1250,
   });
   await enablePolicy();
+});
+
+test("approved launch offer applies 17.5% standard, three free bookings or three months, then 12.5% for the founding cohort", async () => {
+  // Exercise the exact approved launch economics alongside the configurable legacy
+  // policies above. These are synthetic payments against isolated PostgreSQL only.
+  await enablePolicy({
+    standard_fee_bps: 1750,
+    founder_fee_bps: 1250,
+    founder_free_bookings: 3,
+    founder_duration_months: 3,
+    founder_cohort_cap: 40,
+    processing_allocation: "host_actual_cost",
+    payout_delay_hours: 48,
+    referral_credit_cap: 2,
+  });
+  try {
+    const standard = await hostFixture();
+    assert.equal((await reserve(await acceptedBooking(standard.host))).commission_cents, 1750);
+
+    const founder = await hostFixture({ founder: true });
+    const enrollment = (
+      await db.query(
+        `select free_booking_limit,duration_months,lifetime_fee_bps,ends_at,
+        ((starts_at at time zone 'America/New_York')+interval '3 months')
+          at time zone 'America/New_York' as expected_end
+        from private.host_incentive_terms where host_id=$1`,
+        [founder.host],
+      )
+    ).rows[0];
+    assert.equal(enrollment.free_booking_limit, 3);
+    assert.equal(enrollment.duration_months, 3);
+    assert.equal(enrollment.lifetime_fee_bps, 1250);
+    assert.equal(enrollment.ends_at.getTime(), enrollment.expected_end.getTime());
+    for (let i = 0; i < 2; i++)
+      assert.equal((await paidBooking(founder.host)).attempt.commission_cents, 0);
+
+    const third = await attach(await reserve(await acceptedBooking(founder.host)));
+    assert.equal(third.commission_cents, 0);
+    const waiting = await acceptedBooking(founder.host);
+    await rejected(() => reserve(waiting));
+    // A terminal failure releases the final free credit; it cannot be promised to
+    // two simultaneous open checkouts or consumed by the failed attempt.
+    await apply(third, { state: "failed" });
+    const replacement = await attach(await reserve(waiting));
+    assert.equal(replacement.commission_cents, 0);
+    await apply(replacement);
+    assert.equal((await reserve(await acceptedBooking(founder.host))).commission_cents, 1250);
+    assert.deepEqual(
+      (
+        await db.query(
+          "select state,count(*)::int as n from private.incentive_reservations where host_id=$1 and kind='founder' group by state order by state",
+          [founder.host],
+        )
+      ).rows,
+      [
+        { state: "consumed", n: 3 },
+        { state: "released", n: 1 },
+      ],
+    );
+
+    const endedAt = (
+      await db.query(
+        "select (((now() at time zone 'America/New_York')-interval '3 months 1 minute') at time zone 'America/New_York') as start",
+      )
+    ).rows[0].start;
+    const expiredFounder = await hostFixture({ founder: true, startedAt: endedAt });
+    assert.equal(
+      (await reserve(await acceptedBooking(expiredFounder.host))).commission_cents,
+      1250,
+    );
+    // Later platform rate changes do not rewrite the enrolled cohort's rate.
+    await enablePolicy({ founder_fee_bps: 1500 });
+    assert.equal((await reserve(await acceptedBooking(founder.host))).commission_cents, 1250);
+  } finally {
+    await enablePolicy();
+  }
 });

@@ -2,7 +2,12 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { requireAdultHost, requireHost, requireUser } from "@/lib/auth/session";
+import {
+  requireAdultHost,
+  requireAdultAccount,
+  requireHost,
+  requireUser,
+} from "@/lib/auth/session";
 import { idSchema } from "@/lib/host/validation";
 import { bookingCheckout, hostDashboard, hostOnboarding, syncRecipient } from "./service";
 import { paymentConfig } from "./config";
@@ -25,7 +30,7 @@ export async function createBookingCheckout(
   const policyId = idSchema.safeParse(form.get("policyId"));
   if (!policyId.success || form.get("termsAccepted") !== "on")
     return { error: "Review and accept the cancellation terms before payment." };
-  const user = await requireUser(`/bookings/${id.data}`);
+  const user = await requireAdultAccount(`/bookings/${id.data}`);
   const config = paymentConfig();
   if (!config)
     return {

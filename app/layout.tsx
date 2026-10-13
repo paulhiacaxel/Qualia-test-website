@@ -44,6 +44,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               ) : null}
             </nav>
           </div>
+          <nav className="container footer-policy-links" aria-label="Policies">
+            <Link href="/terms">Guest terms</Link>
+            <Link href="/host-terms">Host terms</Link>
+            <Link href="/cancellation-policy">Cancellation policy</Link>
+            <Link href="/privacy">Privacy</Link>
+          </nav>
         </footer>
       </body>
     </html>

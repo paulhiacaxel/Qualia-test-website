@@ -5,6 +5,7 @@ import {
   asRole,
   createTestDatabase,
   attestFixtureAdult,
+  acceptFixtureLegal,
   approveFixtureSafety,
   adultParticipant,
 } from "../database/helpers.mjs";
@@ -19,7 +20,10 @@ before(async () => {
   db = await createTestDatabase();
   for (const id of [host, guest, admin])
     await db.query("insert into auth.users(id,email_confirmed_at) values ($1,now())", [id]);
-  for (const id of [host, guest, admin]) await attestFixtureAdult(db, id);
+  for (const id of [host, guest, admin]) {
+    await attestFixtureAdult(db, id);
+    await acceptFixtureLegal(db, id, { host: id === host });
+  }
   await db.query("update public.profiles set is_host=true where id=$1", [host]);
   await db.query(
     "insert into public.host_profiles(user_id,display_name,city) values ($1,'Host','Miami')",

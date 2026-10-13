@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { requireHost, requireUser } from "@/lib/auth/session";
+import { requireHost, requireUser, requireLegalAgreement } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdultAccount } from "@/lib/participation/data";
 import { idSchema } from "@/lib/host/validation";
@@ -92,8 +92,10 @@ export async function respondToBooking(
   await requireHost();
   const parsed = bookingResponseSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "Choose a valid booking request and response." };
-  if (parsed.data.decision === "accept")
+  if (parsed.data.decision === "accept") {
     await requireAdultAccount(`/bookings/${parsed.data.bookingId}`);
+    await requireLegalAgreement("host", `/bookings/${parsed.data.bookingId}`);
+  }
   try {
     const supabase = await createClient();
     const { error } = await supabase.rpc("respond_booking", {

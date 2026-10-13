@@ -20,7 +20,10 @@ export default async function AccountEligibilityPage({
   const next = destination.startsWith("/account/eligibility") ? "/account/dashboard" : destination;
   await requireUser(`/account/eligibility?next=${encodeURIComponent(next)}`);
   const eligibility = await getAccountEligibility();
-  if (eligibility?.eligible) redirect(next);
+  if (eligibility?.eligible) {
+    const scope = next.startsWith("/host/") ? "host" : "guest";
+    redirect(`/account/agreements?scope=${scope}&next=${encodeURIComponent(next)}`);
+  }
   return (
     <AuthShell
       eyebrow="Your account"

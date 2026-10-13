@@ -28,5 +28,7 @@ export async function confirmAdultAccount(
   }
   revalidatePath("/", "layout");
   const next = safeNext(formData.get("next"));
-  redirect(next.startsWith("/account/eligibility") ? "/account/dashboard" : next);
+  const destination = next.startsWith("/account/eligibility") ? "/account/dashboard" : next;
+  const scope = destination.startsWith("/host/") ? "host" : "guest";
+  redirect(`/account/agreements?scope=${scope}&next=${encodeURIComponent(destination)}`);
 }

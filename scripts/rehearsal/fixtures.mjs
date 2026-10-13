@@ -1,6 +1,6 @@
 import { MARKER, uuid, accountId, sqlString as q } from "./guards.mjs";
 
-// A local rehearsal contract, never a production policy or acceptance of legal terms.
+// A local rehearsal commercial contract, never a production policy or real-user acceptance.
 export const policy = {
   environment: "sandbox",
   enabled: true,
@@ -54,8 +54,11 @@ begin
   -- These two synthetic people explicitly attest only inside this isolated fixture.
   perform set_config('request.jwt.claim.sub',${s.guest},true);
   perform public.attest_adult_account(true,'adult_account_v1');
+  -- Explicit synthetic acceptance; never fabricate consent for hosted real users.
+  perform public.accept_legal_terms('guest','qualia_guest_2026_10_13_v1',null,true,true);
   perform set_config('request.jwt.claim.sub',${s.host},true);
   perform public.attest_adult_account(true,'adult_account_v1');
+  perform public.accept_legal_terms('host','qualia_guest_2026_10_13_v1','qualia_host_2026_10_13_v1',true,true);
   perform public.enable_host_mode();
   perform public.save_host_profile('Local rehearsal host','Synthetic private acceptance fixture.','Miami',null);
   insert into public.listings(id,host_id,title,description,category,price_cents,duration_minutes,city,neighborhood,

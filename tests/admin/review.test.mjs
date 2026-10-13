@@ -5,6 +5,7 @@ import {
   createTestDatabase,
   asRole,
   attestFixtureAdult,
+  acceptFixtureLegal,
   fixtureSafetySubmission,
 } from "../database/helpers.mjs";
 import { miamiDateTime, reviewSchema } from "../../lib/admin/validation.ts";
@@ -34,7 +35,10 @@ before(async () => {
       ],
     );
   }
-  for (const name of ["host", "other", "guest", "admin"]) await attestFixtureAdult(db, ids[name]);
+  for (const name of ["host", "other", "guest", "admin"]) {
+    await attestFixtureAdult(db, ids[name]);
+    await acceptFixtureLegal(db, ids[name], { host: ["host", "other"].includes(name) });
+  }
   for (const name of ["admin", "unverified", "anonymous"]) {
     await db.query(
       "insert into private.admin_memberships(user_id, reason) values ($1, 'Test operator')",

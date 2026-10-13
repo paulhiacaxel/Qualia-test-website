@@ -4,7 +4,7 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { before, after, test } from "node:test";
-import { createTestDatabase, asRole } from "./helpers.mjs";
+import { createTestDatabase, asRole, acceptFixtureLegal } from "./helpers.mjs";
 
 let db;
 const ids = Object.fromEntries(
@@ -49,8 +49,37 @@ const participant = (revision, extra = {}) => ({
   ...extra,
 });
 let counter = 0;
+const legacy = {
+  host: randomUUID(),
+  guest: randomUUID(),
+  listing: randomUUID(),
+  booking: randomUUID(),
+};
 before(async () => {
-  db = await createTestDatabase();
+  db = await createTestDatabase({
+    beforeMigration: async (connection, name) => {
+      if (!name.endsWith("_versioned_launch_legal_acceptance.sql")) return;
+      // Historical state is created before the new legal schema exists. Never
+      // disable a guard or create acceptance for this unattested legacy user.
+      await connection.query(
+        "insert into auth.users(id,email_confirmed_at) values($1,now()),($2,now())",
+        [legacy.host, legacy.guest],
+      );
+      await connection.query("update public.profiles set is_host=true where id=$1", [legacy.host]);
+      await connection.query(
+        "insert into public.host_profiles(user_id,display_name,city) values($1,'Historical synthetic host','Miami')",
+        [legacy.host],
+      );
+      await connection.query(
+        "insert into public.listings(id,host_id,title,category,price_cents,duration_minutes,city) values($1,$2,'Historical synthetic lesson','art',10000,60,'Miami')",
+        [legacy.listing, legacy.host],
+      );
+      await connection.query(
+        "insert into public.bookings(id,listing_id,host_id,guest_id,starts_at,ends_at,status,amount_cents) values($1,$2,$3,$4,'2099-12-01T14:00Z','2099-12-01T15:00Z','confirmed',10000)",
+        [legacy.booking, legacy.listing, legacy.host, legacy.guest],
+      );
+    },
+  });
   for (const [name, id] of Object.entries(ids)) {
     await db.query(
       "insert into auth.users(id,raw_user_meta_data,email_confirmed_at,is_anonymous) values($1,$2,$3,$4)",
@@ -66,8 +95,10 @@ before(async () => {
         name === "anonymous",
       ],
     );
-    if (!["unattested", "unverified", "anonymous"].includes(name))
+    if (!["unattested", "unverified", "anonymous"].includes(name)) {
       await as(name, () => scalar("attest_adult_account", [true, "adult_account_v1"]));
+      await acceptFixtureLegal(db, id, { host: name === "host" });
+    }
   }
   await db.query(
     "insert into private.admin_memberships(user_id,reason) values($1,'Synthetic review operator')",
@@ -89,6 +120,7 @@ async function freshGuest() {
   const id = randomUUID();
   await db.query("insert into auth.users(id,email_confirmed_at) values($1,now())", [id]);
   await as(id, () => scalar("attest_adult_account", [true, "adult_account_v1"]));
+  await acceptFixtureLegal(db, id);
   return id;
 }
 async function state(id) {
@@ -629,15 +661,20 @@ test("checkout fails closed after a rule revision, while confirmed legacy bookin
   );
   // Existing paid records may predate participant attestations. Cancellation and
   // reconciliation must not fabricate missing consent or require new acceptance.
-  const legacy = randomUUID();
-  await db.query(
-    "insert into public.bookings(id,listing_id,host_id,guest_id,starts_at,ends_at,status,amount_cents) values($1,$2,$3,$4,'2099-12-01T14:00Z','2099-12-01T15:00Z','confirmed',10000)",
-    [legacy, f.id, ids.host, ids.unattested],
+  assert.equal(
+    await as(legacy.guest, () => scalar("get_booking_participation", [legacy.booking])),
+    null,
   );
-  assert.equal(await as("unattested", () => scalar("get_booking_participation", [legacy])), null);
+  const agreements = (
+    await db.query(
+      "select guest_legal_acceptance_id,host_legal_acceptance_id from public.bookings where id=$1",
+      [legacy.booking],
+    )
+  ).rows[0];
+  assert.deepEqual(agreements, { guest_legal_acceptance_id: null, host_legal_acceptance_id: null });
   // Confirmed cancellations use the established financial path, not this request RPC.
   assert.equal(
-    (await as("unattested", () => scalar("get_booking_details", [legacy]))).booking.status,
+    (await as(legacy.guest, () => scalar("get_booking_details", [legacy.booking]))).booking.status,
     "confirmed",
   );
 });

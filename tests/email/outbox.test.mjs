@@ -5,6 +5,7 @@ import {
   createTestDatabase,
   asRole,
   attestFixtureAdult,
+  acceptFixtureLegal,
   approveFixtureSafety,
 } from "../database/helpers.mjs";
 let db;
@@ -19,7 +20,10 @@ before(async () => {
     "insert into auth.users(id,email_confirmed_at) values ($1,now()),($2,now()),($3,now())",
     [host, guest, admin],
   );
-  for (const person of [host, guest, admin]) await attestFixtureAdult(db, person);
+  for (const person of [host, guest, admin]) {
+    await attestFixtureAdult(db, person);
+    await acceptFixtureLegal(db, person, { host: person === host });
+  }
   await asRole(db, "authenticated", host, () => db.query("select public.enable_host_mode()"));
   await db.query(
     "insert into private.admin_memberships(user_id,reason) values ($1,'Synthetic email test operator')",

@@ -71,6 +71,21 @@ export async function attestFixtureAdult(db, userId) {
   );
 }
 
+/**
+ * Explicit acceptance by a synthetic fixture identity only. This is separate from
+ * age attestation so tests can deliberately omit either requirement. No hosted
+ * user or production consent record is created by this helper.
+ */
+export async function acceptFixtureLegal(db, userId, { host = false } = {}) {
+  await asRole(db, "authenticated", userId, () =>
+    db.query("select public.accept_legal_terms($1, $2, $3, true, true)", [
+      host ? "host" : "guest",
+      "qualia_guest_2026_10_13_v1",
+      host ? "qualia_host_2026_10_13_v1" : null,
+    ]),
+  );
+}
+
 /** Every legacy fixture describes its synthetic activity instead of bypassing review. */
 export function fixtureSafetySubmission(overrides = {}) {
   return {

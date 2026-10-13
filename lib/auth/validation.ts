@@ -44,9 +44,31 @@ export function safeNext(value: unknown, fallback = "/account/dashboard"): strin
   if (value.startsWith("/account/eligibility?next=")) {
     try {
       const destination = decodeURIComponent(value.slice("/account/eligibility?next=".length));
-      if (destination.startsWith("/account/eligibility")) return fallback;
+      if (
+        destination.startsWith("/account/eligibility") ||
+        destination.startsWith("/account/agreements")
+      )
+        return fallback;
       const next = safeNext(destination, "");
       return next ? `/account/eligibility?next=${encodeURIComponent(next)}` : fallback;
+    } catch {
+      return fallback;
+    }
+  }
+  if (value.startsWith("/account/agreements?")) {
+    const match = value.match(/^\/account\/agreements\?scope=(guest|host)&next=([^&]+)$/);
+    if (!match) return fallback;
+    try {
+      const destination = decodeURIComponent(match[2]);
+      if (
+        destination.startsWith("/account/agreements") ||
+        destination.startsWith("/account/eligibility")
+      )
+        return fallback;
+      const next = safeNext(destination, "");
+      return next
+        ? `/account/agreements?scope=${match[1]}&next=${encodeURIComponent(next)}`
+        : fallback;
     } catch {
       return fallback;
     }
@@ -54,6 +76,7 @@ export function safeNext(value: unknown, fallback = "/account/dashboard"): strin
   const destinations = new Set([
     "/account/dashboard",
     "/account/eligibility",
+    "/account/agreements",
     "/host/start",
     "/host/dashboard",
     "/admin",

@@ -8,6 +8,7 @@ import {
   createTestDatabase,
   asRole,
   attestFixtureAdult,
+  acceptFixtureLegal,
   approveFixtureSafety,
   adultParticipant,
 } from "../database/helpers.mjs";
@@ -39,8 +40,10 @@ before(async () => {
     "insert into private.admin_memberships(user_id, reason) values ($1, 'Test-only operator grant')",
     [user.admin],
   );
-  for (const who of ["host", "host2", "guest", "guest2", "stranger", "admin"])
+  for (const who of ["host", "host2", "guest", "guest2", "stranger", "admin"]) {
     await attestFixtureAdult(db, user[who]);
+    await acceptFixtureLegal(db, user[who], { host: ["host", "host2"].includes(who) });
+  }
   for (const who of ["host", "host2"]) {
     await as(who, async () => {
       await rpc("enable_host_mode");

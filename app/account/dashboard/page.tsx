@@ -1,6 +1,11 @@
 import Link from "next/link";
 import { DashboardShell } from "@/components/dashboard-shell";
-import { requireUser, getProfile, getAccountEligibility } from "@/lib/auth/session";
+import {
+  requireUser,
+  getProfile,
+  getAccountEligibility,
+  getLegalAcceptance,
+} from "@/lib/auth/session";
 import { getMyBookings } from "@/lib/booking/data";
 import { BookingList } from "@/components/booking/booking-list";
 import { effectiveStatus } from "@/lib/booking/validation";
@@ -9,10 +14,11 @@ import "@/components/booking/booking.css";
 export const metadata = { title: "Your account" };
 export default async function AccountPage() {
   const user = await requireUser();
-  const [profile, bookings, eligibility] = await Promise.all([
+  const [profile, bookings, eligibility, agreements] = await Promise.all([
     getProfile(),
     getMyBookings("guest"),
     getAccountEligibility(),
+    getLegalAcceptance(),
   ]);
   const activeBookings = bookings
     .filter(
@@ -35,6 +41,15 @@ export default async function AccountPage() {
           </p>
           <Link className="btn btn-primary" href="/account/eligibility">
             Confirm before booking or hosting
+          </Link>
+        </section>
+      ) : null}
+      {eligibility?.eligible && !agreements.guest_accepted ? (
+        <section className="panel" style={{ marginBottom: 24 }}>
+          <h2>Review your Qualia agreements</h2>
+          <p>Read the terms, cancellation policy and privacy notice before making a new booking.</p>
+          <Link className="btn btn-primary" href="/account/agreements">
+            Review and continue
           </Link>
         </section>
       ) : null}
