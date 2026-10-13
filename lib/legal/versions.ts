@@ -5,7 +5,7 @@
  * confirmations are never treated as acceptance of unseen documents.
  */
 export const GUEST_TERMS_VERSION = "qualia_guest_2026_10_13_v1";
-export const HOST_TERMS_VERSION = "qualia_host_2026_10_13_v1";
+export const HOST_TERMS_VERSION = "qualia_host_2026_10_13_v2";
 export const PRIVACY_VERSION = "qualia_privacy_2026_10_13_v1";
 export const CANCELLATION_POLICY_VERSION = "qualia_cancellation_2026_10_13_v1";
 // The owner approved this release on October 12 in Qualia's Miami time zone.

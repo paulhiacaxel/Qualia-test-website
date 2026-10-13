@@ -1046,7 +1046,7 @@ test("approved launch offer applies 17.5% standard, three free bookings or three
     founder_fee_bps: 1250,
     founder_free_bookings: 3,
     founder_duration_months: 3,
-    founder_cohort_cap: 40,
+    founder_cohort_cap: 30,
     processing_allocation: "host_actual_cost",
     payout_delay_hours: 48,
     referral_credit_cap: 2,

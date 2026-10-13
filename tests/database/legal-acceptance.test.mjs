@@ -6,7 +6,7 @@ import { createTestDatabase, asRole } from "./helpers.mjs";
 
 let db;
 const guestVersion = "qualia_guest_2026_10_13_v1";
-const hostVersion = "qualia_host_2026_10_13_v1";
+const hostVersion = "qualia_host_2026_10_13_v2";
 const ids = Object.fromEntries(
   ["guest", "host", "other", "unattested", "unverified", "anonymous", "oldHost"].map((name) => [
     name,

@@ -1,5 +1,7 @@
 # Approved legal publication and live guest-payment activation
 
+> Historical activation record. The later owner-approved founding cohort is **30 hosts**, with unchanged 3 eligible bookings / 3 calendar months. See [the cap update](release-2026-10-13-founding-30.md) for the new host agreement and versioned commercial policies; original evidence below remains unchanged.
+
 Completed October 12, 2026, Miami time (October 13 UTC). Application source: `4c304aa43366f760032980e63eca385514e7b662`.
 
 | Environment | Deployment | Status |

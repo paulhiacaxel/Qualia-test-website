@@ -8,7 +8,7 @@ export const policy = {
   founder_fee_bps: 1250,
   founder_free_bookings: 3,
   founder_duration_months: 3,
-  founder_cohort_cap: 40,
+  founder_cohort_cap: 30,
   processing_allocation: "host_actual_cost",
   payout_delay_hours: 48,
   restore_refunded_credit: true,
@@ -58,7 +58,7 @@ begin
   perform public.accept_legal_terms('guest','qualia_guest_2026_10_13_v1',null,true,true);
   perform set_config('request.jwt.claim.sub',${s.host},true);
   perform public.attest_adult_account(true,'adult_account_v1');
-  perform public.accept_legal_terms('host','qualia_guest_2026_10_13_v1','qualia_host_2026_10_13_v1',true,true);
+  perform public.accept_legal_terms('host','qualia_guest_2026_10_13_v1','qualia_host_2026_10_13_v2',true,true);
   perform public.enable_host_mode();
   perform public.save_host_profile('Local rehearsal host','Synthetic private acceptance fixture.','Miami',null);
   insert into public.listings(id,host_id,title,description,category,price_cents,duration_minutes,city,neighborhood,

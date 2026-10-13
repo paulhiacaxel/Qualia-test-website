@@ -81,7 +81,7 @@ export async function acceptFixtureLegal(db, userId, { host = false } = {}) {
     db.query("select public.accept_legal_terms($1, $2, $3, true, true)", [
       host ? "host" : "guest",
       "qualia_guest_2026_10_13_v1",
-      host ? "qualia_host_2026_10_13_v1" : null,
+      host ? "qualia_host_2026_10_13_v2" : null,
     ]),
   );
 }

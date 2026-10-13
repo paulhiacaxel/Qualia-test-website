@@ -9,7 +9,7 @@ const proposed = {
   founder_fee_bps: "10",
   founder_free_bookings: "10",
   founder_duration_months: "6",
-  founder_cohort_cap: "40",
+  founder_cohort_cap: "30",
   processing_allocation: "platform_absorbs",
   payout_delay_hours: "48",
   restore_refunded_credit: "no",

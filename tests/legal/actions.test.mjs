@@ -57,6 +57,7 @@ test("missing agreement, notice or stale version never sends acceptance", async 
     { privacyAcknowledged: "" },
     { guestVersion: "old" },
     { scope: "host" },
+    { scope: "host", hostVersion: "qualia_host_2026_10_13_v1" },
     { scope: "admin" },
   ])
     assert.ok((await acceptLegalTerms({}, form(change))).error);
@@ -96,13 +97,13 @@ test("host acceptance uses the reviewed host version and safe navigation", async
         {},
         form({
           scope: "host",
-          hostVersion: "qualia_host_2026_10_13_v1",
+          hostVersion: "qualia_host_2026_10_13_v2",
           next: "https://evil.example",
         }),
       ),
     (e) => e.redirect === "/account/dashboard",
   );
-  assert.equal(control.events.find((e) => e.rpc).args.p_host_version, "qualia_host_2026_10_13_v1");
+  assert.equal(control.events.find((e) => e.rpc).args.p_host_version, "qualia_host_2026_10_13_v2");
 });
 test("an RPC failure never reports acceptance or revalidates", async () => {
   control.error = { code: "42501" };
