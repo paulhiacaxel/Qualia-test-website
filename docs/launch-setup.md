@@ -1,5 +1,7 @@
 # Qualia launch setup and acceptance
 
+> **Current release — October 12 Miami / October 13 UTC:** Approved legal pages and explicit, versioned acceptance are published. Live guest payments, the approved live commercial policy and 24-hour booking/payment windows are enabled on `bookqualia.com`. Application source `4c304aa`; production deployment `dpl_5aoRoxtjXxW5aDtMzJpzYfRt9oqN`. All 238 tests pass. The sole placeholder listing was returned for changes; no experiences are published. See [definitive release record](release-2026-10-13-live-payments.md) and [support procedures](launch-support-procedures.md). This current record supersedes earlier “payments off,” “legal drafts awaiting approval,” and exhaustive provider-test launch-gate statements below. Those sections retain historical setup/evidence context; do not repeat completed operations or switch production back to sandbox. Activity-specific evidence and any necessary guardian documents still require individual review.
+
 ## Current boundary
 
 The code implements the guest, host, review, booking, payment, email, and support workflows. The original static demo is retained as reference but is not served by Next.js. Empty published inventory produces a truthful pre-launch page. Upload only photos the host has authorized; do not use example experiences, fabricated reviews, or third-party portfolios as live inventory.

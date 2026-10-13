@@ -1,5 +1,7 @@
 # Stripe setup and operating guide
 
+> **Current release — October 12 Miami / October 13 UTC:** Approved legal pages and explicit, versioned acceptance are published. Live guest payments, the approved live commercial policy and 24-hour booking/payment windows are enabled on `bookqualia.com`. Application source `4c304aa`; production deployment `dpl_5aoRoxtjXxW5aDtMzJpzYfRt9oqN`. All 238 tests pass. The sole placeholder listing was returned for changes; no experiences are published. See [definitive release record](release-2026-10-13-live-payments.md) and [support procedures](launch-support-procedures.md). This current record supersedes earlier “payments off,” “legal drafts awaiting approval,” and exhaustive provider-test launch-gate statements below. Those sections retain historical setup/evidence context; do not repeat completed operations or switch production back to sandbox. Activity-specific evidence and any necessary guardian documents still require individual review.
+
 Implementation: stripe-node 23.0.0, API `2026-09-30.endive`, Accounts v2 Express recipient accounts, hosted Checkout, separate charges and transfers. Checkout charges Qualia's platform; the database freezes commission and incentive credits. Qualia releases eligible host earnings manually after verified completion and the approved delay. A host transfer is distinct from a Stripe bank payout.
 
 ## Current live configuration — October 12, 2026
