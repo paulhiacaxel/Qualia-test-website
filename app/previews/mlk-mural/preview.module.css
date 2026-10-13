@@ -1,0 +1,1052 @@
+.page {
+  padding-block: 23px 44px;
+}
+.previewNotice {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--inksoft);
+  font-size: 10px;
+  line-height: 1.7;
+}
+.noticeLabel {
+  color: var(--mossdeep);
+  font-weight: 600;
+}
+.previewNotice > a {
+  margin-left: auto;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.hero {
+  padding-top: 51px;
+}
+.heroHeading {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  align-items: end;
+  gap: 60px;
+  margin-bottom: 35px;
+}
+.kicker {
+  margin-bottom: 22px;
+  color: var(--moss);
+}
+.heroHeading h1 {
+  margin: 0;
+  font-size: clamp(43px, 5.4vw, 72px);
+  font-weight: 450;
+  line-height: 1.08;
+  letter-spacing: -0.046em;
+}
+.heroHeading h1 em {
+  color: var(--moss);
+  font-weight: 450;
+}
+.heroIntro {
+  padding-bottom: 5px;
+}
+.hostName {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--moss);
+}
+.heroIntro p {
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 16px 0 20px;
+  color: var(--inksoft);
+}
+.jumpLink {
+  display: inline-flex;
+  gap: 16px;
+  align-items: center;
+  font-size: 10px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 7px;
+}
+.jumpLink span {
+  color: var(--moss);
+  font-size: 19px;
+}
+.heroGallery {
+  display: grid;
+  grid-template-columns: 1.95fr 1fr;
+  gap: 16px;
+  height: 510px;
+}
+.heroGallery figure {
+  margin: 0;
+  overflow: hidden;
+  min-width: 0;
+  background: var(--paperalt);
+}
+.heroGallery img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+.heroPhoto {
+  position: relative;
+  border-radius: 2px;
+}
+.heroPhoto figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 70px 28px 25px;
+  color: white;
+  background: linear-gradient(transparent, rgba(20, 29, 24, 0.72));
+}
+.heroPhoto figcaption span:first-child {
+  font-family: "Fraunces Variable", serif;
+  font-size: 29px;
+}
+.heroPhoto figcaption span:last-child {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+  margin-bottom: 5px;
+}
+.heroSide {
+  display: grid;
+  grid-template-rows: 177px minmax(0, 1fr);
+  gap: 16px;
+}
+.colorNote {
+  position: relative;
+  overflow: hidden;
+  padding: 24px 27px;
+  background: #e7e7d7;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+}
+.colorNote p {
+  position: relative;
+  font-family: "Fraunces Variable", serif;
+  color: var(--mossdeep);
+  font-size: 24px;
+  line-height: 1.16;
+  margin: 0 0 14px;
+}
+.colorNote > span:last-child {
+  position: relative;
+  color: var(--mossdeep);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 8px;
+  line-height: 1.5;
+}
+.swatches {
+  display: flex;
+  position: absolute;
+  top: -22px;
+  right: -14px;
+  opacity: 0.72;
+  transform: rotate(-13deg);
+}
+.swatches i {
+  display: block;
+  width: 63px;
+  height: 68px;
+  border-radius: 50%;
+  margin-left: -24px;
+  background: #c9a453;
+}
+.swatches i:nth-child(2) {
+  background: #c47857;
+}
+.swatches i:nth-child(3) {
+  background: #768860;
+}
+.processPhoto {
+  position: relative;
+  border-radius: 2px;
+}
+.processPhoto img {
+  object-position: center;
+}
+.processPhoto figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 45px 18px 16px;
+  font-size: 9px;
+  color: #fff;
+  background: linear-gradient(transparent, rgba(20, 29, 24, 0.65));
+}
+.galleryCredit {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  padding-top: 12px;
+  font-size: 9px;
+  line-height: 1.7;
+  color: var(--inksoft);
+}
+.galleryCredit a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  flex-shrink: 0;
+}
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 31px 0 0;
+  padding: 24px 0 27px;
+  border-block: 1px solid var(--line);
+}
+.facts > div {
+  padding-inline: 28px;
+  border-left: 1px solid var(--line);
+}
+.facts > div:first-child {
+  padding-left: 0;
+  border: 0;
+}
+.facts dt {
+  font-family: "IBM Plex Mono", monospace;
+  color: var(--inksoft);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  margin-bottom: 10px;
+}
+.facts dt span {
+  color: #8b6a28;
+  margin-right: 10px;
+}
+.facts dd {
+  font-family: "Fraunces Variable", serif;
+  font-size: 25px;
+  margin: 0;
+  line-height: 1.2;
+}
+.experienceContent {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 88px;
+  padding-block: 72px 78px;
+  scroll-margin-top: 95px;
+}
+.story h2 {
+  font-size: 39px;
+  line-height: 1.16;
+  letter-spacing: -0.035em;
+  margin: 18px 0 24px;
+}
+.story h2 em {
+  color: var(--moss);
+}
+.story p {
+  color: var(--inksoft);
+  font-size: 14px;
+  line-height: 1.85;
+  margin-bottom: 18px;
+}
+.story .lead {
+  color: var(--ink);
+  font-size: 19px;
+  line-height: 1.6;
+}
+.sessionPlan {
+  margin-top: 41px;
+  padding-top: 33px;
+  border-top: 1px solid var(--line);
+}
+.sessionPlan h2 {
+  font-size: 31px;
+  margin-bottom: 30px;
+}
+.sessionPlan ol {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.sessionPlan li {
+  display: flex;
+  gap: 21px;
+  margin-bottom: 25px;
+}
+.sessionPlan li:last-child {
+  margin-bottom: 0;
+}
+.stepNumber {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  color: #8b6a28;
+  padding-top: 5px;
+}
+.sessionPlan h3 {
+  font-size: 22px;
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+.sessionPlan p {
+  font-size: 13px;
+  margin-bottom: 0;
+}
+.sessionCard {
+  align-self: start;
+  position: sticky;
+  top: 108px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 3px solid #b99e62;
+  padding: 27px;
+  box-shadow: 0 16px 50px -30px rgba(55, 80, 59, 0.23);
+}
+.cardEyebrow {
+  color: var(--moss);
+  font-size: 9px;
+}
+.sessionCard h2 {
+  font-size: 32px;
+  line-height: 1.14;
+  margin: 20px 0 27px;
+}
+.sessionCard h2 em {
+  color: var(--moss);
+}
+.price {
+  font-family: "Fraunces Variable", serif;
+  font-size: 31px;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+}
+.priceNote {
+  margin: 9px 0 23px;
+  font-size: 11px;
+  color: var(--inksoft);
+}
+.sessionDetails {
+  padding-block: 14px;
+  border-block: 1px solid var(--line);
+  margin: 0 0 17px;
+}
+.sessionDetails > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-size: 11px;
+  padding: 7px 0;
+}
+.sessionDetails dt {
+  color: var(--inksoft);
+}
+.sessionDetails dd {
+  margin: 0;
+  text-align: right;
+}
+.referenceNote {
+  font-size: 10px;
+  line-height: 1.75;
+  color: var(--inksoft);
+  margin-bottom: 20px;
+}
+.unavailable {
+  background: #e6eadd;
+  border: 1px solid #d8dfcd;
+  color: var(--mossdeep);
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 14px 9px;
+  border-radius: 4px;
+}
+.editLink {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--moss);
+  margin: 20px 0 12px;
+}
+.cardFootnote {
+  font-size: 9px;
+  line-height: 1.7;
+  text-align: center;
+  color: var(--inksoft);
+  margin: 0;
+}
+.mission {
+  background: var(--mossdeep);
+  color: var(--paper);
+  padding-block: 67px;
+}
+.missionInner {
+  display: grid;
+  grid-template-columns: 1fr 1.13fr;
+  gap: 100px;
+  align-items: center;
+}
+.missionHeading > span {
+  color: #d6dcca;
+  font-size: 10px;
+}
+.missionHeading h2 {
+  font-size: 88px;
+  line-height: 0.99;
+  letter-spacing: -0.045em;
+  margin: 26px 0 30px;
+}
+.missionHeading h2 em {
+  color: #d1c08b;
+}
+.missionRule {
+  width: 82px;
+  height: 3px;
+  background: #b99e62;
+  margin-bottom: 22px;
+}
+.missionHeading p {
+  color: #d6dcca;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+.artistIdentity {
+  display: flex;
+  gap: 19px;
+  align-items: center;
+  margin-bottom: 29px;
+}
+.artistIdentity img {
+  display: block;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.artistIdentity h3 {
+  margin: 0 0 6px;
+  font-size: 25px;
+}
+.artistIdentity p {
+  font-size: 10px !important;
+  margin: 0;
+}
+.artistStory .artistLead {
+  color: var(--paper);
+  font-family: "Fraunces Variable", serif;
+  font-size: 30px;
+  line-height: 1.28;
+  margin-bottom: 20px;
+}
+.artistStory p {
+  color: #d6dcca;
+  font-size: 13px;
+  line-height: 1.85;
+}
+.artistStory > a {
+  display: inline-flex;
+  gap: 20px;
+  color: var(--paper);
+  font-size: 11px;
+  border-bottom: 1px solid #76896b;
+  padding-bottom: 9px;
+  margin-top: 10px;
+}
+.artistStory > a:hover {
+  color: #e2ce93;
+}
+.portfolio {
+  padding-block: 65px 62px;
+}
+.portfolio header {
+  display: flex;
+  justify-content: space-between;
+  gap: 35px;
+  align-items: end;
+  margin-bottom: 29px;
+}
+.portfolio h2 {
+  font-size: 48px;
+  line-height: 1.09;
+  letter-spacing: -0.035em;
+  margin: 18px 0 0;
+}
+.portfolio h2 em {
+  color: var(--moss);
+}
+.portfolio header > p {
+  color: var(--inksoft);
+  font-size: 12px;
+  line-height: 1.7;
+  text-align: right;
+  margin-bottom: 4px;
+}
+.portfolioGrid {
+  display: grid;
+  grid-template-columns: 1.65fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+.portfolioGrid figure {
+  min-width: 0;
+  margin: 0;
+}
+.portfolioGrid img {
+  display: block;
+  width: 100%;
+  object-fit: cover;
+  background: var(--paperalt);
+}
+.portfolioWide img {
+  aspect-ratio: 4 / 3;
+  height: auto;
+}
+.portfolioDetail {
+  padding-top: 64px;
+}
+.portfolioDetail img {
+  aspect-ratio: 4 / 5;
+  height: auto;
+}
+.portfolioGrid figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 13px;
+  color: var(--inksoft);
+  font-size: 9px;
+  line-height: 1.5;
+}
+.portfolioGrid figcaption span:first-child {
+  font-family: "IBM Plex Mono", monospace;
+  color: #8b6a28;
+}
+.portfolioGrid figcaption span:last-child {
+  text-align: right;
+}
+.portfolioNote {
+  font-size: 10px;
+  color: var(--inksoft);
+  line-height: 1.75;
+  margin: 25px 0 0;
+}
+.nextIdea {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 85px;
+  position: relative;
+  padding-block: 47px;
+}
+.nextIdea::before,
+.nextIdea::after {
+  content: "";
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  border-top: 1px solid var(--line);
+}
+.nextIdea::before {
+  top: 0;
+}
+.nextIdea::after {
+  bottom: 0;
+}
+.nextIdea h2 {
+  font-size: 39px;
+  line-height: 1.13;
+  letter-spacing: -0.025em;
+  margin: 19px 0 0;
+}
+.nextIdea h2 em {
+  color: var(--moss);
+}
+.nextIdea p {
+  font-size: 13px;
+  color: var(--inksoft);
+  line-height: 1.8;
+}
+.nextIdea .ideaNote {
+  font-size: 11px;
+}
+.ideaLink {
+  display: inline-flex;
+  gap: 18px;
+  color: var(--moss);
+  font-size: 12px;
+  margin-top: 7px;
+}
+.reviewNote {
+  padding-top: 28px;
+  scroll-margin-top: 105px;
+  color: var(--inksoft);
+}
+.reviewNote summary {
+  font-size: 11px;
+  line-height: 1.7;
+  cursor: pointer;
+  width: fit-content;
+}
+.reviewNote summary:focus-visible {
+  outline: 2px solid var(--moss);
+  outline-offset: 4px;
+}
+.reviewDetails {
+  max-width: 800px;
+  margin-top: 20px;
+  padding: 22px;
+  background: var(--paperalt);
+}
+.reviewDetails p {
+  font-size: 11px;
+  line-height: 1.85;
+  margin-bottom: 14px;
+}
+.reviewDetails p:last-child {
+  margin-bottom: 0;
+}
+.reviewDetails a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.closingNote {
+  margin-top: 18px;
+  font-size: 9px;
+  line-height: 1.7;
+}
+@media (max-width: 1050px) {
+  .heroHeading {
+    gap: 30px;
+    grid-template-columns: 1fr 245px;
+  }
+  .heroGallery {
+    height: 450px;
+  }
+  .heroSide {
+    grid-template-rows: 165px minmax(0, 1fr);
+  }
+  .colorNote {
+    padding: 22px;
+  }
+  .colorNote p {
+    font-size: 22px;
+  }
+  .experienceContent {
+    gap: 45px;
+    grid-template-columns: minmax(0, 1fr) 315px;
+  }
+  .sessionCard {
+    padding: 24px;
+  }
+  .missionInner {
+    gap: 60px;
+  }
+  .missionHeading h2 {
+    font-size: 76px;
+  }
+}
+@media (max-width: 800px) {
+  .previewNotice {
+    flex-wrap: wrap;
+    gap: 5px 16px;
+  }
+  .previewNotice > a {
+    display: none;
+  }
+  .hero {
+    padding-top: 38px;
+  }
+  .heroHeading {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .heroHeading h1 {
+    font-size: 63px;
+  }
+  .heroIntro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+    align-items: end;
+  }
+  .heroIntro p {
+    grid-column: 1;
+    margin: 10px 0 0;
+    font-size: 14px;
+  }
+  .heroIntro p br {
+    display: none;
+  }
+  .heroIntro p br::after {
+    content: " ";
+  }
+  .jumpLink {
+    grid-column: 2;
+    grid-row: 2;
+    justify-self: end;
+  }
+  .heroGallery {
+    height: 400px;
+    gap: 12px;
+    grid-template-columns: 1.6fr 1fr;
+  }
+  .heroSide {
+    gap: 12px;
+    grid-template-rows: 155px minmax(0, 1fr);
+  }
+  .heroPhoto figcaption {
+    padding: 65px 20px 20px;
+  }
+  .heroPhoto figcaption span:first-child {
+    font-size: 25px;
+  }
+  .colorNote {
+    padding: 19px;
+  }
+  .colorNote p {
+    font-size: 21px;
+  }
+  .colorNote > span:last-child {
+    font-size: 7px;
+  }
+  .facts > div {
+    padding-inline: 16px;
+  }
+  .facts dd {
+    font-size: 22px;
+  }
+  .facts dt {
+    font-size: 8px;
+  }
+  .facts dt span {
+    margin-right: 5px;
+  }
+  .experienceContent {
+    gap: 33px;
+    grid-template-columns: minmax(0, 1fr) 275px;
+    padding-block: 51px;
+  }
+  .story h2 {
+    font-size: 33px;
+  }
+  .story .lead {
+    font-size: 17px;
+  }
+  .story p {
+    font-size: 13px;
+  }
+  .sessionCard {
+    padding: 20px;
+  }
+  .sessionCard h2 {
+    font-size: 29px;
+  }
+  .sessionPlan h2 {
+    font-size: 28px;
+  }
+  .sessionPlan li {
+    gap: 14px;
+  }
+  .sessionPlan h3 {
+    font-size: 20px;
+  }
+  .sessionPlan p {
+    font-size: 12px;
+  }
+  .mission {
+    padding-block: 50px;
+  }
+  .missionInner {
+    gap: 40px;
+  }
+  .missionHeading h2 {
+    font-size: 65px;
+  }
+  .artistStory .artistLead {
+    font-size: 26px;
+  }
+  .artistIdentity {
+    gap: 13px;
+  }
+  .artistIdentity img {
+    width: 65px;
+    height: 65px;
+  }
+  .artistIdentity h3 {
+    font-size: 23px;
+  }
+  .portfolio h2 {
+    font-size: 41px;
+  }
+  .nextIdea {
+    gap: 35px;
+  }
+  .nextIdea h2 {
+    font-size: 34px;
+  }
+  .nextIdea::before,
+  .nextIdea::after {
+    left: 24px;
+    right: 24px;
+  }
+}
+@media (max-width: 650px) {
+  .page {
+    padding-top: 17px;
+    padding-bottom: 36px;
+  }
+  .previewNotice {
+    font-size: 9px;
+    gap: 4px;
+  }
+  .noticeLabel {
+    width: 100%;
+  }
+  .hero {
+    padding-top: 29px;
+  }
+  .heroHeading {
+    gap: 21px;
+    margin-bottom: 26px;
+  }
+  .heroHeading h1 {
+    font-size: clamp(39px, 10.1vw, 60px);
+    line-height: 1.1;
+  }
+  .kicker {
+    font-size: 9px;
+    margin-bottom: 17px;
+  }
+  .heroIntro {
+    grid-template-columns: 1fr;
+  }
+  .hostName {
+    font-size: 10px;
+  }
+  .heroIntro p {
+    margin: 11px 0 14px;
+    font-size: 14px;
+  }
+  .jumpLink {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+    font-size: 10px;
+  }
+  .heroGallery {
+    height: auto;
+    grid-template-columns: 1fr;
+    gap: 11px;
+  }
+  .heroPhoto {
+    aspect-ratio: 4 / 3;
+  }
+  .heroPhoto figcaption {
+    padding: 55px 17px 17px;
+    gap: 7px;
+  }
+  .heroPhoto figcaption span:first-child {
+    font-size: 23px;
+  }
+  .heroPhoto figcaption span:last-child {
+    font-size: 7px;
+    margin-bottom: 2px;
+  }
+  .heroSide {
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 1fr;
+    gap: 11px;
+    min-height: 210px;
+  }
+  .colorNote {
+    padding: 20px 15px;
+  }
+  .colorNote p {
+    font-size: 24px;
+    margin-bottom: 13px;
+  }
+  .colorNote > span:last-child {
+    font-size: 7px;
+  }
+  .processPhoto {
+    min-height: 210px;
+  }
+  .processPhoto figcaption {
+    padding: 42px 12px 13px;
+    font-size: 7px;
+  }
+  .galleryCredit {
+    font-size: 8px;
+    gap: 13px;
+  }
+  .galleryCredit > span {
+    max-width: 25ch;
+  }
+  .facts {
+    margin-top: 23px;
+    padding-block: 20px;
+    gap: 14px;
+  }
+  .facts > div {
+    padding-inline: 0;
+    border: 0;
+  }
+  .facts dt {
+    font-size: 7px;
+    line-height: 1.6;
+    margin-bottom: 7px;
+  }
+  .facts dt span {
+    display: none;
+  }
+  .facts dd {
+    font-size: 20px;
+    line-height: 1.2;
+  }
+  .experienceContent {
+    grid-template-columns: 1fr;
+    gap: 34px;
+    padding-block: 41px;
+  }
+  .story h2 {
+    font-size: 34px;
+  }
+  .story p {
+    font-size: 14px;
+  }
+  .story .lead {
+    font-size: 18px;
+  }
+  .sessionPlan {
+    margin-top: 33px;
+    padding-top: 28px;
+  }
+  .sessionPlan > span {
+    font-size: 9px;
+  }
+  .sessionPlan h2 {
+    font-size: 29px;
+  }
+  .sessionPlan h3 {
+    font-size: 23px;
+  }
+  .sessionPlan p {
+    font-size: 13px;
+  }
+  .sessionPlan li {
+    gap: 17px;
+  }
+  .sessionCard {
+    position: static;
+    padding: 27px;
+  }
+  .sessionCard h2 {
+    font-size: 36px;
+    margin-bottom: 24px;
+  }
+  .sessionDetails > div {
+    font-size: 12px;
+  }
+  .referenceNote {
+    font-size: 11px;
+  }
+  .cardFootnote {
+    font-size: 10px;
+  }
+  .mission {
+    padding-block: 41px 44px;
+  }
+  .missionInner {
+    grid-template-columns: 1fr;
+    gap: 27px;
+  }
+  .missionHeading h2 {
+    font-size: 75px;
+    margin-block: 22px 25px;
+  }
+  .missionHeading h2 br {
+    display: none;
+  }
+  .missionHeading h2 em {
+    display: block;
+  }
+  .missionRule {
+    margin-bottom: 17px;
+  }
+  .missionHeading p {
+    font-size: 9px;
+  }
+  .artistIdentity {
+    margin-bottom: 25px;
+    gap: 19px;
+  }
+  .artistIdentity img {
+    width: 76px;
+    height: 76px;
+  }
+  .artistIdentity h3 {
+    font-size: 25px;
+  }
+  .artistStory .artistLead {
+    font-size: 29px;
+  }
+  .artistStory p {
+    font-size: 14px;
+  }
+  .portfolio {
+    padding-block: 42px 37px;
+  }
+  .portfolio header {
+    display: block;
+    margin-bottom: 25px;
+  }
+  .portfolio h2 {
+    font-size: 41px;
+  }
+  .portfolio header > p {
+    text-align: left;
+    font-size: 11px;
+    margin-top: 18px;
+  }
+  .portfolio header > p br {
+    display: none;
+  }
+  .portfolioGrid {
+    grid-template-columns: 1fr;
+    gap: 23px;
+  }
+  .portfolioDetail {
+    padding-top: 0;
+    width: 78%;
+    justify-self: end;
+  }
+  .portfolioGrid figcaption {
+    font-size: 8px;
+    padding-top: 10px;
+  }
+  .portfolioNote {
+    font-size: 9px;
+    margin-top: 22px;
+  }
+  .nextIdea {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding-block: 34px;
+  }
+  .nextIdea h2 {
+    font-size: 36px;
+    margin-top: 16px;
+  }
+  .nextIdea p {
+    font-size: 14px;
+  }
+  .nextIdea .ideaNote {
+    font-size: 12px;
+  }
+  .reviewNote {
+    padding-top: 23px;
+  }
+  .reviewNote summary {
+    font-size: 10px;
+  }
+  .reviewDetails {
+    padding: 17px;
+  }
+}
