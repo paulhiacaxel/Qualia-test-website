@@ -28,7 +28,7 @@ Profile master: `public/brand_assets/qualia-avatar-1024.png`. Editable source: `
 
 ## Deliverables
 
-Editable masters are under `public/brand_assets/social/`. Fonts are embedded for an offline SVG preview. The source text remains editable. Full font licenses are included in each SVG’s metadata and `public/brand_assets/social/FONT-LICENSES.txt`. Delivered artwork is SVG. Temporary PNGs rendered locally with Inkscape were used for visual inspection only; platform-specific image export remains part of the upload step. No synthetic photography is used.
+Editable masters are under `public/brand_assets/social/`. Fonts are embedded for an offline SVG preview. The source text remains editable. Full font licenses are included in each SVG’s metadata and `public/brand_assets/social/FONT-LICENSES.txt`. Each artwork is delivered as an editable SVG and a full-canvas PNG export, rendered directly from that SVG using Inkscape with the matching Fraunces, Inter and IBM Plex Mono fonts installed locally. PNG dimensions match the canvases below; no cropping, synthetic photography or image editing was added. Platform upload constraints and actual mobile/desktop crops still need verification at setup.
 
 | File stem               | Canvas      | Purpose                                                          |
 | ----------------------- | ----------- | ---------------------------------------------------------------- |
@@ -36,10 +36,10 @@ Editable masters are under `public/brand_assets/social/`. Fonts are embedded for
 | `02-founding-hosts`     | 1080 × 1350 | Invite the first 30 hosts and explain the initial incentive      |
 | `03-how-qualia-works`   | 1080 × 1350 | Explain request, host acceptance and payment order               |
 | `story-host-invitation` | 1080 × 1920 | A vertical companion with space for a real platform link sticker |
-| `linkedin-cover-draft`  | 1584 × 396  | Landscape brand cover                                            |
+| `linkedin-cover-draft`  | 1512 × 256  | Landscape brand cover                                            |
 | `facebook-cover-draft`  | 1640 × 720  | Landscape brand cover                                            |
 
-These are working canvases. Current upload requirements and actual mobile/desktop crops still need verification inside each platform. Preserve important words within the visible crop and check the avatar overlay. Do not label a cover upload-ready until it survives those checks.
+The LinkedIn Company Page cover follows LinkedIn’s currently documented **1512 × 256** size and PNG/JPEG format requirement (maximum 3 MB), checked October 12, 2026. [Official LinkedIn Page image specifications](https://www.linkedin.com/help/linkedin/answer/a563309/image-specifications-for-your-linkedin-pages-and-career-pages?lang=en). The remaining canvases are working layouts whose current upload requirements still need checking. Actual mobile/desktop crops must be verified inside every platform. Preserve important words within the visible crop and check the avatar overlay. Do not label a cover upload-ready until it survives those checks.
 
 The review HTML is self-contained and works without downloading fonts or images. Its profile cards are design previews, with no invented follower counts or account-created claims. Proposed `@bookqualia` handles remain unverified.
 

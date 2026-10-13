@@ -1,8 +1,8 @@
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  width="1584"
-  height="396"
-  viewBox="0 0 1584 396"
+  width="1512"
+  height="256"
+  viewBox="0 0 1512 256"
   role="img"
   aria-labelledby="title desc"
 >
@@ -199,8 +199,8 @@
       }
     </style>
   </defs>
-  <rect width="1584" height="396" fill="#37503B" />
-  <svg x="60" y="75" width="300" height="106.76835081029553" viewBox="-6 -6 314.7 112">
+  <rect width="1512" height="256" fill="#37503B" />
+  <svg x="65" y="70" width="278" height="98.939" viewBox="-6 -6 314.7 112">
     <circle
       cx="50.0"
       cy="50.0"
@@ -290,13 +290,13 @@
       />
     </g>
   </svg>
-  <text x="471" y="135" fill="#FAF6EE" font-family="Fraunces" font-weight="500" font-size="54">
-    <tspan x="471" dy="0">One person. A whole new world.</tspan>
+  <text x="438" y="111" fill="#FAF6EE" font-family="Fraunces" font-weight="500" font-size="48">
+    <tspan x="438" dy="0">One person. A whole new world.</tspan>
   </text>
-  <text x="475" y="204" fill="#FAF6EE" font-family="IBM Plex Mono" font-weight="500" font-size="22">
-    <tspan x="475" dy="0">PERSONAL EXPERIENCES / MIAMI + MIAMI BEACH</tspan>
+  <text x="440" y="163" fill="#FAF6EE" font-family="IBM Plex Mono" font-weight="500" font-size="17">
+    <tspan x="440" dy="0">PERSONAL EXPERIENCES / MIAMI + MIAMI BEACH</tspan>
   </text>
-  <svg x="1402" y="-48" width="300" height="300" viewBox="-6 -6 112 112">
+  <svg x="1357" y="-55" width="290" height="290" viewBox="-6 -6 112 112">
     <circle
       cx="50.0"
       cy="50.0"
@@ -380,5 +380,5 @@
       stroke-linecap="round"
     />
   </svg>
-  <path d="M474 233H1190" stroke="#C7962C" stroke-width="3" />
+  <path d="M440 188H1092" stroke="#C7962C" stroke-width="3" />
 </svg>
