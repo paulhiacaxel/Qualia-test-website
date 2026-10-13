@@ -9,6 +9,7 @@ import {
 import type { BookingSummary } from "@/lib/booking/types";
 import type { AvailabilityWindow, Listing } from "@/lib/host/types";
 import type { HostCalendarBlock } from "@/lib/host/calendar-types";
+import { bookingModeLabel, bookingPartyLabel } from "@/lib/booking/presentation";
 
 type CalendarEvent = {
   id: string;
@@ -52,12 +53,13 @@ export function HostMonthCalendar({
       id: `booking-${booking.id}`,
       kind: effectiveStatus(booking) === "confirmed" ? "confirmed" : "held",
       label: `${booking.guest_name} · ${booking.listing_title}`,
-      detail:
+      detail: `${bookingModeLabel(booking.booking_mode)} · ${bookingPartyLabel(booking.party_size)} · ${
         effectiveStatus(booking) === "confirmed"
           ? "Confirmed booking"
           : effectiveStatus(booking) === "requested"
             ? "Request · waiting for you"
-            : "Time held · awaiting payment",
+            : "Held · awaiting payment"
+      }`,
       href: `/bookings/${booking.id}`,
     })),
     ...blocks.map((block): CalendarEvent => ({
@@ -198,8 +200,8 @@ export function HostMonthCalendar({
         })}
       </div>
       <p className="field-hint">
-        Hosting hours are the windows you saved. Blocks, requests and bookings take priority, and
-        unpublished experiences are not bookable.
+        Hosting hours are the windows you saved. Private bookings hold the whole session; shared
+        bookings hold their guest places. Unpublished experiences are not bookable.
       </p>
       <div id="day-agenda" className="host-day-agenda" tabIndex={-1}>
         <div className="calendar-section-heading">

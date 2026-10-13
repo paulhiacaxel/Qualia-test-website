@@ -17,6 +17,10 @@ export type ReviewListing = {
   description: string;
   category: string;
   price_cents: number;
+  booking_format: "private" | "shared" | "both";
+  max_guests: number;
+  private_price_basis: "group" | "per_guest";
+  shared_price_cents: number | null;
   duration_minutes: number;
   city: string;
   neighborhood: string;

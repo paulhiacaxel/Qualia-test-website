@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { Temporal } from "@js-temporal/polyfill";
 import type { Booking, BookingStatus } from "./types";
-import { participantSchema } from "../participation/validation.ts";
+import { groupParticipantSchema, participantSchema } from "../participation/validation.ts";
 
 const MIAMI_TIME_ZONE = "America/New_York";
 
@@ -30,6 +30,81 @@ export function bookingRequestInput(formData: FormData) {
       rules_revision: integer(formData.get("rulesRevision")),
     },
   };
+}
+
+/** Group requests carry ages and acknowledgments, never names or birth dates. */
+export const groupBookingRequestSchema = z
+  .object({
+    listingId: z.uuid("Choose an experience."),
+    startsAt: z.iso.datetime({ offset: true, message: "Choose an available time." }),
+    guestMessage: z.string().trim().max(3000),
+    bookingMode: z.enum(["private", "shared"]),
+    partySize: z.number().int().min(1).max(50),
+    participants: groupParticipantSchema,
+  })
+  .superRefine((value, context) => {
+    if (value.participants.members.length !== value.partySize) {
+      context.addIssue({
+        code: "custom",
+        path: ["participants"],
+        message: "Add an age for every guest in your party.",
+      });
+    }
+  });
+
+export function groupBookingRequestInput(formData: FormData) {
+  const integer = (value: FormDataEntryValue | null) =>
+    typeof value === "string" && /^\d+$/.test(value) ? Number(value) : Number.NaN;
+  const partySize = integer(formData.get("partySize"));
+  // Bound form parsing before allocation; the schema rejects an invalid count.
+  const count = Number.isInteger(partySize) && partySize >= 1 && partySize <= 50 ? partySize : 0;
+  return {
+    listingId: formData.get("listingId"),
+    startsAt: formData.get("startsAt"),
+    guestMessage: formData.get("guestMessage") ?? "",
+    bookingMode: formData.get("bookingMode"),
+    partySize,
+    participants: {
+      members: Array.from({ length: count }, (_, index) => {
+        const age = integer(formData.get(`participantAge${index}`));
+        return {
+          kind:
+            formData.get(`participantGuardian${index}`) === "on"
+              ? "guardian"
+              : age < 18
+                ? "minor"
+                : "adult",
+          age_at_experience: age,
+        };
+      }),
+      adult_booker_confirmed: formData.get("adultBookerConfirmed") === "on",
+      rules_accepted: formData.get("participationRulesAccepted") === "on",
+      guardian_authority_confirmed: formData.get("guardianAuthorityConfirmed") === "on",
+      guardian_presence_accepted: formData.get("guardianPresenceAccepted") === "on",
+      group_authority_confirmed: formData.get("groupAuthorityConfirmed") === "on",
+      rules_revision: integer(formData.get("rulesRevision")),
+    },
+  };
+}
+
+/** Invalid URL filters use a safe default; they never become raw database filters. */
+export function parseGuestCount(value?: string): number | undefined {
+  if (!value || !/^\d+$/.test(value)) return undefined;
+  const count = Number(value);
+  return Number.isInteger(count) && count >= 1 && count <= 50 ? count : undefined;
+}
+
+export function bookingSelection(
+  listing: { booking_format: "private" | "shared" | "both"; max_guests: number },
+  mode?: string,
+  guests?: string,
+) {
+  const bookingMode =
+    listing.booking_format === "shared" || (listing.booking_format === "both" && mode === "shared")
+      ? ("shared" as const)
+      : ("private" as const);
+  const partySize = Math.min(parseGuestCount(guests) ?? 1, listing.max_guests);
+  return { bookingMode, partySize };
 }
 
 export const bookingMessageSchema = z.object({

@@ -82,7 +82,7 @@ export default async function HostCalendarPage({
           <strong>
             {otherActive.filter((booking) => effectiveStatus(booking) === "confirmed").length}
           </strong>
-          <span>upcoming confirmed experiences</span>
+          <span>upcoming confirmed bookings</span>
         </div>
         <div>
           <strong>
@@ -105,9 +105,10 @@ export default async function HostCalendarPage({
         listings={listings}
       />
       <p className="booking-helper">
-        Pending requests hold time temporarily across your Qualia experiences. A booking is
-        confirmed after payment. Open a booking to respond, message your guest or review
-        cancellation options.
+        Requests temporarily hold the whole session for private bookings, or the requested places
+        for shared bookings. Experiences using the same assigned boat, captain or instructor cannot
+        overlap. A booking is confirmed after payment. Open a booking to respond, message the
+        booking guest or review cancellation options.
       </p>
       {requests.length ? (
         <section className="booking-history">

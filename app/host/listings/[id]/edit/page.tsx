@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ListingForm } from "@/components/host/listing-form";
+import { ListingForm, HostResourceForm } from "@/components/host/listing-form";
 import { LocationForm } from "@/components/host/location-form";
 import { PhotoManager } from "@/components/host/photo-manager";
 import { AvailabilityManager } from "@/components/host/availability-manager";
@@ -7,7 +7,13 @@ import { HostNav } from "@/components/host/host-nav";
 import { ActionForm } from "@/components/host/action-form";
 import { RequiredMark } from "@/components/host/required-field";
 import { deleteListing, submitListing } from "@/app/host/actions";
-import { canEditListing, getHostProfile, getListingDetails } from "@/lib/host/data";
+import {
+  canEditListing,
+  getHostProfile,
+  getHostResources,
+  getListingDetails,
+} from "@/lib/host/data";
+import { MAX_LISTING_GUESTS } from "@/lib/host/validation";
 import { createClient } from "@/lib/supabase/server";
 import { HostSafetyForm } from "@/components/participation/host-safety-form";
 import { getListingSafetySubmission } from "@/lib/participation/data";
@@ -18,11 +24,13 @@ export const metadata = { title: "Your experience" };
 
 export default async function EditListingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [{ listing, location, photos, availability }, profile, safety] = await Promise.all([
-    getListingDetails(id),
-    getHostProfile(),
-    getListingSafetySubmission(id),
-  ]);
+  const [{ listing, location, photos, availability, resourceIds }, profile, safety, resources] =
+    await Promise.all([
+      getListingDetails(id),
+      getHostProfile(),
+      getListingSafetySubmission(id),
+      getHostResources(),
+    ]);
   const editable = canEditListing(listing);
   if (editable) await requireAdultAccount("/host/dashboard");
   const supabase = await createClient();
@@ -43,6 +51,17 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
       ),
       href: "#details",
       help: "Save a description and the broad meeting area.",
+    },
+    {
+      label: "Guest capacity and prices",
+      complete: Boolean(
+        listing.max_guests >= 1 &&
+        listing.max_guests <= MAX_LISTING_GUESTS &&
+        listing.price_cents > 0 &&
+        (listing.booking_format === "private" || (listing.shared_price_cents ?? 0) > 0),
+      ),
+      href: "#details",
+      help: "Save a booking format, maximum guest count, and the prices for every option you offer.",
     },
     {
       label: "Private meeting details",
@@ -109,7 +128,20 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
         <div className="host-main">
           <section id="details" className="panel">
             <h2>01 / The experience</h2>
-            <ListingForm listing={listing} disabled={!editable} />
+            <ListingForm
+              listing={listing}
+              resources={resources}
+              selectedResourceIds={resourceIds}
+              disabled={!editable}
+            />
+            {editable ? (
+              <details style={{ marginTop: 28 }}>
+                <summary>Add a boat, person, space or equipment</summary>
+                <div style={{ marginTop: 20 }}>
+                  <HostResourceForm listingId={id} />
+                </div>
+              </details>
+            ) : null}
           </section>
           <section id="meeting" className="panel">
             <h2>02 / Where you&apos;ll meet</h2>
@@ -128,6 +160,12 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
             <p>
               Choose the times guests may request for this experience. If you change the duration in
               section 01, save those details before adding times here.
+            </p>
+            <p className="field-hint">
+              {listing.booking_format === "private"
+                ? "A private reservation holds the full session for that guest’s party."
+                : "Shared reservations use the same session start and end times, with seats held up to your guest limit. A private reservation, where offered, holds the full session."}{" "}
+              Any linked people or equipment are also reserved across your other listings.
             </p>
             <AvailabilityManager
               listingId={id}

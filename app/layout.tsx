@@ -10,8 +10,9 @@ import Link from "next/link";
 import { getContactEmail } from "@/lib/contact/config";
 
 export const metadata: Metadata = {
-  title: { default: "Qualia — One person. A whole new world.", template: "%s — Qualia" },
-  description: "One-on-one experiences with independent hosts. Launching in Miami and Miami Beach.",
+  title: { default: "Qualia — Your next Miami experience.", template: "%s — Qualia" },
+  description:
+    "Discover personal experiences with independent Miami hosts. Go solo, bring your friends, or join a shared activity.",
   icons: { icon: "/brand_assets/qualia-mark.svg" },
   robots: { index: false, follow: false },
 };
@@ -32,7 +33,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <footer className="site-footer">
           <div className="container footer-inner">
             <span className="wordmark">Qualia</span>
-            <span className="eyebrow">One-on-one. Human to human.</span>
+            <span className="eyebrow">Good people. New experiences.</span>
             <span className="footer-note">Pre-launch · Miami / Miami Beach</span>
             <nav className="footer-links" aria-label="Footer navigation">
               <Link href="/discover">Discover</Link>

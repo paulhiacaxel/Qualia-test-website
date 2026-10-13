@@ -120,3 +120,72 @@ export const participantSchema = z
       });
     }
   });
+
+/** Every seat has its own age check, including minors in an otherwise adult party.
+ * These confirmations arrange the booking; they do not sign another adult's release. */
+export const groupParticipantSchema = z
+  .object({
+    members: z
+      .array(
+        z
+          .object({
+            kind: z.enum(["adult", "minor", "guardian"]),
+            age_at_experience: z.number().int().min(0).max(120),
+          })
+          .strict()
+          .superRefine((member, context) => {
+            if ((member.kind !== "minor") !== member.age_at_experience >= 18) {
+              context.addIssue({
+                code: "custom",
+                path: ["age_at_experience"],
+                message:
+                  "Adults and accompanying guardians must be 18 or over; minors must be under 18.",
+              });
+            }
+          }),
+      )
+      .min(1, "Add everyone taking part.")
+      .max(50, "A booking can include up to 50 guests."),
+    adult_booker_confirmed: z.literal(true, "Confirm you are at least 18."),
+    rules_accepted: z.literal(true, "Read and accept this experience's participation rules."),
+    guardian_authority_confirmed: z.boolean(),
+    guardian_presence_accepted: z.boolean(),
+    group_authority_confirmed: z.boolean(),
+    rules_revision: z.number().int().positive(),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (
+      value.members.some((member) => member.kind === "guardian") &&
+      !value.members.some((member) => member.kind === "minor")
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["members"],
+        message: "An accompanying guardian must attend with a minor in this booking.",
+      });
+    }
+    if (value.members.length > 1 && !value.group_authority_confirmed) {
+      context.addIssue({
+        code: "custom",
+        path: ["group_authority_confirmed"],
+        message: "Confirm you have permission to arrange this group's booking.",
+      });
+    }
+    if (value.members.some((member) => member.kind === "minor")) {
+      if (!value.guardian_authority_confirmed) {
+        context.addIssue({
+          code: "custom",
+          path: ["guardian_authority_confirmed"],
+          message: "You must be a parent or legally authorized guardian for every minor you book.",
+        });
+      }
+      if (!value.guardian_presence_accepted) {
+        context.addIssue({
+          code: "custom",
+          path: ["guardian_presence_accepted"],
+          message: "Confirm the approved supervision arrangements for every minor.",
+        });
+      }
+    }
+  });

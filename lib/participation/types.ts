@@ -67,3 +67,26 @@ export type BookingParticipation = Omit<ParticipantInput, "rules_revision"> & {
   account_attestation_version: string;
   accepted_at: string;
 };
+
+/** Ages are assessed at the experience date; no names or birth dates are stored. */
+export type PartyMember = {
+  kind: "adult" | "minor" | "guardian";
+  age_at_experience: number;
+};
+
+/** Booking permission is not a waiver on behalf of another adult. */
+export type GroupParticipantInput = {
+  members: PartyMember[];
+  adult_booker_confirmed: true;
+  rules_accepted: true;
+  guardian_authority_confirmed: boolean;
+  guardian_presence_accepted: boolean;
+  group_authority_confirmed: boolean;
+  rules_revision: number;
+};
+
+export type BookingPartyParticipation = {
+  members: PartyMember[];
+  group_authority_confirmed: boolean;
+  accepted_at: string;
+};

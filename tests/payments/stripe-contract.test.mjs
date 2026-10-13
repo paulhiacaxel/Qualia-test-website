@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { registerHooks } from "node:module";
 import Stripe from "stripe";
 import { STRIPE_API_VERSION } from "../../lib/payments/config.ts";
+import { checkoutReservationSchema } from "../../lib/payments/contracts.ts";
 // Test-only module resolution loads the actual server gateway with a fake HTTP transport.
 registerHooks({
   resolve(specifier, context, nextResolve) {
@@ -55,6 +56,8 @@ test("real SDK serializes hosted Checkout amount snapshot and stable idempotency
   await createCheckoutSession(stripe, quote, "https://qualia.example");
   const body = new URLSearchParams(calls[0].body);
   assert.equal(body.get("line_items[0][price_data][unit_amount]"), "12345");
+  assert.equal(body.get("line_items[0][quantity]"), "1");
+  assert.equal(body.has("line_items[0][price_data][product_data][description]"), false);
   assert.equal(body.get("payment_intent_data[metadata][qualia_attempt_id]"), attempt);
   assert.equal(body.get("payment_intent_data[transfer_group]"), `qualia_booking_${attempt}`);
   assert.equal(body.has("payment_intent_data[application_fee_amount]"), false);
@@ -64,6 +67,60 @@ test("real SDK serializes hosted Checkout amount snapshot and stable idempotency
   );
   assert.equal(new Headers(calls[0].headers).get("idempotency-key"), `qualia-checkout-${attempt}`);
   assert.equal(new Headers(calls[0].headers).get("stripe-version"), STRIPE_API_VERSION);
+});
+test("group Checkout retains one authoritative total and the original product payload for retry compatibility", async () => {
+  for (const fields of [
+    {
+      booking_mode: "private",
+      party_size: 6,
+      price_basis_snapshot: "group",
+      unit_price_cents_snapshot: 60000,
+      amount_cents: 60000,
+    },
+    {
+      booking_mode: "shared",
+      party_size: 3,
+      price_basis_snapshot: "per_guest",
+      unit_price_cents_snapshot: 4500,
+      amount_cents: 13500,
+    },
+  ]) {
+    const { stripe, calls } = transport({
+      id: "cs_fixture",
+      url: "https://checkout.stripe.com/c/pay/fixture",
+    });
+    const quote = checkoutReservationSchema.parse({
+      ...fields,
+      attempt_id: attempt,
+      operation_id: attempt,
+      booking_id: attempt,
+      host_id: attempt,
+      guest_id: attempt,
+      currency: "usd",
+      listing_title: "Miami experience",
+      host_account_id: "acct_fixture",
+      commission_cents: 0,
+      attempt_state: "creating",
+      session_id: null,
+      url: null,
+      expires_at: new Date(Date.now() + 3600000).toISOString(),
+      created_at: new Date().toISOString(),
+    });
+    await createCheckoutSession(
+      stripe,
+      { ...quote, title: quote.listing_title, stripe_account_id: quote.host_account_id },
+      "https://qualia.example",
+    );
+    const body = new URLSearchParams(calls[0].body);
+    assert.equal(body.get("line_items[0][quantity]"), "1");
+    assert.equal(body.get("line_items[0][price_data][unit_amount]"), String(fields.amount_cents));
+    assert.deepEqual(
+      [...body.entries()].filter(([key]) =>
+        key.startsWith("line_items[0][price_data][product_data]"),
+      ),
+      [["line_items[0][price_data][product_data][name]", quote.listing_title]],
+    );
+  }
 });
 test("real SDK Accounts v2 recipient requests Express and transfer capability without accepting host legal terms", async () => {
   const { stripe, calls } = transport({ id: "acct_fixture", livemode: false });

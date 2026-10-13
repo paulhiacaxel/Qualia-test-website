@@ -1,7 +1,12 @@
 import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/auth/session";
-import type { BookingParticipation, ListingSafetySubmission, ParticipationRules } from "./types";
+import type {
+  BookingParticipation,
+  BookingPartyParticipation,
+  ListingSafetySubmission,
+  ParticipationRules,
+} from "./types";
 
 export { getAccountEligibility, requireAdultAccount } from "@/lib/auth/session";
 
@@ -31,4 +36,17 @@ export async function getBookingParticipation(id: string): Promise<BookingPartic
   const { data, error } = await supabase.rpc("get_booking_participation", { p_booking_id: id });
   if (error) throw new Error("The booking's participation record could not be loaded.");
   return data as BookingParticipation | null;
+}
+
+export async function getBookingPartyParticipation(
+  id: string,
+): Promise<BookingPartyParticipation | null> {
+  await requireUser(`/bookings/${id}`);
+  const supabase = await createClient();
+  // The database permits only this booking's guest, host, and administrators.
+  const { data, error } = await supabase.rpc("get_booking_party_participation", {
+    p_booking_id: id,
+  });
+  if (error) throw new Error("The booking's guest details could not be loaded.");
+  return data as BookingPartyParticipation | null;
 }

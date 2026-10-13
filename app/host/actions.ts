@@ -11,6 +11,7 @@ import { canEditListing, getOwnedListing } from "@/lib/host/data";
 import {
   accountProfileSchema,
   hostProfileSchema,
+  hostResourceSchema,
   idSchema,
   listingSchema,
   locationSchema,
@@ -97,6 +98,11 @@ function listingArguments(value: z.output<typeof listingSchema>) {
     p_duration_minutes: value.durationMinutes,
     p_city: value.city,
     p_neighborhood: value.neighborhood,
+    p_booking_format: value.bookingFormat,
+    p_max_guests: value.maxGuests,
+    p_private_price_basis: value.privatePriceBasis,
+    p_shared_price_cents: value.sharedPrice,
+    p_resource_ids: value.resourceIds,
   };
 }
 
@@ -105,12 +111,18 @@ export async function createListing(
   formData: FormData,
 ): Promise<HostActionState> {
   await requireAdultHost();
-  const parsed = listingSchema.safeParse(Object.fromEntries(formData));
+  const parsed = listingSchema.safeParse({
+    ...Object.fromEntries(formData),
+    resourceIds: formData.getAll("resourceIds"),
+  });
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   let id: string;
   try {
     const supabase = await createClient();
-    const { data, error } = await supabase.rpc("create_listing", listingArguments(parsed.data));
+    const { data, error } = await supabase.rpc(
+      "create_listing_with_booking_options",
+      listingArguments(parsed.data),
+    );
     if (error || !idSchema.safeParse(data).success)
       return {
         error:
@@ -130,12 +142,15 @@ export async function saveListing(
 ): Promise<HostActionState> {
   await requireAdultHost();
   const id = listingId(formData);
-  const parsed = listingSchema.safeParse(Object.fromEntries(formData));
+  const parsed = listingSchema.safeParse({
+    ...Object.fromEntries(formData),
+    resourceIds: formData.getAll("resourceIds"),
+  });
   if (!id.success) return { error: "This experience could not be found." };
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   try {
     const supabase = await createClient();
-    const { error } = await supabase.rpc("save_listing", {
+    const { error } = await supabase.rpc("save_listing_with_booking_options", {
       p_listing_id: id.data,
       ...listingArguments(parsed.data),
     });
@@ -149,6 +164,39 @@ export async function saveListing(
   }
   refreshListing(id.data);
   return { success: "Your experience details are saved." };
+}
+
+export async function saveHostResource(
+  _state: HostActionState,
+  formData: FormData,
+): Promise<HostActionState> {
+  await requireAdultHost();
+  const parsed = hostResourceSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return { error: parsed.error.issues[0].message };
+  const parentListing = listingId(formData);
+  if (formData.has("listingId") && !parentListing.success)
+    return { error: "This experience could not be found." };
+  // Validate any return context as an owned listing; it is not an authority grant.
+  if (parentListing.success) await getOwnedListing(parentListing.data);
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase.rpc("save_host_resource", {
+      p_resource_id: parsed.data.resourceId || null,
+      p_label: parsed.data.label,
+      p_kind: parsed.data.kind,
+    });
+    if (error || !idSchema.safeParse(data).success)
+      return { error: "This resource could not be saved. Check its name and try again." };
+  } catch {
+    return connectionError;
+  }
+  revalidatePath("/host/listings/new");
+  revalidatePath("/host/listings/[id]/edit", "page");
+  revalidatePath("/host/dashboard");
+  if (parentListing.success) refreshListing(parentListing.data);
+  return {
+    success: "Saved. Select this resource in your experience details and save them to link it.",
+  };
 }
 
 export async function saveLocation(

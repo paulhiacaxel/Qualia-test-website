@@ -2,6 +2,7 @@ import Link from "next/link";
 import { formatMiamiDate, formatMoney } from "@/lib/host/validation";
 import { effectiveStatus, bookingStatusLabel } from "@/lib/booking/validation";
 import type { BookingSummary } from "@/lib/booking/types";
+import { bookingModeLabel, bookingPartyLabel } from "@/lib/booking/presentation";
 
 export function BookingList({
   bookings,
@@ -43,6 +44,10 @@ export function BookingList({
               </p>
               <p>
                 <time dateTime={booking.starts_at}>{formatMiamiDate(booking.starts_at)}</time>
+              </p>
+              <p>
+                {bookingModeLabel(booking.booking_mode)} · {bookingPartyLabel(booking.party_size)}
+                {booking.price_basis_snapshot === "group" ? " · priced for the whole group" : ""}
               </p>
             </div>
             <div className="booking-summary-action">

@@ -1113,3 +1113,127 @@ test("approved launch offer applies 17.5% standard, three free bookings or three
     await enablePolicy();
   }
 });
+
+test("one three-seat reservation uses one founding credit; partial refund keeps seats and full refund releases the party and credit", async () => {
+  await enablePolicy({ founder_free_bookings: 3, founder_duration_months: 3 });
+  const founder = await hostFixture({ founder: true });
+  const groupGuest = await makeUser();
+  const listing = await member(founder.host, () =>
+    value("create_listing_with_booking_options", [
+      "Synthetic shared activity",
+      "Synthetic reviewed shared session.",
+      "art",
+      10000,
+      60,
+      "Miami",
+      "Wynwood",
+      "both",
+      4,
+      "group",
+      2500,
+      [],
+    ]),
+  );
+  const startsAt = "2099-06-01T14:00:00.000Z";
+  const endsAt = "2099-06-01T15:00:00.000Z";
+  await member(founder.host, async () => {
+    await rpc("save_listing_location", [
+      listing,
+      "SYNTHETIC GROUP VENUE",
+      "",
+      "33127",
+      "Meet the synthetic host.",
+    ]);
+    await rpc("add_availability_window", [listing, startsAt, endsAt]);
+  });
+  const revision = await approveFixtureSafety(db, {
+    listingId: listing,
+    hostId: founder.host,
+    adminId: admin,
+  });
+  await member(admin, () => rpc("admin_set_booking_policy", [1440, 1440, true]));
+  const booking = await member(groupGuest, () =>
+    value("request_group_booking", [
+      listing,
+      startsAt,
+      "Synthetic three-person booking",
+      {
+        members: Array.from({ length: 3 }, () => ({ kind: "adult", age_at_experience: 30 })),
+        adult_booker_confirmed: true,
+        rules_accepted: true,
+        group_authority_confirmed: true,
+        guardian_authority_confirmed: false,
+        guardian_presence_accepted: false,
+        rules_revision: revision,
+      },
+      "shared",
+      3,
+    ]),
+  );
+  await member(founder.host, () => rpc("respond_booking", [booking, "accept"]));
+  const attempt = await attach(await reserve(booking, groupGuest));
+  assert.equal(attempt.amount_cents, 7500);
+  assert.equal(attempt.commission_cents, 0);
+  await apply(attempt);
+  const creditStates = async () =>
+    (
+      await db.query(
+        "select state,count(*)::int as n from private.incentive_reservations where attempt_id=$1 and kind='founder' group by state order by state",
+        [attempt.attempt_id],
+      )
+    ).rows;
+  const remainingSeats = async () => {
+    const rows = await asRole(db, "anon", null, () =>
+      rpc("list_group_booking_slots", [listing, startsAt, "2099-06-02T14:00:00.000Z", "shared", 1]),
+    );
+    return rows.rows.find((row) => new Date(row.starts_at).toISOString() === startsAt)
+      ?.remaining_seats;
+  };
+  assert.deepEqual(await creditStates(), [{ state: "consumed", n: 1 }]);
+  assert.equal(await remainingSeats(), 1);
+
+  const partialId = randomUUID();
+  await server(() =>
+    rpc("pay_prepare_refund", [
+      admin,
+      booking,
+      2500,
+      "Synthetic partial group refund",
+      partialId,
+      attempt.attempt_id,
+    ]),
+  );
+  await server(() => rpc("pay_record_operation", [partialId, token("re"), "succeeded", null]));
+  assert.equal(await remainingSeats(), 1);
+  assert.equal(
+    (await db.query("select status from public.bookings where id=$1", [booking])).rows[0].status,
+    "confirmed",
+  );
+  assert.deepEqual(await creditStates(), [{ state: "consumed", n: 1 }]);
+
+  const remainderId = randomUUID();
+  await server(() =>
+    rpc("pay_prepare_refund", [
+      admin,
+      booking,
+      5000,
+      "Synthetic remaining group refund",
+      remainderId,
+      attempt.attempt_id,
+    ]),
+  );
+  await server(() => rpc("pay_record_operation", [remainderId, token("re"), "succeeded", null]));
+  assert.equal(
+    (await db.query("select status,party_size from public.bookings where id=$1", [booking])).rows[0]
+      .status,
+    "cancelled",
+  );
+  assert.equal(
+    (await db.query("select party_size from public.bookings where id=$1", [booking])).rows[0]
+      .party_size,
+    3,
+  );
+  assert.equal(await remainingSeats(), 4);
+  assert.deepEqual(await creditStates(), [{ state: "released", n: 1 }]);
+  await enablePolicy();
+});

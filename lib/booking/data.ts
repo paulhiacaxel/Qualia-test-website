@@ -7,6 +7,7 @@ import { categories, cities, idSchema } from "@/lib/host/validation";
 import type { HostProfile, ListingPhoto } from "@/lib/host/types";
 import type {
   BookingDetails,
+  BookingMode,
   BookingPolicy,
   BookingSlot,
   BookingSummary,
@@ -19,7 +20,16 @@ export async function listExperiences({
   city,
   limit = 60,
   hostId,
-}: { category?: string; city?: string; limit?: number; hostId?: string } = {}) {
+  guests,
+  bookingMode,
+}: {
+  category?: string;
+  city?: string;
+  limit?: number;
+  hostId?: string;
+  guests?: number;
+  bookingMode?: BookingMode;
+} = {}) {
   if (!getSupabaseConfig()) return { configured: false, experiences: [] as PublicExperience[] };
   const supabase = await createClient();
   let query = supabase
@@ -32,6 +42,10 @@ export async function listExperiences({
     query = query.eq("category", category);
   if (city && cities.includes(city as (typeof cities)[number])) query = query.eq("city", city);
   if (hostId) query = query.eq("host_id", hostId);
+  if (guests && Number.isInteger(guests) && guests >= 1 && guests <= 50)
+    query = query.gte("max_guests", guests);
+  if (bookingMode === "private" || bookingMode === "shared")
+    query = query.in("booking_format", [bookingMode, "both"]);
   const { data, error } = await query;
   if (error) throw new Error("Experiences could not be loaded. Please try again.");
   const experiences = (data ?? []) as PublicExperience[];
@@ -123,7 +137,13 @@ export async function getPublicHost(id: string) {
   return { host: experiences[0].host, experiences };
 }
 
-export async function getSlots(id: string, month?: string, requestedDate?: string) {
+export async function getSlots(
+  id: string,
+  month?: string,
+  requestedDate?: string,
+  bookingMode: BookingMode = "private",
+  partySize = 1,
+) {
   const calendar = calendarMonth(month);
   const supabase = await createClient();
   const [windows, policy] = await Promise.all([
@@ -161,10 +181,12 @@ export async function getSlots(id: string, month?: string, requestedDate?: strin
   const bounds = calendarDay(selectedDate);
   // A one-day query stays below the 2,000-slot safety cap even for one-minute
   // experiences, so later dates never disappear because a month was truncated.
-  const slots = await supabase.rpc("list_booking_slots", {
+  const slots = await supabase.rpc("list_group_booking_slots", {
     p_listing_id: id,
     p_from: bounds.from,
     p_until: bounds.until,
+    p_booking_mode: bookingMode,
+    p_party_size: partySize,
   });
   if (slots.error) throw new Error("Available times could not be loaded. Please try again.");
   return {

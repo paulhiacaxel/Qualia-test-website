@@ -2,7 +2,15 @@
 
 Hosts can add a single availability window or repeat weekly hours over a bounded date range. Weekly hours become individual windows that can be edited later. Required fields carry an asterisk; Miami time is used throughout, and invalid or ambiguous daylight-saving times are rejected.
 
-The month calendar links to a day agenda showing offered hours, pending requests, payments, confirmed sessions, and busy time. A pending request temporarily holds the host's time across all their Qualia experiences. Existing booking pages provide messaging, response, and cancellation controls.
+The month calendar links to a day agenda showing offered hours, pending requests, payments, confirmed sessions, and busy time. Booking entries show private/shared format and party size. A private request reserves the session; a shared request holds only its party's seats, allowing other parties to join that exact listing and start time up to capacity. Existing booking pages provide messaging, response, and cancellation controls.
+
+## Linked resources
+
+Hosts can name boats, captains, instructors, studios, or other resources and select every resource an experience requires. Conflicting bookings on any of those resources block that time across the host's listings. A private reservation and shared seats cannot coexist for the same session. Separate resource sets can run concurrently; include the captain or instructor as well as the boat if that person is needed for both activities.
+
+Listings without named resources keep the conservative host-wide conflict rule. A resource link is not a live connection to another booking platform. The outside-calendar controls below remain necessary for external bookings.
+
+Each booking is one order with a fixed party size and captured total. Cancelling an order releases that party's reservation; it does not cancel other parties attending a shared session. The existing payment reconciliation rules protect seats while checkout can still settle. Group-size and resource changes must preserve existing commitments and pass the applicable listing review.
 
 ## Blocking time
 

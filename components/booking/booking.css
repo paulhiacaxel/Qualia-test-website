@@ -13,17 +13,18 @@
   max-width: 64ch;
 }
 .discovery-filters {
-  display: flex;
-  align-items: flex-end;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  align-items: end;
   gap: 16px;
   padding: 22px;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 18px;
-  margin-bottom: 36px;
+  margin-bottom: 12px;
 }
 .discovery-filters > div {
-  flex: 1;
+  min-width: 0;
 }
 .discovery-filters .field-input {
   font-size: 13px;
@@ -302,6 +303,21 @@
   border-radius: 999px;
   cursor: pointer;
   font-size: 11px;
+}
+.slot-capacity {
+  display: block;
+  margin-top: 2px;
+  font-size: 9px;
+  opacity: 0.85;
+}
+.booking-options-form {
+  margin-block: 18px;
+  padding-block: 16px;
+  border-block: 1px solid var(--line);
+}
+.slot-option:has(input:disabled) {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .slot-option.selected {
   background: var(--moss);
@@ -735,7 +751,7 @@
     font-size: 38px;
   }
   .discovery-filters {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     align-items: stretch;
     gap: 14px;
   }

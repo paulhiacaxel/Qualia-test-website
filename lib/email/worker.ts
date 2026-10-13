@@ -13,7 +13,7 @@ type Dependencies = {
 /** The only caller is an authenticated server job. Dependencies keep tests offline. */
 export async function runEmailBatch({ client, from, render, send }: Dependencies) {
   // Deadlines must close requests without depending on a participant's next
-  // visit. The RPC holds the same host lock as checkout and preserves payments
+  // visit. The RPC uses the same inventory locks as checkout and preserves payments
   // that Stripe may still settle. Its trigger queues closure notifications.
   const expired = await client.rpc("expire_due_bookings", { p_limit: 100 });
   if (expired.error) throw new Error("Booking deadlines could not be reconciled.");

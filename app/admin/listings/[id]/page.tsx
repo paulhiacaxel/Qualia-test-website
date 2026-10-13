@@ -45,7 +45,20 @@ export default async function ListingReviewPage({ params }: { params: Promise<{ 
               {new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
                 listing.price_cents / 100,
               )}{" "}
-              · {listing.duration_minutes} minutes · One guest
+              · {listing.duration_minutes} minutes · Up to {listing.max_guests ?? 1} guests
+            </p>
+            <p className={styles.subtitle}>
+              Format:{" "}
+              {listing.booking_format === "both"
+                ? "Private and shared"
+                : (listing.booking_format ?? "private")}
+              .
+              {listing.booking_format !== "shared"
+                ? ` Private price is ${listing.private_price_basis === "per_guest" ? "per guest" : "for the whole group"}.`
+                : null}
+              {listing.booking_format !== "private" && listing.shared_price_cents
+                ? ` Shared seats: ${new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(listing.shared_price_cents / 100)} per guest.`
+                : null}
             </p>
             <p className={styles.subtitle}>Public area: {listing.neighborhood}</p>
             <h3 className={styles.sectionTitle}>Meet {host.display_name}</h3>

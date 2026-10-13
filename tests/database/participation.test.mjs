@@ -472,23 +472,29 @@ test("self and guardian bookings enforce approved age bounds and both guardian a
     }),
   ])
     await rejects(() => request(f, details), "22023");
-  const id = await request(
-    f,
-    participant(f.revision, {
-      kind: "minor",
-      age_at_experience: 12,
-      guardian_authority_confirmed: true,
-      guardian_presence_accepted: true,
-    }),
+  // This legacy fixture has capacity one. A required accompanying guardian
+  // must occupy a counted seat; acknowledgments alone cannot add that person.
+  // The group-booking suite covers a successful reviewed two-person booking.
+  await assert.rejects(
+    () =>
+      request(
+        f,
+        participant(f.revision, {
+          kind: "minor",
+          age_at_experience: 12,
+          guardian_authority_confirmed: true,
+          guardian_presence_accepted: true,
+        }),
+      ),
+    (error) =>
+      error.code === "22023" &&
+      /Include the accompanying guardian in your guest count/.test(error.message),
   );
-  const snap = await as(f.guest, () => scalar("get_booking_participation", [id]));
-  assert.equal(snap.kind, "minor");
-  assert.equal(snap.age_at_experience, 12);
-  assert.equal(snap.rules_snapshot.revision, f.revision);
-  assert.equal(snap.account_attestation_version, "adult_account_v1");
-  assert.equal(snap.guardian_authority_confirmed, true);
-  assert.ok(snap.accepted_at);
-  assert.ok(!("name" in snap) && !("date_of_birth" in snap));
+  assert.equal(
+    (await db.query("select count(*)::int as n from public.bookings where listing_id=$1", [f.id]))
+      .rows[0].n,
+    0,
+  );
 });
 test("review expiry cannot outlast evidence; slots and requests require clearance through the session end", async () => {
   const f = await fixture({

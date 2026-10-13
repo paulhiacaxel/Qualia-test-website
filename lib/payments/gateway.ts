@@ -43,6 +43,8 @@ export async function createCheckoutSession(stripe: Stripe, quote: CheckoutQuote
           price_data: {
             currency: quote.currency,
             unit_amount: quote.amount_cents,
+            // Keep the payload stable across rolling deploys and retries. Party
+            // details appear on the booking page; this is the frozen total once.
             product_data: { name: quote.title },
           },
         },

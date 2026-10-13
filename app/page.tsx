@@ -5,7 +5,7 @@ import { listExperiences } from "@/lib/booking/data";
 import "@/components/booking/booking.css";
 
 const categories = ["Cooking", "Sailing", "Photography", "Language", "Music", "Art", "Fitness"];
-const hostListingHelpUrl = `mailto:contact@bookqualia.com?subject=${encodeURIComponent("Help with my Qualia listing")}&body=${encodeURIComponent("Hi Qualia,\n\nI'd like help putting a lesson on Qualia. Here's what I already offer, or a link to my website:\n\n")}`;
+const hostListingHelpUrl = `mailto:contact@bookqualia.com?subject=${encodeURIComponent("Help with my Qualia listing")}&body=${encodeURIComponent("Hi Qualia,\n\nI'd like help putting an experience on Qualia. Here's what I already offer, or a link to my website:\n\n")}`;
 
 export default async function HomePage() {
   const { experiences } = await listExperiences({ limit: 3 });
@@ -14,14 +14,14 @@ export default async function HomePage() {
       <section className="hero">
         <div className="container hero-inner">
           <div className="hero-copy">
-            <span className="eyebrow">A marketplace for one-on-one experiences</span>
+            <span className="eyebrow">Miami, through the people who know it</span>
             <h1>
               Step into <em>someone else&apos;s</em> world for an afternoon.
             </h1>
             <p>
               Qualia connects you with independent hosts who share the skills, stories, and
-              perspectives that make them who they are. One person, one afternoon, something
-              personal.
+              perspectives that make them who they are. Go solo, bring your favorite people, or meet
+              someone new along the way.
             </p>
             <div className="button-row">
               <Link href="/discover" className="btn btn-primary">
@@ -46,7 +46,7 @@ export default async function HomePage() {
                   A new skill.
                   <br />A different point of view.
                 </h3>
-                <p>A one-on-one experience shaped around you.</p>
+                <p>Make it your own, or share the afternoon.</p>
               </div>
               <div className="story-card">
                 <span className="eyebrow">For the people who know</span>
@@ -114,12 +114,15 @@ export default async function HomePage() {
           <article className="step-card">
             <span className="step-number">02 / MAKE IT PERSONAL</span>
             <h3>Time that&apos;s yours.</h3>
-            <p>One guest and one host, with room for questions, conversation, and your own pace.</p>
+            <p>
+              Book time just for you and your group, or choose a shared experience with room for new
+              faces.
+            </p>
           </article>
           <article className="step-card">
             <span className="step-number">03 / TAKE IT WITH YOU</span>
             <h3>More than an afternoon.</h3>
-            <p>Leave with a new perspective and something you can keep learning.</p>
+            <p>Leave with a new perspective, a new skill, or simply a great story.</p>
           </article>
         </div>
       </section>
@@ -127,11 +130,11 @@ export default async function HomePage() {
         <div className="container">
           <div>
             <span className="eyebrow">Our first Miami hosts</span>
-            <h2>There&apos;s something only you can teach.</h2>
+            <h2>Show us your side of Miami.</h2>
             <p>
-              Already teach one-on-one in Miami or Miami Beach? Listing on Qualia is free. You set
-              your price and availability. Send us your existing lesson or website, and we&apos;ll
-              write your experience page for you to approve.
+              Offer lessons, outings, charters, or something all your own in Miami or Miami Beach?
+              Listing on Qualia is free. You set your prices, group size, and availability. Send us
+              what you already offer, and we&apos;ll write your experience page for you to approve.
             </p>
             <p>
               We&apos;re preparing to launch with our first 30 Founding Hosts. Every experience is

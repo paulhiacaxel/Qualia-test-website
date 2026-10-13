@@ -16,6 +16,11 @@ export const checkoutReservationSchema = z.object({
   guest_id: z.uuid(),
   host_id: z.uuid(),
   listing_title: z.string(),
+  // Absent on pre-group bookings so existing Checkout attempts replay unchanged.
+  booking_mode: z.enum(["private", "shared"]).optional(),
+  party_size: z.number().int().min(1).max(50).optional(),
+  price_basis_snapshot: z.enum(["group", "per_guest"]).optional(),
+  unit_price_cents_snapshot: cents.positive().optional(),
   amount_cents: cents.positive(),
   currency: z.literal("usd"),
   host_account_id: z.string(),

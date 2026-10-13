@@ -9,6 +9,7 @@ import {
   approveFixtureSafety,
 } from "../database/helpers.mjs";
 let db;
+let fixtureSequence = 0;
 const host = randomUUID(),
   guest = randomUUID(),
   admin = randomUUID(),
@@ -46,8 +47,12 @@ before(async () => {
 });
 after(async () => db.close());
 beforeEach(async () => db.exec("delete from private.email_outbox"));
-async function booking(hours = 48) {
+async function booking(hours) {
   const id = randomUUID();
+  // These bookings survive between tests. Give every default fixture its own
+  // session so real inventory protection remains enabled throughout the suite.
+  const startHours = hours ?? 48 + fixtureSequence * 2;
+  fixtureSequence++;
   // Keep booking and explicit participation evidence in the same transaction,
   // including when the caller is testing transaction rollback.
   await db.query(
@@ -59,7 +64,7 @@ async function booking(hours = 48) {
     adult_booker_confirmed,rules_accepted,guardian_authority_confirmed,guardian_presence_accepted,account_attestation_version)
     select requested.id,'self',30,l.participation_rules,true,true,false,false,'adult_account_v1'
     from requested join public.listings l on l.id=requested.listing_id`,
-    [id, listing, host, guest, hours],
+    [id, listing, host, guest, startHours],
   );
   return id;
 }
@@ -101,8 +106,12 @@ test("booking transaction queues host request once and rollback leaves no email"
   );
   assert.deepEqual(rows, [{ recipient_id: host, kind: "new_request" }]);
   await db.exec("begin");
-  const rolledBack = await booking();
-  await db.exec("rollback");
+  let rolledBack;
+  try {
+    rolledBack = await booking();
+  } finally {
+    await db.exec("rollback");
+  }
   assert.equal(
     (
       await db.query(

@@ -29,7 +29,7 @@ const publicFields = [
   {
     name: "supervision_plan",
     label: "Supervision and guardian arrangements",
-    hint: "For minors, explain supervision, guardian presence and handover arrangements. For an adult-only activity, state that clearly.",
+    hint: "Explain how you supervise the maximum group size, including instructor-to-guest ratios. Capacity includes everyone attending or boarding, including accompanying guardians. For minors, explain guardian presence and handover arrangements. For an adult-only activity, state that clearly.",
   },
 ] as const;
 
@@ -42,7 +42,7 @@ const evidenceFields = [
   {
     name: "insurance_evidence",
     label: "Insurance evidence and scope",
-    hint: "Describe the insurer, policy reference, covered activity, participant ages and venue, and any exclusions. Identify anything unconfirmed. This information does not establish verified coverage.",
+    hint: "Describe the insurer, policy reference, covered activity, group size, participant ages and venue, and any exclusions. Identify anything unconfirmed. This information does not establish verified coverage.",
   },
   {
     name: "venue_evidence",

@@ -10,6 +10,7 @@ import {
 } from "../database/helpers.mjs";
 
 let db;
+let fixtureSequence = 0;
 const host = randomUUID(),
   guest = randomUUID(),
   admin = randomUUID(),
@@ -46,11 +47,18 @@ before(async () => {
   );
 });
 after(async () => db.close());
-beforeEach(async () => db.exec("begin"));
+beforeEach(async () => {
+  fixtureSequence = 0;
+  await db.exec("begin");
+});
 afterEach(async () => db.exec("rollback"));
 
 async function booking(status = "requested", due = true, pastStart = false) {
   const id = randomUUID();
+  // Each lifecycle fixture reserves a separate session. The inventory guard
+  // must remain active even when testing unrelated deadline/outbox behavior.
+  const startHours = pastStart ? -2 - fixtureSequence * 2 : 48 + fixtureSequence * 2;
+  fixtureSequence++;
   // These lifecycle fixtures explicitly record adult participation; a writable
   // CTE keeps it atomic inside each test's enclosing rollback transaction.
   await db.query(
@@ -64,7 +72,7 @@ async function booking(status = "requested", due = true, pastStart = false) {
     adult_booker_confirmed,rules_accepted,guardian_authority_confirmed,guardian_presence_accepted,account_attestation_version)
     select fixture.id,'self',30,l.participation_rules,true,true,false,false,'adult_account_v1'
     from fixture join public.listings l on l.id=fixture.listing_id`,
-    [id, listing, host, guest, pastStart ? -2 : 48, status, due ? -1 : 60],
+    [id, listing, host, guest, startHours, status, due ? -1 : 60],
   );
   return id;
 }

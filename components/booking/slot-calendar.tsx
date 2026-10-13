@@ -6,7 +6,12 @@ import Link from "next/link";
 import { requestBooking } from "@/app/bookings/actions";
 import { formatMoney } from "@/lib/host/validation";
 import { formatSlotTime, type calendarMonth } from "@/lib/booking/validation";
-import type { BookingActionState, BookingPolicy, BookingSlot } from "@/lib/booking/types";
+import type {
+  BookingActionState,
+  BookingMode,
+  BookingPolicy,
+  BookingSlot,
+} from "@/lib/booking/types";
 import type { ParticipationRules } from "@/lib/participation/types";
 import { eligibilityPath } from "@/lib/auth/validation";
 import { ParticipationRulesSummary } from "./participation-rules";
@@ -28,6 +33,12 @@ export function SlotCalendar({
   signedIn,
   isOwner,
   priceCents,
+  sharedPriceCents,
+  privatePriceBasis,
+  bookingFormat,
+  bookingMode,
+  maxGuests,
+  partySize,
   adultEligible,
   participationRules,
 }: {
@@ -38,24 +49,124 @@ export function SlotCalendar({
   signedIn: boolean;
   isOwner: boolean;
   priceCents: number;
+  sharedPriceCents: number | null;
+  privatePriceBasis: "group" | "per_guest";
+  bookingFormat: "private" | "shared" | "both";
+  bookingMode: BookingMode;
+  maxGuests: number;
+  partySize: number;
   adultEligible: boolean;
   participationRules: ParticipationRules | null;
 }) {
   const [selected, setSelected] = useState("");
-  const [participantKind, setParticipantKind] = useState<"self" | "minor" | "">("");
+  const [optionMode, setOptionMode] = useState(bookingMode);
+  const [optionCount, setOptionCount] = useState(String(partySize));
+  const choicesChanged = optionMode !== bookingMode || optionCount !== String(partySize);
+  const [participantAges, setParticipantAges] = useState<string[]>(Array(partySize).fill(""));
+  const [accompanyingGuardians, setAccompanyingGuardians] = useState<boolean[]>(
+    Array(partySize).fill(false),
+  );
   const [state, action] = useActionState<BookingActionState, FormData>(requestBooking, {});
   const scheduledDays = new Set(calendar.scheduledDates);
   const canRequest = Boolean(
-    policy?.enabled && signedIn && !isOwner && adultEligible && participationRules,
+    policy?.enabled &&
+    signedIn &&
+    !isOwner &&
+    adultEligible &&
+    participationRules &&
+    !choicesChanged,
   );
-  const allowsAdult = Boolean(participationRules && participationRules.max_age >= 18);
-  const allowsMinor = Boolean(participationRules && participationRules.min_age < 18);
+  const hasMinor = participantAges.some((age) => age !== "" && Number(age) < 18);
+  const agesComplete = participantAges.every((age) => age !== "" && /^\d+$/.test(age));
+  const guardianSeatMissing =
+    hasMinor &&
+    participationRules?.guardian_presence === "required" &&
+    !participantAges.some((age) => age !== "" && Number(age) >= 18);
+  const selectedSlot = slots.find((slot) => slot.starts_at === selected);
+  const perGuest = bookingMode === "shared" || privatePriceBasis === "per_guest";
+  const unitPrice = bookingMode === "shared" ? (sharedPriceCents ?? 0) : priceCents;
+  const totalPrice = selectedSlot?.price_cents ?? unitPrice * (perGuest ? partySize : 1);
+  const calendarHref = (month: string, date?: string) => {
+    const query = new URLSearchParams({ month, mode: bookingMode, guests: String(partySize) });
+    if (date) query.set("date", date);
+    return `/experiences/${listingId}?${query.toString()}#booking`;
+  };
+  const slotLabel = (slot: BookingSlot) =>
+    `${formatSlotTime(slot.starts_at)}${bookingMode === "shared" ? ` · ${slot.remaining_seats} spaces available` : " · Private"}`;
   return (
     <div className="slot-picker">
       <div className="booking-price">
-        {formatMoney(priceCents)} <small>/ session</small>
+        {formatMoney(totalPrice)} <small>total</small>
       </div>
-      <p className="booking-price-note">For one participant · Miami time</p>
+      <p className="booking-price-note">
+        {bookingMode === "private" ? "Private experience" : "Shared experience"} · {partySize}{" "}
+        {partySize === 1 ? "guest" : "guests"}
+        {perGuest ? ` · ${formatMoney(unitPrice)} per guest` : " · Flat group price"}
+      </p>
+      <form
+        action={`/experiences/${listingId}#booking`}
+        method="get"
+        className="form-stack booking-options-form"
+      >
+        <input type="hidden" name="month" value={calendar.value} />
+        <input type="hidden" name="date" value={calendar.selectedDate} />
+        <div>
+          <label className="field-label" htmlFor="booking-mode">
+            How would you like to join?
+          </label>
+          <select
+            id="booking-mode"
+            name="mode"
+            className="field-input"
+            value={optionMode}
+            onChange={(event) => setOptionMode(event.target.value as BookingMode)}
+          >
+            {bookingFormat !== "shared" ? (
+              <option value="private">Private — just your party</option>
+            ) : null}
+            {bookingFormat !== "private" ? (
+              <option value="shared">Shared — join other guests</option>
+            ) : null}
+          </select>
+        </div>
+        <div>
+          <label className="field-label" htmlFor="booking-guests">
+            Guests (required)
+          </label>
+          <input
+            className="field-input"
+            id="booking-guests"
+            name="guests"
+            type="number"
+            min={1}
+            max={maxGuests}
+            step={1}
+            value={optionCount}
+            onChange={(event) => setOptionCount(event.target.value)}
+            required
+            aria-describedby="booking-guests-hint"
+          />
+          <p className="field-hint" id="booking-guests-hint">
+            Up to {maxGuests} {maxGuests === 1 ? "guest" : "guests"}. Include everyone attending or
+            boarding, including children and accompanying guardians. Apply changes to see times for
+            your party.
+          </p>
+        </div>
+        <button type="submit" className="btn btn-outline full-width">
+          Update available times
+        </button>
+      </form>
+      {choicesChanged ? (
+        <p className="notice" role="status">
+          Update available times to apply your new format or guest count. The price and times below
+          are for your current selection.
+        </p>
+      ) : null}
+      <p className="booking-helper">
+        {bookingMode === "private"
+          ? "Your party has the experience to yourselves."
+          : "Your party joins the same session as other guests. Everyone attending or boarding needs a space, including accompanying guardians."}
+      </p>
       <p className="booking-helper">
         Requests close 32 minutes before the start to leave time for payment. Request ahead so your
         host has time to respond.
@@ -64,20 +175,14 @@ export function SlotCalendar({
         <h2>{calendar.label}</h2>
         <div className="calendar-controls">
           {calendar.previous ? (
-            <Link
-              href={`/experiences/${listingId}?month=${calendar.previous}#booking`}
-              aria-label="Previous month"
-            >
+            <Link href={calendarHref(calendar.previous)} aria-label="Previous month">
               ←
             </Link>
           ) : (
             <span aria-hidden="true">←</span>
           )}
           {calendar.next ? (
-            <Link
-              href={`/experiences/${listingId}?month=${calendar.next}#booking`}
-              aria-label="Next month"
-            >
+            <Link href={calendarHref(calendar.next)} aria-label="Next month">
               →
             </Link>
           ) : (
@@ -104,7 +209,7 @@ export function SlotCalendar({
             <Link
               key={date}
               className={`calendar-date ${calendar.selectedDate === date ? "selected" : ""}`}
-              href={`/experiences/${listingId}?month=${calendar.value}&date=${date}#booking`}
+              href={calendarHref(calendar.value, date)}
               aria-current={calendar.selectedDate === date ? "date" : undefined}
               aria-label={`${calendar.label} ${index + 1}, check available times`}
             >
@@ -120,12 +225,14 @@ export function SlotCalendar({
       {!slots.length ? (
         <p className="booking-empty">
           {scheduledDays.size
-            ? "No bookable times remain on this date. Choose another date."
+            ? "No times have enough availability for this party and format. Try another date or update your choices."
             : "No scheduled dates this month. Try another month."}
         </p>
       ) : null}
       <form action={action} className="form-stack booking-request-form">
         <input type="hidden" name="listingId" value={listingId} />
+        <input type="hidden" name="bookingMode" value={bookingMode} />
+        <input type="hidden" name="partySize" value={partySize} />
         {participationRules ? (
           <input type="hidden" name="rulesRevision" value={participationRules.revision} />
         ) : null}
@@ -145,7 +252,7 @@ export function SlotCalendar({
                 <option value="">Choose a time</option>
                 {slots.map((slot) => (
                   <option key={slot.starts_at} value={slot.starts_at}>
-                    {formatSlotTime(slot.starts_at)}
+                    {slotLabel(slot)}
                   </option>
                 ))}
               </select>
@@ -165,7 +272,14 @@ export function SlotCalendar({
                       required
                       disabled={!canRequest}
                     />
-                    <span>{formatSlotTime(slot.starts_at)}</span>
+                    <span>
+                      {formatSlotTime(slot.starts_at)}
+                      <small className="slot-capacity">
+                        {bookingMode === "shared"
+                          ? `${slot.remaining_seats} spaces available`
+                          : "Private session"}
+                      </small>
+                    </span>
                   </label>
                 ))}
               </div>
@@ -209,87 +323,116 @@ export function SlotCalendar({
         ) : (
           <>
             <section aria-labelledby="participation-heading" className="form-stack">
-              <h3 id="participation-heading">Who is taking part?</h3>
+              <h3 id="participation-heading">Who is coming?</h3>
               <ParticipationRulesSummary rules={participationRules} />
-              <fieldset className="unstyled-fieldset form-stack">
-                <legend className="field-label">Choose the participant (required)</legend>
-                {allowsAdult ? (
-                  <label className="booking-checkbox">
-                    <input
-                      type="radio"
-                      name="participantKind"
-                      value="self"
-                      checked={participantKind === "self"}
-                      onChange={() => setParticipantKind("self")}
-                      required
-                    />
-                    Myself — I will be 18 or older
+              <p className="field-hint" id="participant-privacy">
+                Enter each guest’s age in whole years on the experience date. Do not provide names,
+                birth dates or medical information here.
+              </p>
+              {participantAges.map((age, index) => (
+                <div key={index}>
+                  <label className="field-label" htmlFor={`participant-age-${index}`}>
+                    Guest {index + 1} — age on the experience date (required)
                   </label>
-                ) : null}
-                {allowsMinor ? (
-                  <label className="booking-checkbox">
-                    <input
-                      type="radio"
-                      name="participantKind"
-                      value="minor"
-                      checked={participantKind === "minor"}
-                      onChange={() => setParticipantKind("minor")}
-                      required
-                    />
-                    A minor — I am their parent or legal guardian
-                  </label>
-                ) : null}
-              </fieldset>
-              {participantKind ? (
-                <div key={participantKind}>
-                  <label className="field-label" htmlFor="participant-age">
-                    {participantKind === "self" ? "Your age" : "The minor’s age"} on the experience
-                    date (required)
-                  </label>
+                  {participationRules.guardian_presence === "required" ? (
+                    <label className="booking-checkbox">
+                      <input
+                        type="checkbox"
+                        name={`participantGuardian${index}`}
+                        checked={accompanyingGuardians[index]}
+                        onChange={(event) =>
+                          setAccompanyingGuardians((current) =>
+                            current.map((value, member) =>
+                              member === index ? event.target.checked : value,
+                            ),
+                          )
+                        }
+                      />
+                      Accompanying guardian — not taking part
+                    </label>
+                  ) : null}
                   <input
                     className="field-input"
                     type="number"
                     inputMode="numeric"
-                    id="participant-age"
-                    name="participantAge"
+                    id={`participant-age-${index}`}
+                    name={`participantAge${index}`}
                     step={1}
-                    min={Math.max(participationRules.min_age, participantKind === "self" ? 18 : 0)}
-                    max={Math.min(
-                      participationRules.max_age,
-                      participantKind === "minor" ? 17 : 120,
-                    )}
+                    min={accompanyingGuardians[index] ? 18 : participationRules.min_age}
+                    max={accompanyingGuardians[index] ? 120 : participationRules.max_age}
+                    value={age}
+                    onChange={(event) =>
+                      setParticipantAges((current) =>
+                        current.map((value, member) =>
+                          member === index ? event.target.value : value,
+                        ),
+                      )
+                    }
                     required
                     aria-describedby="participant-privacy"
                   />
-                  <p className="field-hint" id="participant-privacy">
-                    Enter age in whole years on the selected experience date. Do not provide a
-                    child&apos;s name, birth date or medical information.
-                  </p>
                 </div>
+              ))}
+              {participationRules.guardian_presence === "required" ? (
+                <p className="field-hint">
+                  A required accompanying guardian must be included in your guest count, even for a
+                  children’s activity. Guardians must be 18 or older and accompany a minor.{" "}
+                  {perGuest
+                    ? "The per-guest price applies to guardians too."
+                    : "Guardians count toward the group maximum and are included in the flat group price."}
+                </p>
+              ) : null}
+              {guardianSeatMissing ? (
+                <p className="notice" role="status">
+                  {maxGuests < 2 ? (
+                    <>
+                      This experience needs a capacity review before a minor and their required
+                      guardian can attend.{" "}
+                      <Link className="text-link" href="/contact">
+                        Contact Qualia
+                      </Link>{" "}
+                      for help.
+                    </>
+                  ) : (
+                    <>
+                      Enter the accompanying adult’s age. If they are not yet included, increase
+                      your guest count above and update available times. Select “Accompanying
+                      guardian” if they are not taking part.
+                    </>
+                  )}
+                </p>
+              ) : null}
+              {partySize > 1 ? (
+                <label className="booking-checkbox">
+                  <input type="checkbox" name="groupAuthorityConfirmed" required />I have permission
+                  to arrange this booking for everyone in my party and will share the participation
+                  requirements with them.
+                </label>
               ) : null}
               <label className="booking-checkbox">
                 <input type="checkbox" name="adultBookerConfirmed" required />I am 18 or older and
                 am making this request from my own account.
               </label>
-              {participantKind === "minor" ? (
+              {hasMinor ? (
                 <>
                   <label className="booking-checkbox">
-                    <input type="checkbox" name="guardianAuthorityConfirmed" required />I am this
-                    minor&apos;s parent or legal guardian and have authority to arrange their
-                    participation.
+                    <input type="checkbox" name="guardianAuthorityConfirmed" required />I am the
+                    parent or legally authorized guardian of every minor in this party and have
+                    authority to arrange their participation.
                   </label>
                   <label className="booking-checkbox">
                     <input type="checkbox" name="guardianPresenceAccepted" required />
                     {participationRules.guardian_presence === "required"
-                      ? "I will remain present throughout the experience and follow the supervision requirements above."
+                      ? "I will remain present for every minor throughout the experience and follow the supervision requirements above."
                       : "I understand guardian presence is not required for this activity and will follow the approved supervision arrangements above."}
                   </label>
                 </>
               ) : null}
               <label className="booking-checkbox">
                 <input type="checkbox" name="participationRulesAccepted" required />I have read the
-                activity risks, equipment, prerequisites and supervision requirements above and will
-                follow these participation rules.
+                activity risks, equipment, prerequisites and supervision requirements above.
+                Everyone taking part meets these requirements. Accompanying guardians will follow
+                the supervision requirements, and I will share these rules with my party.
               </label>
               <p className="field-hint">
                 This confirms the activity requirements for this request. It is not a liability
@@ -319,7 +462,18 @@ export function SlotCalendar({
                 {state.error}
               </p>
             ) : null}
-            <RequestButton disabled={!selected || !participantKind} />
+            {selectedSlot ? (
+              <p className="booking-price-note">
+                Request total: {formatMoney(selectedSlot.price_cents)} for {partySize}{" "}
+                {partySize === 1 ? "guest" : "guests"}.{" "}
+                {bookingMode === "shared"
+                  ? `${selectedSlot.remaining_seats} spaces are currently available.`
+                  : "A private booking reserves the whole session for your party."}
+              </p>
+            ) : null}
+            <RequestButton
+              disabled={choicesChanged || guardianSeatMissing || !selectedSlot || !agesComplete}
+            />
             <p className="booking-helper">You won&apos;t be charged when you send a request.</p>
           </>
         )}

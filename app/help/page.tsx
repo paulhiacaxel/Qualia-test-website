@@ -14,13 +14,20 @@ export default function HelpPage() {
           <h2>For guests</h2>
           <h3>What is an experience?</h3>
           <p>
-            Time with one host who shares a skill or practice with you, one-on-one. Each published
-            listing describes the price, duration, area and host.
+            A lesson, outing, charter, or activity offered by an independent host. Each published
+            listing describes the format, guest limit, price, duration, area, and host.
+          </p>
+          <h3>Private or shared?</h3>
+          <p>
+            Private bookings reserve the session for you and the guests you bring. Shared bookings
+            reserve seats in an activity that other guests can also join. The host chooses which
+            options to offer. Choose your guest count to see the total before requesting a time.
           </p>
           <h3>How do requests work?</h3>
           <p>
-            Choose an available time and send the host a request. A request is not a confirmed
-            booking. Check your booking page for the host&apos;s decision and any payment deadline.
+            Choose a format, guest count, and available time, then send the host a request. A
+            request is not a confirmed booking. Check your booking page for the host&apos;s decision
+            and any payment deadline.
           </p>
           <h3>Can I talk to my host?</h3>
           <p>
@@ -46,12 +53,19 @@ export default function HelpPage() {
             Material changes need another review. Availability has separate controls so existing
             booking commitments stay protected.
           </p>
+          <h3>How do I protect my calendar?</h3>
+          <p>
+            Link listings that use the same boat, instructor, or other resource. Qualia checks those
+            commitments before reserving time or seats. Use calendar blocks for bookings made
+            elsewhere, or import a calendar file. File imports are snapshots, so update them when
+            your outside bookings change.
+          </p>
         </section>
       </div>
       <section className="panel" style={{ marginTop: 24 }}>
         <h2>Have something particular in mind?</h2>
         <p>
-          Tell us what you would like to learn and where you would like to meet. We can review your
+          Tell us what you would like to try and where you would like to meet. We can review your
           idea as the Miami collection grows. We cannot promise that every request can be matched.
         </p>
         <Link className="btn btn-primary" href="/contact">

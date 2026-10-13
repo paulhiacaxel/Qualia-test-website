@@ -11,7 +11,13 @@ export type BookingSlot = {
   ends_at: string;
   price_cents: number;
   currency: "usd";
+  remaining_seats: number;
+  private_available: boolean;
+  booking_mode: BookingMode;
+  party_size: number;
 };
+
+export type BookingMode = "private" | "shared";
 
 export type BookingPolicy = {
   enabled: boolean;
@@ -37,6 +43,10 @@ export type Booking = {
   ends_at: string;
   status: BookingStatus;
   amount_cents: number;
+  booking_mode: BookingMode;
+  party_size: number;
+  unit_price_cents_snapshot: number;
+  price_basis_snapshot: "group" | "per_guest";
   currency: "usd";
   guest_message: string;
   request_expires_at: string | null;

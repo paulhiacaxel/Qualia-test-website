@@ -49,6 +49,68 @@ test("templates escape user titles, link to configured origin and do not claim p
   );
 });
 
+test("group confirmations show the booked format, guest count and server total without participant details", () => {
+  for (const [booking, expected] of [
+    [
+      {
+        booking_mode: "private",
+        party_size: 6,
+        price_basis_snapshot: "group",
+        unit_price_cents_snapshot: 60000,
+        amount_cents: 60000,
+      },
+      ["Private experience · 6 guests", "$600.00 for the whole group"],
+    ],
+    [
+      {
+        booking_mode: "shared",
+        party_size: 3,
+        price_basis_snapshot: "per_guest",
+        unit_price_cents_snapshot: 4500,
+        amount_cents: 13500,
+      },
+      ["Shared experience · 3 guests", "$45.00 × 3 guests = $135.00 total"],
+    ],
+  ]) {
+    const result = renderBookingEmail(
+      {
+        ...context,
+        ...booking,
+        kind: "confirmed",
+        members: [{ kind: "minor", age_at_experience: 7, name: "SECRET PARTICIPANT" }],
+        rules_snapshot: { supervision_plan: "SECRET SUPERVISION" },
+        address_line1: "SECRET ADDRESS",
+      },
+      "https://qualia.example",
+    );
+    for (const content of [result.text, result.html]) {
+      for (const label of expected) assert.ok(content.includes(label));
+      assert.ok(!content.includes("SECRET"));
+      assert.ok(!content.includes("minor"));
+      assert.ok(!content.includes("age_at_experience"));
+    }
+  }
+});
+
+test("legacy emails do not invent a count or price and inconsistent breakdowns retain only the total", () => {
+  const legacy = renderBookingEmail(context, "https://qualia.example");
+  assert.ok(!legacy.text.includes("1 guest"));
+  assert.ok(!legacy.text.includes("$"));
+  const result = renderBookingEmail(
+    {
+      ...context,
+      booking_mode: "shared",
+      party_size: 3,
+      price_basis_snapshot: "per_guest",
+      unit_price_cents_snapshot: 1000,
+      amount_cents: 4000,
+    },
+    "https://qualia.example",
+  );
+  assert.ok(result.text.includes("$40.00 total"));
+  assert.ok(!result.text.includes("$10.00 ×"));
+});
+
 test("job authorization fails closed and requires exact bearer secret", () => {
   const secret = "a".repeat(32);
   assert.equal(isEmailJobAuthorized(`Bearer ${secret}`, secret), true);

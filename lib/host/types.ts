@@ -15,6 +15,10 @@ export type Listing = {
   description: string;
   category: (typeof categories)[number];
   price_cents: number;
+  booking_format: "private" | "shared" | "both";
+  max_guests: number;
+  private_price_basis: "group" | "per_guest";
+  shared_price_cents: number | null;
   currency: "usd";
   duration_minutes: number;
   city: (typeof cities)[number];
@@ -52,3 +56,12 @@ export type AvailabilityWindow = {
 };
 
 export type HostActionState = { error?: string; success?: string };
+
+export type HostResource = {
+  id: string;
+  host_id: string;
+  label: string;
+  kind: "boat" | "captain" | "instructor" | "space" | "equipment" | "other";
+  created_at: string;
+  updated_at: string;
+};

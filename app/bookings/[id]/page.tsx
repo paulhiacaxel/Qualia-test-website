@@ -4,16 +4,18 @@ import { effectiveStatus, bookingStatusLabel } from "@/lib/booking/validation";
 import { formatMoney, formatMiamiDate } from "@/lib/host/validation";
 import { BookingActions } from "@/components/booking/booking-actions";
 import { MessageThread } from "@/components/booking/message-thread";
-import { getBookingParticipation } from "@/lib/participation/data";
+import { getBookingParticipation, getBookingPartyParticipation } from "@/lib/participation/data";
 import { ParticipationRulesSummary } from "@/components/booking/participation-rules";
+import { bookingModeLabel, bookingPartyLabel, bookingPriceLabel } from "@/lib/booking/presentation";
 
 export const metadata = { title: "Your booking" };
 
 export default async function BookingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const [details, participation] = await Promise.all([
+  const [details, participation, party] = await Promise.all([
     getBookingDetails(id),
     getBookingParticipation(id),
+    getBookingPartyParticipation(id),
   ]);
   const {
     booking,
@@ -26,6 +28,9 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
   } = details;
   const isHost = booking.host_id === userId;
   const status = effectiveStatus(booking);
+  const hasMinors = party
+    ? party.members.some((member) => member.kind === "minor")
+    : participation?.kind === "minor";
   return (
     <main id="main-content" className="container dashboard">
       <Link className="experience-back" href={isHost ? "/host/calendar" : "/bookings"}>
@@ -41,8 +46,16 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
       <div className="booking-detail-grid">
         <div className="booking-detail-main">
           <section className="panel">
-            <h2>Your afternoon</h2>
+            <h2>Your experience</h2>
             <dl className="booking-details">
+              <div>
+                <dt>Booking format</dt>
+                <dd>{bookingModeLabel(booking.booking_mode)}</dd>
+              </div>
+              <div>
+                <dt>Your party</dt>
+                <dd>{bookingPartyLabel(booking.party_size)}</dd>
+              </div>
               <div>
                 <dt>Starts</dt>
                 <dd>
@@ -62,8 +75,12 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
                 </dd>
               </div>
               <div>
-                <dt>Session total</dt>
+                <dt>Booking total</dt>
                 <dd>{formatMoney(booking.amount_cents)}</dd>
+              </div>
+              <div>
+                <dt>Pricing</dt>
+                <dd>{bookingPriceLabel(booking)}</dd>
               </div>
               <div>
                 <dt>Status</dt>
@@ -75,6 +92,11 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
                 </dd>
               </div>
             </dl>
+            <p className="muted">
+              {booking.booking_mode === "shared"
+                ? "Your reservation covers the guests in your party. Other parties may join this session."
+                : "This session is reserved for your party only."}
+            </p>
             {booking.guest_message ? (
               <div className="booking-original-note">
                 <span className="eyebrow">Guest&apos;s request note</span>
@@ -87,19 +109,49 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
             {participation ? (
               <div className="form-stack">
                 <dl className="booking-details">
-                  <div>
-                    <dt>Participant</dt>
-                    <dd>
-                      {participation.kind === "minor"
-                        ? "Minor, booked by a parent or legal guardian"
-                        : "Adult account holder"}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Age at the experience</dt>
-                    <dd>{participation.age_at_experience}</dd>
-                  </div>
-                  {participation.kind === "minor" ? (
+                  {party ? (
+                    <>
+                      {party.members.map((member, index) => (
+                        <div key={index}>
+                          <dt>Guest {index + 1}</dt>
+                          <dd>
+                            {member.kind === "guardian"
+                              ? "Accompanying guardian"
+                              : member.kind === "minor"
+                                ? "Minor"
+                                : "Adult"}
+                            , age {member.age_at_experience} at the experience
+                          </dd>
+                        </div>
+                      ))}
+                      {party.members.length > 1 ? (
+                        <div>
+                          <dt>Permission to arrange this booking</dt>
+                          <dd>
+                            {party.group_authority_confirmed
+                              ? "Confirmed by the booking adult"
+                              : "Not recorded"}
+                          </dd>
+                        </div>
+                      ) : null}
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <dt>Participant</dt>
+                        <dd>
+                          {participation.kind === "minor"
+                            ? "Minor, booked by a parent or legal guardian"
+                            : "Adult account holder"}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt>Age at the experience</dt>
+                        <dd>{participation.age_at_experience}</dd>
+                      </div>
+                    </>
+                  )}
+                  {hasMinors ? (
                     <>
                       <div>
                         <dt>Guardian authority</dt>
@@ -137,7 +189,8 @@ export default async function BookingPage({ params }: { params: Promise<{ id: st
                 </dl>
                 <p className="muted">
                   These are the activity requirements recorded when the request was made. The
-                  acknowledgment is not a liability waiver.
+                  booking adult must share them with everyone in their party. This acknowledgment is
+                  not a liability waiver or consent on another adult&apos;s behalf.
                 </p>
                 <ParticipationRulesSummary rules={participation.rules_snapshot} />
               </div>

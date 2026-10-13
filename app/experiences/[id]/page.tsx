@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { SlotCalendar } from "@/components/booking/slot-calendar";
+import { bookingSelection } from "@/lib/booking/validation";
 import { getPublicExperience, getSlots } from "@/lib/booking/data";
 import { getCurrentUser } from "@/lib/auth/session";
 import { firstValue } from "@/lib/auth/validation";
@@ -18,8 +19,15 @@ export default async function ExperiencePage({
 }) {
   const [{ id }, query] = await Promise.all([params, searchParams]);
   const { listing, host, photos } = await getPublicExperience(id);
+  const selection = bookingSelection(listing, firstValue(query.mode), firstValue(query.guests));
   const [availability, user, eligibility, participationRules] = await Promise.all([
-    getSlots(id, firstValue(query.month), firstValue(query.date)),
+    getSlots(
+      id,
+      firstValue(query.month),
+      firstValue(query.date),
+      selection.bookingMode,
+      selection.partySize,
+    ),
     getCurrentUser(),
     getAccountEligibility(),
     getListingParticipationRules(id),
@@ -39,7 +47,16 @@ export default async function ExperiencePage({
             With {host.display_name}
           </Link>
           <span>{listing.duration_minutes} minutes</span>
-          <span>One participant</span>
+          <span>
+            {listing.booking_format === "both"
+              ? "Private or shared"
+              : listing.booking_format === "shared"
+                ? "Shared experience"
+                : "Private experience"}
+          </span>
+          <span>
+            Up to {listing.max_guests} {listing.max_guests === 1 ? "guest" : "guests"}
+          </span>
           <span>{listing.neighborhood}</span>
         </div>
       </header>
@@ -111,12 +128,17 @@ export default async function ExperiencePage({
         </div>
         <aside id="booking" className="panel experience-booking">
           <SlotCalendar
-            key={`${availability.calendar.value}-${availability.calendar.selectedDate}-${participationRules?.revision ?? "pending"}`}
+            key={`${availability.calendar.value}-${availability.calendar.selectedDate}-${participationRules?.revision ?? "pending"}-${selection.bookingMode}-${selection.partySize}`}
             listingId={id}
             {...availability}
             signedIn={Boolean(user)}
             isOwner={user?.id === listing.host_id}
+            {...selection}
+            bookingFormat={listing.booking_format}
+            maxGuests={listing.max_guests}
             priceCents={listing.price_cents}
+            sharedPriceCents={listing.shared_price_cents}
+            privatePriceBasis={listing.private_price_basis}
             adultEligible={eligibility?.eligible === true}
             participationRules={participationRules}
           />

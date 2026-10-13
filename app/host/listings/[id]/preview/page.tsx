@@ -33,7 +33,16 @@ export default async function PreviewListingPage({ params }: { params: Promise<{
         <div className="preview-subtitle">
           <span>With {host?.display_name}</span>
           <span>{listing.duration_minutes} minutes</span>
-          <span>One guest</span>
+          <span>
+            Up to {listing.max_guests} {listing.max_guests === 1 ? "guest" : "guests"}
+          </span>
+          <span>
+            {listing.booking_format === "both"
+              ? "Private or shared"
+              : listing.booking_format === "shared"
+                ? "Shared session"
+                : "Private session"}
+          </span>
           <span>{listing.neighborhood || "Neighborhood to be added"}</span>
         </div>
       </div>
@@ -131,10 +140,38 @@ export default async function PreviewListingPage({ params }: { params: Promise<{
           </section>
         </div>
         <aside className="panel">
-          <div className="preview-price">
-            {formatMoney(listing.price_cents)} <small>/ session</small>
-          </div>
-          <p>{listing.duration_minutes} minutes · one-on-one</p>
+          {listing.booking_format !== "shared" ? (
+            <div>
+              <span className="eyebrow">Private session</span>
+              <div className="preview-price">
+                {formatMoney(listing.price_cents)}{" "}
+                <small>
+                  / {listing.private_price_basis === "group" ? "private group" : "guest"}
+                </small>
+              </div>
+              <p className="field-hint">
+                {listing.private_price_basis === "group"
+                  ? "One total for the whole private party, up to your guest limit."
+                  : "Price multiplied by the private party’s guest count; the session is exclusive to that party."}
+              </p>
+            </div>
+          ) : null}
+          {listing.booking_format !== "private" && listing.shared_price_cents ? (
+            <div>
+              <span className="eyebrow">Shared session</span>
+              <div className="preview-price">
+                {formatMoney(listing.shared_price_cents)} <small>/ guest</small>
+              </div>
+              <p className="field-hint">
+                Separate bookings may join the same session, up to {listing.max_guests} guests in
+                total.
+              </p>
+            </div>
+          ) : null}
+          <p>
+            {listing.duration_minutes} minutes · up to {listing.max_guests}{" "}
+            {listing.max_guests === 1 ? "guest" : "guests"}
+          </p>
           <hr style={{ border: 0, borderTop: "1px solid var(--line)", margin: "24px 0" }} />
           <span className="eyebrow">Your saved availability</span>
           {futureWindows.length ? (

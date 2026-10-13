@@ -8,8 +8,8 @@ import { requireAdultAccount } from "@/lib/participation/data";
 import { idSchema } from "@/lib/host/validation";
 import {
   bookingMessageSchema,
-  bookingRequestSchema,
-  bookingRequestInput,
+  groupBookingRequestSchema,
+  groupBookingRequestInput,
   bookingResponseSchema,
 } from "@/lib/booking/validation";
 import type { BookingActionState } from "@/lib/booking/types";
@@ -25,7 +25,7 @@ export async function requestBooking(
   _previous: BookingActionState,
   formData: FormData,
 ): Promise<BookingActionState> {
-  const parsed = bookingRequestSchema.safeParse(bookingRequestInput(formData));
+  const parsed = groupBookingRequestSchema.safeParse(groupBookingRequestInput(formData));
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   await requireUser(`/experiences/${parsed.data.listingId}`);
   await requireAdultAccount(`/experiences/${parsed.data.listingId}`);
@@ -34,11 +34,13 @@ export async function requestBooking(
   let bookingId: string;
   try {
     const supabase = await createClient();
-    const { data, error } = await supabase.rpc("request_booking", {
+    const { data, error } = await supabase.rpc("request_group_booking", {
       p_listing_id: parsed.data.listingId,
       p_starts_at: parsed.data.startsAt,
       p_guest_message: parsed.data.guestMessage,
-      p_participant: parsed.data.participant,
+      p_participants: parsed.data.participants,
+      p_booking_mode: parsed.data.bookingMode,
+      p_party_size: parsed.data.partySize,
     });
     if (error) {
       if (error.code === "40001")
@@ -49,7 +51,7 @@ export async function requestBooking(
       if (error.code === "22023")
         return {
           error:
-            "Check the participant's age at the experience and the required guardian confirmations.",
+            "Check every guest’s age, party size, booking format, and required group or guardian confirmations.",
         };
       if (error.code === "42501")
         return {
@@ -63,7 +65,7 @@ export async function requestBooking(
       if (error.code === "23P01" || error.code === "23505")
         return {
           error:
-            "That time was just taken. Refresh the calendar and choose another available time.",
+            "There is no longer enough availability for this party or booking format. Refresh the calendar and choose another time.",
         };
       if (error.code === "55000")
         return {
@@ -122,7 +124,7 @@ export async function respondToBooking(
     success:
       parsed.data.decision === "accept"
         ? "Request accepted. The guest must complete payment before the booking is confirmed."
-        : "Request declined. The time is available again.",
+        : "Request declined. Its reserved capacity is available again.",
   };
 }
 

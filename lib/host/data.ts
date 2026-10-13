@@ -6,6 +6,7 @@ import { idSchema } from "./validation";
 import type {
   AvailabilityWindow,
   HostProfile,
+  HostResource,
   Listing,
   ListingLocation,
   ListingPhoto,
@@ -35,6 +36,18 @@ export async function getHostListings() {
   return data as Listing[];
 }
 
+export async function getHostResources() {
+  const { user } = await requireHost();
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("host_resources")
+    .select("id,host_id,label,kind,created_at,updated_at")
+    .eq("host_id", user.id)
+    .order("label");
+  if (error) throw new Error("Your people and equipment could not be loaded.");
+  return (data ?? []) as HostResource[];
+}
+
 export async function getOwnedListing(id: string) {
   const { user } = await requireHost();
   if (!idSchema.safeParse(id).success) notFound();
@@ -54,7 +67,7 @@ export async function getListingDetails(id: string) {
   // Explicit owner check prevents this private preview becoming a public data endpoint.
   const listing = await getOwnedListing(id);
   const supabase = await createClient();
-  const [locationResult, photoResult, availabilityResult] = await Promise.all([
+  const [locationResult, photoResult, availabilityResult, resourceResult] = await Promise.all([
     supabase.rpc("get_listing_location", { p_listing_id: id }),
     supabase
       .from("listing_photos")
@@ -66,8 +79,9 @@ export async function getListingDetails(id: string) {
       .select("id,listing_id,starts_at,ends_at")
       .eq("listing_id", id)
       .order("starts_at"),
+    supabase.rpc("get_listing_resource_ids", { p_listing_id: id }),
   ]);
-  if (locationResult.error || photoResult.error || availabilityResult.error)
+  if (locationResult.error || photoResult.error || availabilityResult.error || resourceResult.error)
     throw new Error("Your experience details could not be loaded.");
   const photos = (photoResult.data ?? []) as ListingPhoto[];
   if (photos.length) {
@@ -87,6 +101,7 @@ export async function getListingDetails(id: string) {
       : locationResult.data) as ListingLocation | null,
     photos,
     availability: (availabilityResult.data ?? []) as AvailabilityWindow[],
+    resourceIds: (resourceResult.data ?? []) as string[],
   };
 }
 
