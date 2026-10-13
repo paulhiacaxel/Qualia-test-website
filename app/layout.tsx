@@ -39,6 +39,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <Link href="/host/start">Host with Qualia</Link>
               <Link href="/help">Help &amp; concierge</Link>
               <Link href="/contact">Contact us</Link>
+              <a href="https://www.instagram.com/bookqualia/" aria-label="Qualia on Instagram">
+                Instagram
+              </a>
+              <a
+                href="https://www.linkedin.com/company/bookqualia/"
+                aria-label="Qualia on LinkedIn"
+              >
+                LinkedIn
+              </a>
               {contactEmail ? (
                 <a href={`mailto:${encodeURIComponent(contactEmail)}`}>{contactEmail}</a>
               ) : null}

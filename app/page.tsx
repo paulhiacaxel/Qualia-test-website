@@ -5,7 +5,7 @@ import { listExperiences } from "@/lib/booking/data";
 import "@/components/booking/booking.css";
 
 const categories = ["Cooking", "Sailing", "Photography", "Language", "Music", "Art", "Fitness"];
-const hostListingHelpUrl = `mailto:axel@bookqualia.com?subject=${encodeURIComponent("Help with my Qualia listing")}&body=${encodeURIComponent("Hi Axel,\n\nI'd like help putting a lesson on Qualia. Here's what I already offer, or a link to my website:\n\n")}`;
+const hostListingHelpUrl = `mailto:contact@bookqualia.com?subject=${encodeURIComponent("Help with my Qualia listing")}&body=${encodeURIComponent("Hi Qualia,\n\nI'd like help putting a lesson on Qualia. Here's what I already offer, or a link to my website:\n\n")}`;
 
 export default async function HomePage() {
   const { experiences } = await listExperiences({ limit: 3 });
@@ -140,7 +140,7 @@ export default async function HomePage() {
           </div>
           <div className="button-row host-actions">
             <a href={hostListingHelpUrl} className="btn">
-              Let Axel help with your listing
+              Let us help with your listing
             </a>
             <Link href="/signup?role=host" className="host-signup-link">
               Or create your own host account
