@@ -5,6 +5,7 @@ import { listExperiences } from "@/lib/booking/data";
 import "@/components/booking/booking.css";
 
 const categories = ["Cooking", "Sailing", "Photography", "Language", "Music", "Art", "Fitness"];
+const hostListingHelpUrl = `mailto:axel@bookqualia.com?subject=${encodeURIComponent("Help with my Qualia listing")}&body=${encodeURIComponent("Hi Axel,\n\nI'd like help putting a lesson on Qualia. Here's what I already offer, or a link to my website:\n\n")}`;
 
 export default async function HomePage() {
   const { experiences } = await listExperiences({ limit: 3 });
@@ -128,13 +129,23 @@ export default async function HomePage() {
             <span className="eyebrow">Our first Miami hosts</span>
             <h2>There&apos;s something only you can teach.</h2>
             <p>
-              Already teach or share your work one-on-one? We&apos;re building Qualia with our first
-              hosts. Listing will be free, and we&apos;ll help you put your experience into words.
+              Already teach one-on-one in Miami or Miami Beach? Listing on Qualia is free. You set
+              your price and availability. Send us your existing lesson or website, and we&apos;ll
+              write your experience page for you to approve.
+            </p>
+            <p>
+              We&apos;re preparing to launch with our first 30 Founding Hosts. Every experience is
+              reviewed before it goes live.
             </p>
           </div>
-          <Link href="/signup?role=host" className="btn">
-            Join as a host
-          </Link>
+          <div className="button-row host-actions">
+            <a href={hostListingHelpUrl} className="btn">
+              Let Axel help with your listing
+            </a>
+            <Link href="/signup?role=host" className="host-signup-link">
+              Or create your own host account
+            </Link>
+          </div>
         </div>
       </section>
     </main>

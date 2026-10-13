@@ -428,10 +428,25 @@ input:disabled {
   color: #e1d7c2;
   margin-bottom: 0;
 }
+.host-section p + p {
+  margin-top: 16px;
+}
+.host-actions {
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: flex-start;
+  max-width: 100%;
+}
+.host-signup-link {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
 .host-section .btn {
   background: var(--paper);
   color: var(--mossdeep);
   flex-shrink: 0;
+  white-space: normal;
+  text-align: center;
 }
 .host-section .btn:hover {
   background: var(--paperalt);
