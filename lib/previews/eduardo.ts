@@ -1,17 +1,34 @@
 // Editorial review page only. This data is deliberately separate from listings,
-// availability and checkout. Published reference terms require Eduardo's approval
-// before they can become a Qualia offer; the teaching idea is only a proposal.
+// availability and checkout. The October 14 call shapes this proposal; price basis,
+// capacity, venue access and final listing details still need Eduardo's confirmation.
 export const eduardoProposal = {
   name: "Eduardo Bono",
   portfolioUrl: "https://www.krop.com/ecoloco/",
   serviceUrl: "https://www.airbnb.com/services/6105236",
-  checkedAt: "October 13, 2026",
-  packageName: "Basic Brickell",
-  durationHours: 1,
-  pricePerGuestDollars: 50,
-  minimumDollars: 200,
-  editedPhotos: 40,
-  deliveryHours: 48,
+  discussedAt: "October 14, 2026",
+  backgroundCheckedAt: "October 13, 2026",
+  proposedPriceDollars: 300,
+  durationLabel: "2 hr 25 min",
+  itinerary: [
+    {
+      title: "Before you take a photograph",
+      minutes: 50,
+      description:
+        "Start with a conversation about your camera, what you enjoy photographing and what you hope to see. Eduardo introduces his approach before you head out together.",
+    },
+    {
+      title: "Head out with your camera",
+      minutes: 45,
+      description:
+        "Walk, look and make photographs with Eduardo alongside you. Pay attention to the light, try a different angle and notice what draws you into a scene.",
+    },
+    {
+      title: "Look back at what you saw",
+      minutes: 50,
+      description:
+        "Sit down together to look through your photographs. Talk about what you noticed, what you felt while taking them and how those choices show up in the image.",
+    },
+  ],
   headshot: {
     src: "/previews/eduardo-bono/headshot.webp",
     width: 240,

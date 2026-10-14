@@ -189,6 +189,21 @@
   padding-top: 35px;
   border-top: 1px solid var(--line);
 }
+.stepTime {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--moss);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+}
+.setting {
+  margin-top: 45px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+.setting h2 {
+  font-size: 30px;
+}
 .sessionPlan h2 {
   font-size: 32px;
   margin-bottom: 30px;
@@ -258,7 +273,7 @@
   font-size: 10px;
   color: var(--inksoft);
 }
-.perGuest {
+.priceBasis {
   margin: 13px 0 24px;
   font-size: 11px;
   color: var(--inksoft);
@@ -443,40 +458,40 @@
   color: var(--inksoft);
   margin: 24px 0 0;
 }
-.nextIdea {
+.preparation {
   display: grid;
   grid-template-columns: 1fr 1fr;
   column-gap: 80px;
   position: relative;
   padding-block: 48px;
 }
-.nextIdea::before,
-.nextIdea::after {
+.preparation::before,
+.preparation::after {
   content: "";
   position: absolute;
   left: 40px;
   right: 40px;
   border-top: 1px solid var(--line);
 }
-.nextIdea::before {
+.preparation::before {
   top: 0;
 }
-.nextIdea::after {
+.preparation::after {
   bottom: 0;
 }
-.nextIdea h2 {
+.preparation h2 {
   font-size: 34px;
   line-height: 1.16;
   margin: 20px 0 0;
 }
-.nextIdea h2 em {
+.preparation h2 em {
   color: var(--moss);
 }
-.nextIdea p {
+.preparation p {
   font-size: 13px;
   color: var(--inksoft);
 }
-.nextIdea .ideaNote {
+.preparation .preparationNote {
   font-size: 11px;
   line-height: 1.8;
 }
@@ -641,14 +656,14 @@
   .portfolioGrid figcaption {
     font-size: 8px;
   }
-  .nextIdea {
+  .preparation {
     gap: 35px;
   }
-  .nextIdea h2 {
+  .preparation h2 {
     font-size: 30px;
   }
-  .nextIdea::before,
-  .nextIdea::after {
+  .preparation::before,
+  .preparation::after {
     left: 24px;
     right: 24px;
   }
@@ -861,19 +876,19 @@
   .portfolioNote {
     font-size: 9px;
   }
-  .nextIdea {
+  .preparation {
     grid-template-columns: 1fr;
     gap: 22px;
     padding-block: 34px;
   }
-  .nextIdea h2 {
+  .preparation h2 {
     font-size: 33px;
     margin-top: 16px;
   }
-  .nextIdea p {
+  .preparation p {
     font-size: 14px;
   }
-  .nextIdea .ideaNote {
+  .preparation .preparationNote {
     font-size: 12px;
   }
   .reviewNote {
