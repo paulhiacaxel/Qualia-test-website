@@ -16,8 +16,6 @@ let operator;
 beforeEach(async () => {
   db = await createTestDatabase();
   operator = randomUUID();
-  // Auth email exists in Supabase; this extra field belongs only to this fixture.
-  await db.exec("alter table auth.users add column email text");
   await db.query(
     "insert into auth.users(id,email,email_confirmed_at) values($1,'axel@bookqualia.com',now())",
     [operator],
