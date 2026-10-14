@@ -1,4 +1,6 @@
+import { getAssistedHostListing } from "@/lib/host/assisted/data";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ListingForm, HostResourceForm } from "@/components/host/listing-form";
 import { LocationForm } from "@/components/host/location-form";
 import { PhotoManager } from "@/components/host/photo-manager";
@@ -24,6 +26,8 @@ export const metadata = { title: "Your experience" };
 
 export default async function EditListingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const assisted = await getAssistedHostListing();
+  if (assisted?.listing_id === id && !assisted.confirmed_at) redirect("/host/welcome");
   const [{ listing, location, photos, availability, resourceIds }, profile, safety, resources] =
     await Promise.all([
       getListingDetails(id),

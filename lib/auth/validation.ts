@@ -78,6 +78,7 @@ export function safeNext(value: unknown, fallback = "/account/dashboard"): strin
     "/account/eligibility",
     "/account/agreements",
     "/host/start",
+    "/host/welcome",
     "/host/dashboard",
     "/admin",
     "/account/update-password",

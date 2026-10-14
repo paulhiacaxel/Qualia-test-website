@@ -18,7 +18,7 @@ export default async function ConfirmPage({
     token.length >= 10 &&
     token.length <= 512 &&
     type &&
-    ["signup", "recovery", "email"].includes(type),
+    ["signup", "recovery", "email", "invite"].includes(type),
   );
   return (
     <AuthShell
@@ -26,19 +26,33 @@ export default async function ConfirmPage({
       eyebrow="Secure email confirmation"
     >
       {valid ? (
-        <AuthForm
-          mode="confirm"
-          tokenHash={token}
-          confirmationType={type}
-          next={safeNext(firstValue(params.next))}
-          configured={authIsConfigured()}
-        />
+        <>
+          <AuthForm
+            mode="confirm"
+            tokenHash={token}
+            confirmationType={type}
+            next={safeNext(firstValue(params.next))}
+            configured={authIsConfigured()}
+          />
+          {type === "invite" ? (
+            <p className="auth-footnote">
+              If your invitation has expired, <a href="mailto:contact@bookqualia.com">contact us</a>{" "}
+              and we’ll help you access your prepared listing.
+            </p>
+          ) : null}
+        </>
       ) : (
         <div className="auth-card message-card">
           <p>This email link is incomplete or invalid.</p>
-          <Link className="btn btn-primary" href="/verify-email">
-            Request a new link
-          </Link>
+          {type === "invite" ? (
+            <a className="btn btn-primary" href="mailto:contact@bookqualia.com">
+              Get help with your invitation
+            </a>
+          ) : (
+            <Link className="btn btn-primary" href="/verify-email">
+              Request a new link
+            </Link>
+          )}
         </div>
       )}
     </AuthShell>

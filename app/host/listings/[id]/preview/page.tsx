@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getAssistedHostListing } from "@/lib/host/assisted/data";
 import { getHostProfile, getListingDetails } from "@/lib/host/data";
 import { formatMoney, formatMiamiDate } from "@/lib/host/validation";
 import { getListingSafetySubmission } from "@/lib/participation/data";
@@ -8,6 +10,8 @@ export const metadata = { title: "Private experience preview" };
 
 export default async function PreviewListingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const assisted = await getAssistedHostListing();
+  if (assisted?.listing_id === id && !assisted.confirmed_at) redirect("/host/welcome");
   const [{ listing, photos, availability }, host, safety] = await Promise.all([
     getListingDetails(id),
     getHostProfile(),

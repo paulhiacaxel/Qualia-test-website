@@ -4,12 +4,15 @@ import Link from "next/link";
 export function AdminNav({
   active,
 }: {
-  active: "reviews" | "settings" | "support" | "commercial" | "payments" | "email";
+  active: "hosts" | "reviews" | "settings" | "support" | "commercial" | "payments" | "email";
 }) {
   return (
     <nav className="dashboard-nav" aria-label="Administration">
       <Link href="/admin" aria-current={active === "reviews" ? "page" : undefined}>
         Listing reviews
+      </Link>
+      <Link href="/admin/hosts" aria-current={active === "hosts" ? "page" : undefined}>
+        Prepared hosts
       </Link>
       <Link href="/admin/settings" aria-current={active === "settings" ? "page" : undefined}>
         Booking settings

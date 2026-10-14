@@ -10,9 +10,10 @@ with the link can view it. There is no booking, checkout or database mutation.
 ## Current proposal
 
 Guests bring their own cameras and learn to see through a photographer's eyes.
-The call established a 50-minute briefing, 45 minutes taking photographs and a
-50-minute debrief discussing the pictures and what participants felt: 145 minutes
-(2 hours 25 minutes) total. The discussed price is $300, but whether this is per
+Eduardo corrected the timing in his October 14 email (message
+`1a13b155ec8dcb63`): 15-minute introduction, 45-minute exercise and
+30-minute review, 90 minutes total, with 15–20 images per participant.
+The earlier 50/45/50 transcription is superseded. The discussed price is $300, but whether this is per
 guest or for the whole session was not specified. The preview explicitly leaves
 the price basis unconfirmed; it must not become checkout pricing by inference.
 

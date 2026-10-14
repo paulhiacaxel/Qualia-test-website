@@ -15,7 +15,7 @@ export default function EduardoBonoPreviewPage() {
     <main id="main-content" className={styles.page}>
       <div className={`container ${styles.previewNotice}`} role="note">
         <span className={styles.noticeLabel}>Prepared for Eduardo · Listing preview</span>
-        <span>Updated after our conversation · Not yet bookable</span>
+        <span>Updated with Eduardo’s notes · Not yet bookable</span>
         <a href="#preview-notes">About this preview ↗</a>
       </div>
 
@@ -305,11 +305,12 @@ export default function EduardoBonoPreviewPage() {
               it.
             </p>
             <p>
-              The proposed 50-minute introduction, 45-minute photo walk, 50-minute review and $300
-              price come from that conversation. Whether the price covers a session or each guest,
-              the guest limit, dates and private or shared format are still to be confirmed. Deering
-              Estate is a venue idea, not a confirmed booking or affiliation. No venue access,
-              admission inclusion, particular wildlife or sunrise conditions are promised.
+              The proposed 15-minute introduction, 45-minute photo walk, 30-minute review and $300
+              price reflect the conversation and Eduardo’s follow-up. Each guest works with 15–20
+              images. Whether the price covers a session or each guest, the guest limit, dates and
+              private or shared format are still to be confirmed. Deering Estate is a venue idea,
+              not a confirmed booking or affiliation. No venue access, admission inclusion,
+              particular wildlife or sunrise conditions are promised.
             </p>
             <p>
               Eduardo’s professional background was checked against his{" "}

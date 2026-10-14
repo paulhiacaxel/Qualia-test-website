@@ -8,11 +8,11 @@ export const eduardoProposal = {
   discussedAt: "October 14, 2026",
   backgroundCheckedAt: "October 13, 2026",
   proposedPriceDollars: 300,
-  durationLabel: "2 hr 25 min",
+  durationLabel: "1 hr 30 min",
   itinerary: [
     {
       title: "Before you take a photograph",
-      minutes: 50,
+      minutes: 15,
       description:
         "Start with a conversation about your camera, what you enjoy photographing and what you hope to see. Eduardo introduces his approach before you head out together.",
     },
@@ -24,9 +24,9 @@ export const eduardoProposal = {
     },
     {
       title: "Look back at what you saw",
-      minutes: 50,
+      minutes: 30,
       description:
-        "Sit down together to look through your photographs. Talk about what you noticed, what you felt while taking them and how those choices show up in the image.",
+        "Choose 15–20 of your photographs to look through together. Talk about what you noticed, what you felt while taking them and how those choices show up in the image.",
     },
   ],
   headshot: {

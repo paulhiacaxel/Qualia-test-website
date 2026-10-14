@@ -151,7 +151,7 @@ export async function updatePassword(_previous: AuthState, formData: FormData): 
     return temporary;
   }
   revalidatePath("/", "layout");
-  redirect("/login?updated=1");
+  redirect(`/login?updated=1&next=${encodeURIComponent(safeNext(formData.get("next")))}`);
 }
 
 export async function signOut(): Promise<void> {
@@ -188,7 +188,7 @@ export async function confirmEmail(_previous: AuthState, formData: FormData): Pr
   const parsed = z
     .object({
       token_hash: z.string().min(10).max(512),
-      type: z.enum(["signup", "recovery", "email"]),
+      type: z.enum(["signup", "recovery", "email", "invite"]),
     })
     .safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "This link is incomplete. Please request a new email." };
@@ -202,8 +202,10 @@ export async function confirmEmail(_previous: AuthState, formData: FormData): Pr
   }
   revalidatePath("/", "layout");
   redirect(
-    parsed.data.type === "recovery"
-      ? "/account/update-password"
-      : eligibilityPath(formData.get("next")),
+    parsed.data.type === "invite"
+      ? "/account/update-password?next=%2Fhost%2Fwelcome"
+      : parsed.data.type === "recovery"
+        ? "/account/update-password"
+        : eligibilityPath(formData.get("next")),
   );
 }

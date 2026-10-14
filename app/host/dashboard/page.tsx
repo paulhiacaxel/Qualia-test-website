@@ -1,10 +1,14 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { getAssistedHostListing } from "@/lib/host/assisted/data";
 import { HostNav } from "@/components/host/host-nav";
 import { getHostListings, getHostProfile } from "@/lib/host/data";
 import { formatMoney } from "@/lib/host/validation";
 
 export const metadata = { title: "Host workspace" };
 export default async function HostDashboardPage() {
+  const assisted = await getAssistedHostListing();
+  if (assisted && !assisted.confirmed_at) redirect("/host/welcome");
   const [listings, profile] = await Promise.all([getHostListings(), getHostProfile()]);
   return (
     <main id="main-content" className="container dashboard">
