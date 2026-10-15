@@ -6,7 +6,7 @@ import styles from "./preview.module.css";
 export const metadata: Metadata = {
   title: "Through a photographer’s eyes with Eduardo Bono — listing preview",
   description:
-    "Bring your own camera for a photo walk and conversation with Eduardo Bono. An updated listing preview, prepared for his review and not yet bookable.",
+    "Bring your own camera for a Brickell photo walk and conversation with Eduardo Bono. A listing preview, prepared for his review and not yet bookable.",
   robots: { index: false, follow: false, nocache: true },
 };
 
@@ -22,7 +22,7 @@ export default function EduardoBonoPreviewPage() {
       <section className={`container ${styles.hero}`} aria-labelledby="experience-title">
         <header className={styles.heroHeading}>
           <div>
-            <p className={`eyebrow ${styles.kicker}`}>Photography · Miami</p>
+            <p className={`eyebrow ${styles.kicker}`}>Photography · Brickell, Miami</p>
             <h1 id="experience-title">
               See through
               <br />a photographer’s <em>eyes.</em>
@@ -74,7 +74,7 @@ export default function EduardoBonoPreviewPage() {
             <dt>
               <span>01</span> The starting idea
             </dt>
-            <dd>A nature walk in Cutler Bay</dd>
+            <dd>A photography walk in Brickell</dd>
           </div>
           <div>
             <dt>
@@ -101,7 +101,7 @@ export default function EduardoBonoPreviewPage() {
               <em>See what you notice.</em>
             </h2>
             <p className={styles.lead}>
-              A patch of light on the water. The shape of a tree. An expression you nearly missed.
+              Light between buildings. A reflection in glass. An expression you nearly missed.
             </p>
             <p>
               Join Eduardo with your own camera for a session about seeing as much as photographing.
@@ -134,16 +134,15 @@ export default function EduardoBonoPreviewPage() {
 
           <section className={styles.setting} aria-labelledby="setting-title">
             <span className="eyebrow">Where your eye takes you</span>
-            <h2 id="setting-title">Nature, or another side of Miami.</h2>
+            <h2 id="setting-title">See Brickell a little differently.</h2>
             <p>
-              The first idea is a nature walk in Cutler Bay, with water, trees and the life around
-              them as possible subjects. Deering Estate came up as a possible location; access,
-              permissions and any admission costs still need to be confirmed.
+              Brickell is the starting point for this photography walk. Explore light, architecture
+              and city scenes with Eduardo, finding the angles and details that catch your eye.
             </p>
             <p>
-              Eduardo also suggested city scenes, architecture, portraits and a possible sunrise
-              session. These are alternatives to shape with him, rather than stops on one route. The
-              location and time will be agreed before booking.
+              There’s no need to see the city exactly as he does. Bring your own perspective and
+              camera; he’ll help you explore both. The exact route, meeting point and available
+              times will be confirmed before booking.
             </p>
           </section>
         </div>
@@ -179,13 +178,17 @@ export default function EduardoBonoPreviewPage() {
               <dd>To confirm with Eduardo</dd>
             </div>
             <div>
+              <dt>Location</dt>
+              <dd>Brickell, Miami</dd>
+            </div>
+            <div>
               <dt>Dates &amp; meeting point</dt>
-              <dd>To confirm</dd>
+              <dd>Exact details to confirm</dd>
             </div>
           </dl>
           <p className={styles.referenceNote}>
             Prepared from our {proposal.discussedAt} conversation. The final location, guest
-            options, price basis and any venue fees will be agreed before this becomes bookable.
+            options, price basis and meeting details will be agreed before this becomes bookable.
           </p>
           <div className={styles.unavailable}>Preview — bookings unavailable</div>
           <a href={proposal.editUrl} className={styles.editLink}>
@@ -284,9 +287,8 @@ export default function EduardoBonoPreviewPage() {
             like help with, so he can confirm the session is a good fit.
           </p>
           <p className={styles.preparationNote}>
-            The route, walking conditions, weather plan and any venue admission will be confirmed
-            before booking. Camera hire and a delivered collection of edited photographs are not
-            part of this draft.
+            The route, walking conditions and weather plan will be confirmed before booking. Camera
+            hire and a delivered collection of edited photographs are not part of this draft.
           </p>
           <a href={proposal.editUrl} className={styles.ideaLink}>
             Help us finish the details <span aria-hidden="true">↗</span>
@@ -308,9 +310,8 @@ export default function EduardoBonoPreviewPage() {
               The proposed 15-minute introduction, 45-minute photo walk, 30-minute review and $300
               price reflect the conversation and Eduardo’s follow-up. Each guest works with 15–20
               images. Whether the price covers a session or each guest, the guest limit, dates and
-              private or shared format are still to be confirmed. Deering Estate is a venue idea,
-              not a confirmed booking or affiliation. No venue access, admission inclusion,
-              particular wildlife or sunrise conditions are promised.
+              private or shared format are still to be confirmed. This draft is for Brickell; the
+              exact route, meeting point and weather arrangements need confirmation before booking.
             </p>
             <p>
               Eduardo’s professional background was checked against his{" "}
@@ -322,9 +323,9 @@ export default function EduardoBonoPreviewPage() {
                 public portfolio
               </a>{" "}
               and published service, including his profile photo. Photography is credited to Eduardo
-              Bono; the images span his existing work and are not identified as Cutler Bay, Deering
-              Estate or previous Qualia experiences. Photo selection, copy, final terms and venue
-              arrangements remain for his confirmation and Qualia’s listing review.
+              Bono; the images span his existing work and are not identified as Brickell or previous
+              Qualia experiences. Photo selection, copy, final terms and route arrangements remain
+              for his confirmation and Qualia’s listing review.
             </p>
           </div>
         </details>

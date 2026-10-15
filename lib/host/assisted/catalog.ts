@@ -16,12 +16,12 @@ export const assistedHostCatalog = {
     listing: {
       title: "Through a photographer’s eyes with Eduardo Bono",
       description:
-        "Bring your own camera for a photography walk with Eduardo Bono. Start with a 15-minute introduction, spend 45 minutes making photographs, then sit down for a 30-minute review of 15–20 images each. Talk about what caught your attention, what you felt and how your choices appear in the photographs.\n\nThe starting idea is a nature walk in Cutler Bay. Deering Estate is a possible venue, subject to access and admission confirmation. City scenes, architecture, portraits and sunrise sessions are alternative ideas to agree with Eduardo. The first location, meeting point and dates will be confirmed before bookings open.\n\nUse your own camera; tell Eduardo what you plan to bring. The selected images on this page are from his existing portfolio, not photographs of this new session. Final equipment requirements, route, weather plan and any venue charges will be confirmed before publication.",
+        "Bring your own camera for a photography walk in Brickell with Eduardo Bono. Start with a 15-minute introduction, spend 45 minutes making photographs, then sit down for a 30-minute review of 15–20 images each. Talk about what caught your attention, what you felt and how your choices appear in the photographs.\n\nExplore Brickell through your own lens, paying attention to light, architecture and city scenes. Eduardo will help you notice a different angle and find the details that interest you. The exact route, meeting point and dates will be confirmed before bookings open.\n\nUse your own camera; tell Eduardo what you plan to bring. The selected images are from his existing portfolio. They are not identified as photographs of Brickell and do not show this new session. Final equipment requirements, walking conditions and weather arrangements will be confirmed before publication.",
       category: "photography",
       price_cents: 30000,
       duration_minutes: 90,
       city: "Miami",
-      neighborhood: "Cutler Bay — location to confirm",
+      neighborhood: "Brickell",
     },
     photos: [
       eduardoProposal.photos.place,
