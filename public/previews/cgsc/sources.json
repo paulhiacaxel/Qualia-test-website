@@ -1,0 +1,37 @@
+{
+  "captured_date": "2026-10-13",
+  "purpose": "Non-bookable CGSC proposal preview; subject to club review.",
+  "facts_source": "https://www.cgscic.org/programs/adult-sailing",
+  "publication_caveats": [
+    "CGSC approval of photos and listing required before public bookable publication.",
+    "Instructor assignment, actual availability, final price and inclusions require club confirmation.",
+    "The $240 reference is three hours at the published $80/hour per person coaching rate; $335 certification is separate.",
+    "Basic Keelboat course or equivalent experience required."
+  ],
+  "images": [
+    {
+      "file": "keelboat.webp",
+      "original_url": "https://www.cgsc.org/wp-content/uploads/2015/10/basic-keelboat-2-for-cgsc-page.jpg",
+      "source_page": "https://www.cgsc.org/",
+      "processing": "Lossy WebP compression at quality82; aspect ratio/content preserved; moorings resized to1600px width only."
+    },
+    {
+      "file": "onboard.webp",
+      "original_url": "https://www.cgscic.org/assets/courses/basic-keelboat.jpg",
+      "source_page": "https://www.cgscic.org/programs/adult-sailing",
+      "processing": "Lossy WebP compression at quality82; aspect ratio/content preserved; moorings resized to1600px width only."
+    },
+    {
+      "file": "moorings.webp",
+      "original_url": "https://www.cgsc.org/wp-content/uploads/2015/10/mooorrr.jpg",
+      "source_page": "https://www.cgsc.org/",
+      "processing": "Lossy WebP compression at quality82; aspect ratio/content preserved; moorings resized to1600px width only."
+    },
+    {
+      "file": "ed-benitez.webp",
+      "original_url": "https://www.cgscic.org/assets/coaches/ed.jpg",
+      "source_page": "https://www.cgscic.org/programs/adult-sailing",
+      "processing": "Lossy WebP compression at quality82; aspect ratio/content preserved; moorings resized to1600px width only."
+    }
+  ]
+}

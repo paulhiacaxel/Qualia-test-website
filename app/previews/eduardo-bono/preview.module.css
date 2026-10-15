@@ -1,0 +1,903 @@
+.page {
+  padding-block: 24px 72px;
+}
+.previewNotice {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: var(--inksoft);
+  font-size: 10px;
+  line-height: 1.6;
+}
+.noticeLabel {
+  color: var(--moss);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+}
+.previewNotice > a {
+  margin-left: auto;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.hero {
+  padding-top: 66px;
+}
+.heroHeading {
+  display: grid;
+  grid-template-columns: 1.65fr 1fr;
+  align-items: end;
+  gap: 60px;
+  margin-bottom: 38px;
+}
+.kicker {
+  margin-bottom: 22px;
+  color: var(--moss);
+}
+.heroHeading h1 {
+  margin: 0;
+  font-size: clamp(46px, 5.9vw, 78px);
+  font-weight: 450;
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+}
+.heroHeading h1 em {
+  color: var(--moss);
+  font-weight: 450;
+}
+.heroIntro {
+  padding-bottom: 4px;
+}
+.hostName {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--moss);
+}
+.heroIntro p {
+  font-size: 17px;
+  line-height: 1.65;
+  margin: 15px 0 23px;
+  color: var(--inksoft);
+}
+.jumpLink {
+  display: inline-flex;
+  gap: 24px;
+  align-items: center;
+  font-size: 11px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 7px;
+}
+.jumpLink span {
+  color: var(--moss);
+  font-size: 19px;
+}
+.heroGallery {
+  display: grid;
+  grid-template-columns: 1.72fr 1fr;
+  gap: 14px;
+  height: 490px;
+}
+.heroGallery figure {
+  margin: 0;
+  overflow: hidden;
+  min-width: 0;
+  background: var(--paperalt);
+}
+.heroGallery img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+.heroPhoto {
+  border-radius: 2px;
+}
+.heroPortrait {
+  position: relative;
+  border-radius: 100px 2px 2px 2px;
+}
+.heroPortrait figcaption {
+  position: absolute;
+  inset: auto 0 0;
+  display: grid;
+  gap: 7px;
+  padding: 65px 24px 24px;
+  color: white;
+  background: linear-gradient(transparent, rgba(20, 29, 24, 0.75));
+}
+.heroPortrait figcaption span:first-child {
+  font-family: "Fraunces Variable", serif;
+  font-size: 23px;
+  line-height: 1.15;
+  max-width: 12ch;
+}
+.heroPortrait figcaption span:last-child {
+  font-size: 9px;
+}
+.galleryCredit {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding-top: 12px;
+  font-size: 10px;
+  color: var(--inksoft);
+  line-height: 1.6;
+}
+.galleryCredit a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 34px 0 0;
+  padding: 23px 0 30px;
+  border-block: 1px solid var(--line);
+}
+.facts > div {
+  padding-inline: 30px;
+  border-left: 1px solid var(--line);
+}
+.facts > div:first-child {
+  padding-left: 0;
+  border: 0;
+}
+.facts dt {
+  font-family: "IBM Plex Mono", monospace;
+  color: var(--inksoft);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  margin-bottom: 12px;
+}
+.facts dt span {
+  color: #8b6a28;
+  margin-right: 10px;
+}
+.facts dd {
+  font-family: "Fraunces Variable", serif;
+  font-size: 25px;
+  margin: 0;
+}
+.experienceContent {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 350px;
+  gap: 90px;
+  padding-block: 74px 78px;
+  scroll-margin-top: 95px;
+}
+.story h2 {
+  font-size: 40px;
+  line-height: 1.13;
+  letter-spacing: -0.035em;
+  margin: 18px 0 24px;
+}
+.story h2 em {
+  color: var(--moss);
+}
+.story p {
+  color: var(--inksoft);
+  font-size: 14px;
+  line-height: 1.85;
+  margin-bottom: 19px;
+}
+.story .lead {
+  color: var(--ink);
+  font-size: 18px;
+  line-height: 1.65;
+}
+.sessionPlan {
+  margin-top: 50px;
+  padding-top: 35px;
+  border-top: 1px solid var(--line);
+}
+.stepTime {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--moss);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 10px;
+}
+.setting {
+  margin-top: 45px;
+  padding-top: 32px;
+  border-top: 1px solid var(--line);
+}
+.setting h2 {
+  font-size: 30px;
+}
+.sessionPlan h2 {
+  font-size: 32px;
+  margin-bottom: 30px;
+}
+.sessionPlan ol {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.sessionPlan li {
+  display: flex;
+  gap: 21px;
+  margin-bottom: 28px;
+}
+.sessionPlan li:last-child {
+  margin-bottom: 0;
+}
+.stepNumber {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  color: #8b6a28;
+  padding-top: 5px;
+}
+.sessionPlan h3 {
+  font-size: 22px;
+  line-height: 1.25;
+  margin-bottom: 10px;
+}
+.sessionPlan p {
+  font-size: 13px;
+  margin-bottom: 0;
+}
+.sessionCard {
+  align-self: start;
+  position: sticky;
+  top: 108px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  padding: 28px;
+  box-shadow: 0 16px 50px -30px rgba(55, 80, 59, 0.23);
+}
+.cardEyebrow {
+  color: var(--moss);
+  font-size: 9px;
+}
+.sessionCard h2 {
+  font-size: 33px;
+  line-height: 1.1;
+  margin: 20px 0 29px;
+}
+.sessionCard h2 em {
+  color: var(--moss);
+}
+.price {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+.price span:first-child {
+  font-family: "Fraunces Variable", serif;
+  font-size: 48px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+.price span:last-child {
+  font-size: 10px;
+  color: var(--inksoft);
+}
+.priceBasis {
+  margin: 13px 0 24px;
+  font-size: 11px;
+  color: var(--inksoft);
+}
+.sessionDetails {
+  padding-block: 15px;
+  border-block: 1px solid var(--line);
+  margin: 0 0 17px;
+}
+.sessionDetails > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  font-size: 11px;
+  padding: 7px 0;
+}
+.sessionDetails dt {
+  color: var(--inksoft);
+}
+.sessionDetails dd {
+  margin: 0;
+  text-align: right;
+}
+.referenceNote {
+  font-size: 10px;
+  line-height: 1.75;
+  color: var(--inksoft);
+  margin-bottom: 20px;
+}
+.unavailable {
+  background: #e6eadd;
+  border: 1px solid #d8dfcd;
+  color: var(--mossdeep);
+  text-align: center;
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 14px 9px;
+  border-radius: 4px;
+}
+.editLink {
+  display: flex;
+  justify-content: center;
+  gap: 13px;
+  font-size: 11px;
+  color: var(--moss);
+  margin: 20px 0 13px;
+}
+.cardFootnote {
+  font-size: 9px;
+  line-height: 1.7;
+  text-align: center;
+  color: var(--inksoft);
+  margin: 0;
+}
+.artistSection {
+  background: var(--mossdeep);
+  color: var(--paper);
+  padding-block: 66px;
+}
+.artistInner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 90px;
+}
+.artistTitle .eyebrow {
+  color: #d6dcca;
+  font-size: 10px;
+}
+.artistTitle h2 {
+  font-size: 78px;
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  margin: 25px 0;
+}
+.artistTitle h2 em {
+  color: #d1c08b;
+}
+.artistIdentity {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-top: 30px;
+}
+.artistIdentity img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.artistIdentity p {
+  font-size: 12px;
+  color: #d6dcca;
+  margin: 0;
+  line-height: 1.6;
+}
+.artistStory {
+  padding-top: 20px;
+}
+.artistStory .artistLead {
+  color: var(--paper);
+  font-family: "Fraunces Variable", serif;
+  font-size: 32px;
+  line-height: 1.25;
+  margin-bottom: 25px;
+}
+.artistStory p {
+  color: #d6dcca;
+  font-size: 13px;
+  line-height: 1.85;
+}
+.artistStory > a {
+  display: inline-flex;
+  gap: 20px;
+  color: var(--paper);
+  font-size: 11px;
+  border-bottom: 1px solid #76896b;
+  padding-bottom: 9px;
+  margin-top: 12px;
+}
+.artistStory > a:hover {
+  color: #e2ce93;
+}
+.portfolio {
+  padding-block: 72px 65px;
+}
+.portfolio header {
+  display: flex;
+  justify-content: space-between;
+  gap: 35px;
+  align-items: end;
+  margin-bottom: 30px;
+}
+.portfolio h2 {
+  font-size: 36px;
+  line-height: 1.15;
+  margin: 17px 0 0;
+}
+.portfolio h2 em {
+  color: var(--moss);
+}
+.portfolioLabel {
+  color: var(--inksoft);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 9px;
+  line-height: 1.7;
+  text-align: right;
+  flex-shrink: 0;
+}
+.portfolioGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+.portfolioGrid figure {
+  min-width: 0;
+  margin: 0;
+}
+.portfolioGrid figure:nth-child(2) {
+  padding-top: 44px;
+}
+.portfolioGrid img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--paperalt);
+}
+.portfolioGrid figcaption {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 13px;
+  color: var(--inksoft);
+  font-size: 9px;
+}
+.portfolioGrid figcaption span:first-child {
+  font-family: "IBM Plex Mono", monospace;
+  color: #8b6a28;
+}
+.portfolioNote {
+  font-size: 10px;
+  color: var(--inksoft);
+  margin: 24px 0 0;
+}
+.preparation {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 80px;
+  position: relative;
+  padding-block: 48px;
+}
+.preparation::before,
+.preparation::after {
+  content: "";
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  border-top: 1px solid var(--line);
+}
+.preparation::before {
+  top: 0;
+}
+.preparation::after {
+  bottom: 0;
+}
+.preparation h2 {
+  font-size: 34px;
+  line-height: 1.16;
+  margin: 20px 0 0;
+}
+.preparation h2 em {
+  color: var(--moss);
+}
+.preparation p {
+  font-size: 13px;
+  color: var(--inksoft);
+}
+.preparation .preparationNote {
+  font-size: 11px;
+  line-height: 1.8;
+}
+.ideaLink {
+  display: inline-flex;
+  gap: 18px;
+  color: var(--moss);
+  font-size: 12px;
+  margin-top: 8px;
+}
+.reviewNote {
+  padding-top: 28px;
+  scroll-margin-top: 105px;
+  color: var(--inksoft);
+}
+.reviewNote summary {
+  font-size: 11px;
+  line-height: 1.7;
+  cursor: pointer;
+  width: fit-content;
+}
+.reviewNote summary:focus-visible {
+  outline: 2px solid var(--moss);
+  outline-offset: 4px;
+}
+.reviewDetails {
+  max-width: 800px;
+  margin-top: 20px;
+  padding: 22px;
+  background: var(--paperalt);
+}
+.reviewDetails p {
+  font-size: 11px;
+  line-height: 1.85;
+  margin-bottom: 14px;
+}
+.reviewDetails p:last-child {
+  margin-bottom: 0;
+}
+.reviewDetails a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (max-width: 1050px) {
+  .heroHeading {
+    gap: 35px;
+  }
+  .heroGallery {
+    height: 425px;
+  }
+  .experienceContent {
+    grid-template-columns: minmax(0, 1fr) 315px;
+    gap: 44px;
+  }
+  .sessionCard {
+    padding: 24px;
+  }
+  .facts dd {
+    font-size: 23px;
+  }
+  .artistInner {
+    gap: 60px;
+  }
+}
+@media (max-width: 800px) {
+  .previewNotice {
+    flex-wrap: wrap;
+    gap: 5px 16px;
+  }
+  .previewNotice > a {
+    display: none;
+  }
+  .hero {
+    padding-top: 43px;
+  }
+  .heroHeading {
+    grid-template-columns: 1.25fr 1fr;
+    gap: 27px;
+  }
+  .heroHeading h1 {
+    font-size: 53px;
+  }
+  .heroIntro p {
+    font-size: 14px;
+  }
+  .heroGallery {
+    height: 360px;
+    gap: 10px;
+    grid-template-columns: 1.5fr 1fr;
+  }
+  .heroPortrait {
+    border-top-left-radius: 75px;
+  }
+  .heroPortrait figcaption {
+    padding: 50px 16px 18px;
+  }
+  .heroPortrait figcaption span:first-child {
+    font-size: 22px;
+  }
+  .facts > div {
+    padding-inline: 16px;
+  }
+  .facts dd {
+    font-size: 21px;
+  }
+  .facts dt {
+    font-size: 9px;
+  }
+  .facts dt span {
+    margin-right: 5px;
+  }
+  .experienceContent {
+    gap: 32px;
+    grid-template-columns: minmax(0, 1fr) 280px;
+    padding-block: 52px;
+  }
+  .story h2 {
+    font-size: 33px;
+  }
+  .story .lead {
+    font-size: 16px;
+  }
+  .story p {
+    font-size: 13px;
+  }
+  .sessionCard {
+    padding: 20px;
+  }
+  .sessionCard h2 {
+    font-size: 31px;
+  }
+  .sessionPlan h2 {
+    font-size: 28px;
+  }
+  .sessionPlan li {
+    gap: 13px;
+  }
+  .sessionPlan h3 {
+    font-size: 20px;
+  }
+  .sessionPlan p {
+    font-size: 12px;
+  }
+  .artistInner {
+    gap: 40px;
+  }
+  .artistTitle h2 {
+    font-size: 67px;
+  }
+  .artistStory .artistLead {
+    font-size: 28px;
+  }
+  .portfolio h2 {
+    font-size: 30px;
+  }
+  .portfolioLabel {
+    display: none;
+  }
+  .portfolioGrid {
+    gap: 13px;
+  }
+  .portfolioGrid figcaption {
+    font-size: 8px;
+  }
+  .preparation {
+    gap: 35px;
+  }
+  .preparation h2 {
+    font-size: 30px;
+  }
+  .preparation::before,
+  .preparation::after {
+    left: 24px;
+    right: 24px;
+  }
+}
+@media (max-width: 620px) {
+  .page {
+    padding-top: 17px;
+    padding-bottom: 44px;
+  }
+  .previewNotice {
+    font-size: 9px;
+    gap: 4px;
+  }
+  .noticeLabel {
+    font-size: 9px;
+    width: 100%;
+  }
+  .hero {
+    padding-top: 33px;
+  }
+  .heroHeading {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    margin-bottom: 25px;
+  }
+  .heroHeading h1 {
+    font-size: clamp(42px, 10.5vw, 64px);
+    line-height: 1.04;
+  }
+  .kicker {
+    font-size: 9px;
+    margin-bottom: 17px;
+  }
+  .heroIntro {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .heroIntro p {
+    margin: 11px 0 14px;
+    font-size: 14px;
+  }
+  .heroIntro p br {
+    display: none;
+  }
+  .jumpLink {
+    width: fit-content;
+    font-size: 10px;
+  }
+  .hostName {
+    font-size: 11px;
+  }
+  .heroGallery {
+    height: auto;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .heroPhoto {
+    aspect-ratio: 3 / 2;
+  }
+  .heroPortrait {
+    justify-self: end;
+    width: 62%;
+    aspect-ratio: 850 / 1079;
+    margin-top: -36px !important;
+    border: 7px solid var(--paper);
+    border-top-left-radius: 65px;
+  }
+  .heroPortrait figcaption {
+    padding: 50px 13px 16px;
+  }
+  .heroPortrait figcaption span:first-child {
+    font-size: 22px;
+  }
+  .heroPortrait figcaption span:last-child {
+    font-size: 8px;
+    line-height: 1.5;
+  }
+  .galleryCredit {
+    font-size: 8px;
+    gap: 10px;
+    padding-top: 10px;
+  }
+  .galleryCredit a {
+    flex-shrink: 0;
+  }
+  .facts {
+    margin-top: 24px;
+    padding-block: 20px;
+    gap: 13px;
+  }
+  .facts > div {
+    padding-inline: 0;
+    border: 0;
+  }
+  .facts dt {
+    font-size: 8px;
+    letter-spacing: 0;
+    line-height: 1.6;
+    margin-bottom: 7px;
+  }
+  .facts dt span {
+    display: none;
+  }
+  .facts dd {
+    font-size: 19px;
+    line-height: 1.15;
+  }
+  .experienceContent {
+    grid-template-columns: 1fr;
+    gap: 35px;
+    padding-block: 42px;
+  }
+  .story h2 {
+    font-size: 35px;
+  }
+  .story p {
+    font-size: 14px;
+  }
+  .story .lead {
+    font-size: 17px;
+  }
+  .sessionPlan {
+    margin-top: 33px;
+    padding-top: 29px;
+  }
+  .sessionPlan h2 {
+    font-size: 29px;
+  }
+  .sessionPlan h3 {
+    font-size: 23px;
+  }
+  .sessionPlan p {
+    font-size: 13px;
+  }
+  .sessionPlan li {
+    gap: 18px;
+  }
+  .sessionCard {
+    position: static;
+    padding: 26px;
+  }
+  .sessionCard h2 {
+    font-size: 35px;
+    margin-bottom: 22px;
+  }
+  .sessionDetails > div {
+    font-size: 12px;
+  }
+  .referenceNote {
+    font-size: 11px;
+  }
+  .cardFootnote {
+    font-size: 10px;
+  }
+  .artistSection {
+    padding-block: 42px;
+  }
+  .artistInner {
+    grid-template-columns: 1fr;
+    gap: 26px;
+  }
+  .artistTitle h2 {
+    font-size: 73px;
+    margin-block: 20px;
+  }
+  .artistTitle h2 br {
+    display: none;
+  }
+  .artistTitle h2 em {
+    display: block;
+  }
+  .artistStory {
+    padding-top: 0;
+  }
+  .artistStory .artistLead {
+    font-size: 30px;
+  }
+  .artistStory p {
+    font-size: 14px;
+  }
+  .portfolio {
+    padding-block: 44px 36px;
+  }
+  .portfolio h2 {
+    font-size: 32px;
+    max-width: 17ch;
+  }
+  .portfolio header {
+    margin-bottom: 24px;
+  }
+  .portfolioGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 14px;
+  }
+  .portfolioGrid figure:first-child {
+    grid-column: 1 / -1;
+  }
+  .portfolioGrid figure:nth-child(2) {
+    padding-top: 0;
+  }
+  .portfolioGrid figcaption {
+    font-size: 8px;
+    padding-top: 9px;
+  }
+  .portfolioGrid figure:not(:first-child) figcaption span:last-child {
+    max-width: 11ch;
+    text-align: right;
+    line-height: 1.5;
+  }
+  .portfolioNote {
+    font-size: 9px;
+  }
+  .preparation {
+    grid-template-columns: 1fr;
+    gap: 22px;
+    padding-block: 34px;
+  }
+  .preparation h2 {
+    font-size: 33px;
+    margin-top: 16px;
+  }
+  .preparation p {
+    font-size: 14px;
+  }
+  .preparation .preparationNote {
+    font-size: 12px;
+  }
+  .reviewNote {
+    padding-top: 24px;
+  }
+  .reviewNote summary {
+    font-size: 10px;
+  }
+  .reviewDetails {
+    padding: 17px;
+  }
+}

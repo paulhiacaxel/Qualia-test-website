@@ -1,0 +1,8 @@
+{"postgres":"PostgreSQL 18.6 (Ubuntu 18.6-0ubuntu0.26.04.1) on x86_64-pc-linux-gnu, compiled by gcc (Ubuntu 15.2.0-16ubuntu1) 15.2.0, 64-bit","migrationsSha256":"8f4d42d96dcf01089556b38a4c8807ad915ea6471ff651988c2c9e47039c0d3b"}
+{"case":"two parties contend for the last shared seat","backendA":3906,"backendB":3907,"blocking":{"pid":3907,"wait_event_type":"Lock","wait_event":"advisory","blockers":[3906]},"committed":1,"rejected":1,"rejectionCode":"23P01"}
+{"case":"private buyout commits while shared-seat request waits","backendA":3908,"backendB":3909,"blocking":{"pid":3909,"wait_event_type":"Lock","wait_event":"advisory","blockers":[3908]},"committed":1,"rejected":1,"rejectionCode":"23P01"}
+{"case":"shared seats commit while private buyout waits","backendA":3910,"backendB":3911,"blocking":{"pid":3911,"wait_event_type":"Lock","wait_event":"advisory","blockers":[3910]},"committed":1,"rejected":1,"rejectionCode":"23P01"}
+{"case":"different listings contend for the same boat","backendA":3912,"backendB":3913,"blocking":{"pid":3913,"wait_event_type":"Lock","wait_event":"advisory","blockers":[3912]},"committed":1,"rejected":1,"rejectionCode":"23P01"}
+{"case":"independent boats remain bookable after lock serialization","backendA":3914,"backendB":3915,"blocking":{"pid":3915,"wait_event_type":"Lock","wait_event":"advisory","blockers":[3914]},"committed":2,"rejected":0,"rejectionCode":null}
+{"case":"unpaid cancellation releases final seat atomically","backendA":3916,"backendB":3917,"blocking":{"pid":3917,"wait_event_type":"Lock","wait_event":"advisory","blockers":[3916]},"cancelled":1,"replacementCommitted":1}
+{"passed":6,"total":6,"providerPaymentTested":false,"productionTouched":false}
