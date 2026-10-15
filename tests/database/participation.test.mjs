@@ -213,6 +213,36 @@ async function fixture({
 const request = (f, details = participant(f.revision), guest = f.guest) =>
   as(guest, () => scalar("request_booking", [f.id, f.start, "Synthetic request", details]));
 
+test("guardian choice persists across saves; completing the last safety note allows submission", async () => {
+  const draft = complete({ min_age: 15, guardian_presence: "required", insurance_evidence: "" });
+  const f = await fixture({ submission: draft, publish: false, review: false });
+  let revision = f.revision;
+  for (let save = 0; save < 2; save++) {
+    const saved = await as("host", () => scalar("get_listing_safety_submission", [f.id]));
+    assert.equal(saved.guardian_presence, "required");
+    assert.equal(saved.revision, revision);
+    revision = await as("host", () =>
+      scalar("save_listing_safety_submission", [f.id, revision, draft]),
+    );
+  }
+  await rejects(() => as("host", () => scalar("submit_listing_for_review", [f.id])), "22023");
+  assert.equal((await state(f.id)).status, "draft");
+  await as("host", () =>
+    scalar("save_listing_safety_submission", [
+      f.id,
+      revision,
+      {
+        ...draft,
+        insurance_evidence: "Synthetic host reports coverage is unconfirmed; review needed.",
+      },
+    ]),
+  );
+  await as("host", () => scalar("submit_listing_for_review", [f.id]));
+  const submitted = await state(f.id);
+  assert.equal(submitted.status, "submitted");
+  assert.equal(submitted.participation_rules, null);
+});
+
 test("untrusted signup metadata cannot create adult eligibility and host entry needs explicit attestation", async () => {
   const result = await as("unattested", () => scalar("get_account_eligibility"));
   assert.equal(result.eligible, false);

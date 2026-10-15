@@ -3,6 +3,7 @@ import { test } from "node:test";
 import {
   safetySubmissionSchema,
   safetySubmissionComplete,
+  missingSafetyDetails,
   safetyReviewSchema,
   participantSchema,
 } from "../../lib/participation/validation.ts";
@@ -22,6 +23,17 @@ const submission = {
   emergency_plan: "Stop activity and contact emergency services as needed.",
   evidence_expires_on: "2027-12-31",
 };
+
+test("incomplete safety drafts identify the exact missing fields and their form links", () => {
+  assert.deepEqual(missingSafetyDetails({ ...submission, insurance_evidence: "   " }), [
+    { label: "Insurance evidence and scope", href: "#safety-insurance_evidence" },
+  ]);
+  assert.deepEqual(missingSafetyDetails({ ...submission, guardian_presence: null }), [
+    { label: "Guardian presence for a minor", href: "#safety-guardian" },
+  ]);
+  assert.deepEqual(missingSafetyDetails({ ...submission, min_age: 0 }), []);
+  assert.equal(missingSafetyDetails(null).length, 12);
+});
 
 test("safety drafts can remain incomplete but cannot count as ready for review", () => {
   const incomplete = { ...submission, min_age: null, insurance_evidence: "" };

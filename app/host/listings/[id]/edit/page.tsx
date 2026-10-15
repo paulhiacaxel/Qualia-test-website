@@ -19,7 +19,7 @@ import { MAX_LISTING_GUESTS } from "@/lib/host/validation";
 import { createClient } from "@/lib/supabase/server";
 import { HostSafetyForm } from "@/components/participation/host-safety-form";
 import { getListingSafetySubmission } from "@/lib/participation/data";
-import { safetySubmissionComplete } from "@/lib/participation/validation";
+import { missingSafetyDetails, safetySubmissionComplete } from "@/lib/participation/validation";
 import { requireAdultAccount } from "@/lib/auth/session";
 
 export const metadata = { title: "Your experience" };
@@ -41,6 +41,7 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
   const feedbackResult = await supabase.rpc("get_listing_review_feedback", { p_listing_id: id });
   if (feedbackResult.error) throw new Error("Your review feedback could not be loaded.");
   const feedback = feedbackResult.data?.[0]?.host_feedback as string | undefined;
+  const missingSafety = missingSafetyDetails(safety);
   const checklist = [
     {
       label: "Host profile",
@@ -94,7 +95,9 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
       label: "Participation and safety details",
       complete: safetySubmissionComplete(safety),
       href: "#participation-safety",
-      help: "Save the proposed age range, participation rules and private evidence for review.",
+      help: missingSafety.length
+        ? `Still needed: ${missingSafety.map((item) => item.label).join(", ")}. Complete these fields in section 05, then save that section.`
+        : "Save the proposed age range, participation rules and private evidence for review.",
     },
   ];
   const complete = checklist.every((item) => item.complete);

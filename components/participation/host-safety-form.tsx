@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { saveListingSafety, type SafetySaveState } from "@/app/host/safety-actions";
 import { RequiredMark } from "@/components/host/required-field";
 import type { ListingSafetySubmission } from "@/lib/participation/types";
+import { missingSafetyDetails } from "@/lib/participation/validation";
 
 const publicFields = [
   {
@@ -42,7 +43,7 @@ const evidenceFields = [
   {
     name: "insurance_evidence",
     label: "Insurance evidence and scope",
-    hint: "Describe the insurer, policy reference, covered activity, group size, participant ages and venue, and any exclusions. Identify anything unconfirmed. This information does not establish verified coverage.",
+    hint: "Describe the insurer, policy reference, covered activity, group size, participant ages and venue, and any exclusions. If you do not have insurance or coverage is unconfirmed, say so here. Qualia will review it before publication; saving this note does not establish verified coverage.",
   },
   {
     name: "venue_evidence",
@@ -81,12 +82,19 @@ export function HostSafetyForm({
   const [initialRevision] = useState(submission?.revision ?? null);
   const expectedRevision = state.savedRevision ?? initialRevision;
   const revisionChanged = (submission?.revision ?? 0) > (expectedRevision ?? 0);
+  const missing = missingSafetyDetails(submission);
   // Controlled fields preserve the host’s writing if validation or a revision check fails.
   const [values, setValues] = useState(() => initialValues(submission));
   const setValue = (name: string, value: string) =>
     setValues((current) => ({ ...current, [name]: value }));
   return (
-    <form action={action} className="form-stack host-form">
+    <form
+      action={action}
+      // This edit form owns its values. React's post-action native reset can reset
+      // a controlled select's DOM value, so a second save would send a blank rule.
+      onReset={(event) => event.preventDefault()}
+      className="form-stack host-form"
+    >
       <input type="hidden" name="listingId" value={listingId} />
       <input type="hidden" name="expectedRevision" value={expectedRevision ?? ""} />
       <p className="field-hint">
@@ -105,6 +113,21 @@ export function HostSafetyForm({
         <div className="notice">
           <strong>Participation review feedback</strong>
           <p className="preview-prose">{submission.review_note}</p>
+        </div>
+      ) : null}
+      {submission && missing.length > 0 ? (
+        <div className="notice">
+          <strong>Still needed before you can submit for review</strong>
+          <ul>
+            {missing.map(({ label, href }) => (
+              <li key={href}>
+                <a className="text-link" href={href}>
+                  {label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p>Complete these fields, then use “Save participation and safety draft” below.</p>
         </div>
       ) : null}
       {revisionChanged ? (

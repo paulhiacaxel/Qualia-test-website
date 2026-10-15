@@ -27,6 +27,31 @@ export const safetySubmissionSchema = z
     { path: ["max_age"], message: "The oldest participant must be at least the minimum age." },
   );
 
+const requiredSafetyDetails = [
+  ["min_age", "Minimum participant age", "safety-min-age"],
+  ["max_age", "Maximum participant age", "safety-max-age"],
+  ["guardian_presence", "Guardian presence for a minor", "safety-guardian"],
+  ["participation_rules", "Who can take part", "safety-participation_rules"],
+  ["hazards", "Risks guests should understand", "safety-hazards"],
+  ["equipment", "Equipment and what to bring", "safety-equipment"],
+  ["prerequisites", "Experience and other requirements", "safety-prerequisites"],
+  ["supervision_plan", "Supervision and guardian arrangements", "safety-supervision_plan"],
+  ["credentials_evidence", "Qualifications and licenses", "safety-credentials_evidence"],
+  ["insurance_evidence", "Insurance evidence and scope", "safety-insurance_evidence"],
+  ["venue_evidence", "Permission to use the venue", "safety-venue_evidence"],
+  ["emergency_plan", "Emergency and stop conditions", "safety-emergency_plan"],
+] as const;
+
+/** Name the blank draft fields without inventing answers or weakening review checks. */
+export function missingSafetyDetails(value: SafetySubmission | null) {
+  return requiredSafetyDetails
+    .filter(([name]) => {
+      const field = value?.[name];
+      return field == null || (typeof field === "string" && field.trim() === "");
+    })
+    .map(([, label, id]) => ({ label, href: `#${id}` }));
+}
+
 export function safetySubmissionComplete(value: SafetySubmission | null): boolean {
   if (!value) return false;
   // Read models also include reviewer metadata. Validate just the draft fields.
