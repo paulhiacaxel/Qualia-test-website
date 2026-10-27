@@ -70,7 +70,7 @@ export async function startHostOnboarding(
   _previous: PaymentActionState,
   _form: FormData,
 ): Promise<PaymentActionState> {
-  const { user, profile } = await requireAdultHost();
+  const { user, profile } = await requireAdultHost("/host/payments");
   const access = await getHostPaymentAccess(user.id);
   if (!access?.canOnboard)
     return {
@@ -93,7 +93,7 @@ export async function openHostPaymentDashboard(
   _previous: PaymentActionState,
   _form: FormData,
 ): Promise<PaymentActionState> {
-  const { user } = await requireHost();
+  const { user } = await requireHost("/host/payments");
   if (!(await getHostPaymentAccess(user.id)))
     return { error: "Your Stripe payout dashboard is not available yet." };
   let url: string;
@@ -112,7 +112,7 @@ export async function refreshHostPaymentStatus(
   _previous: PaymentActionState,
   _form: FormData,
 ): Promise<PaymentActionState> {
-  const { user } = await requireHost();
+  const { user } = await requireHost("/host/payments");
   const access = await getHostPaymentAccess(user.id);
   if (!access) return { error: "Payout setup is not available yet." };
   try {

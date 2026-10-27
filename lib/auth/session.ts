@@ -87,17 +87,17 @@ export const getProfile = cache(async () => {
   };
 });
 
-export async function requireHost() {
-  const user = await requireUser("/host/dashboard");
+export async function requireHost(next = "/host/dashboard") {
+  const user = await requireUser(next);
   const profile = await getProfile();
   if (!profile?.is_host) redirect("/host/start");
   return { user, profile };
 }
 
 /** New host work requires eligibility; existing records and declines remain accessible. */
-export async function requireAdultHost() {
-  await requireAdultAccount("/host/dashboard");
-  return requireHost();
+export async function requireAdultHost(next = "/host/dashboard") {
+  await requireAdultAccount(next);
+  return requireHost(next);
 }
 
 export async function requireAdmin() {
