@@ -35,7 +35,7 @@ export async function SiteHeader() {
           ) : (
             <>
               <Link href="/login">Sign in</Link>
-              <Link className="btn btn-primary btn-sm" href="/signup?role=host">
+              <Link className="btn btn-primary btn-sm" href="/#hosts">
                 Become a host
               </Link>
             </>

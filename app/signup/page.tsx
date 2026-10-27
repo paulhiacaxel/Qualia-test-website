@@ -37,7 +37,7 @@ export default async function SignupPage({
         configured={authIsConfigured()}
       />
       <p className="auth-footnote">
-        We&apos;re pre-launch. Creating an account does not make a booking or publish a listing.
+        Creating an account does not make a booking or publish a listing.
       </p>
     </AuthShell>
   );
