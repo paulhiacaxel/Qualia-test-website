@@ -27,7 +27,7 @@ export default async function HomePage() {
               <Link href="/discover" className="btn btn-primary">
                 Explore Qualia
               </Link>
-              <Link href="/signup?role=host" className="btn btn-outline">
+              <Link href="/#hosts" className="btn btn-outline">
                 Become a host
               </Link>
             </div>
@@ -99,8 +99,9 @@ export default async function HomePage() {
             and what they can share.
           </h2>
           <p className="muted">
-            We&apos;re preparing our first collection of personal experiences in Miami. Bookings
-            will open after hosts and their listings are reviewed.
+            We&apos;re building our Miami collection with independent hosts. Every experience is
+            reviewed before it appears here. Hosts choose what they offer and when they&apos;re
+            available.
           </p>
         </div>
         <div className="three-column">
@@ -137,13 +138,14 @@ export default async function HomePage() {
               what you already offer, and we&apos;ll write your experience page for you to approve.
             </p>
             <p>
-              We&apos;re preparing to launch with our first 30 Founding Hosts. Every experience is
-              reviewed before it goes live.
+              Start with a link to your website, Instagram, or an existing class. We&apos;ll draft
+              the page, then you review the details before anything goes live. You don&apos;t need
+              to create an account to ask us for help.
             </p>
           </div>
           <div className="button-row host-actions">
             <a href={hostListingHelpUrl} className="btn">
-              Let us help with your listing
+              Send us your experience
             </a>
             <Link href="/signup?role=host" className="host-signup-link">
               Or create your own host account

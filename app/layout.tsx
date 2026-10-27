@@ -34,10 +34,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <div className="container footer-inner">
             <span className="wordmark">Qualia</span>
             <span className="eyebrow">Good people. New experiences.</span>
-            <span className="footer-note">Pre-launch · Miami / Miami Beach</span>
+            <span className="footer-note">Founding hosts welcome · Miami / Miami Beach</span>
             <nav className="footer-links" aria-label="Footer navigation">
               <Link href="/discover">Discover</Link>
-              <Link href="/host/start">Host with Qualia</Link>
+              <Link href="/#hosts">Host with Qualia</Link>
               <Link href="/help">Help &amp; concierge</Link>
               <Link href="/contact">Contact us</Link>
               <a href="https://www.instagram.com/bookqualia/" aria-label="Qualia on Instagram">
