@@ -87,6 +87,7 @@ export function safeNext(value: unknown, fallback = "/account/dashboard"): strin
     "/bookings",
     "/host/calendar",
     "/host/profile",
+    "/host/payments",
     "/account/profile",
     "/host/listings/new",
   ]);

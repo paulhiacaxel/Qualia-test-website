@@ -39,6 +39,20 @@ test("post-auth navigation rejects external origins and encoded redirect tricks"
   );
 });
 
+test("payout setup survives sign-in and agreement redirects without allowing URL variants", () => {
+  assert.equal(safeNext("/host/payments"), "/host/payments");
+  assert.equal(eligibilityPath("/host/payments"), "/account/eligibility?next=%2Fhost%2Fpayments");
+  const agreement = "/account/agreements?scope=host&next=%2Fhost%2Fpayments";
+  assert.equal(safeNext(agreement), agreement);
+  for (const destination of [
+    "/host/payments?next=https://evil.example",
+    "/host/payments/../admin",
+    "//host/payments",
+    "https://bookqualia.com/host/payments",
+  ])
+    assert.equal(safeNext(destination), "/account/dashboard");
+});
+
 test("signup cannot request an administrator role and requires a strong password", () => {
   const valid = {
     email: "HOST@example.com",

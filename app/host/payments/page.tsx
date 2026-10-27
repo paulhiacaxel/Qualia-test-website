@@ -10,7 +10,7 @@ import { hostPaymentsSchema } from "@/lib/payments/read-models";
 import { formatMoney } from "@/lib/host/validation";
 export const metadata = { title: "Host payments" };
 export default async function HostPaymentsPage() {
-  const { user } = await requireHost();
+  const { user } = await requireHost("/host/payments");
   const access = await getHostPaymentAccess(user.id);
   const config = access?.config;
   const data = config
